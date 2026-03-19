@@ -1,14 +1,14 @@
-interface ButtonProps {
+interface WhiteButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
 }
 
-export default function Button({
+export default function WhiteButton({
   children,
   onClick,
   className = "",
-}: ButtonProps) {
+}: WhiteButtonProps) {
   return (
     <button
       type="button"

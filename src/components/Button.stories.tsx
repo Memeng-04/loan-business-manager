@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import Button from "./Button";
+import WhiteButton from "./Button";
 
 const meta = {
-  title: "Components/Button",
-  component: Button,
+  title: "Components/WhiteButton",
+  component: WhiteButton,
   parameters: {
     layout: "centered",
   },
@@ -22,7 +22,7 @@ const meta = {
       description: "Additional Tailwind classes",
     },
   },
-} satisfies Meta<typeof Button>;
+} satisfies Meta<typeof WhiteButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

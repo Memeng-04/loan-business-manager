@@ -1,5 +1,5 @@
 import logoWhite from "./assets/icons/192x192/lend-white.png";
-import Button from "./components/Button";
+import WhiteButton from "./components/Button";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
             Because your lending business deserves better than a notebook.
           </h2>
 
-          <Button>Get Started</Button>
+          <WhiteButton>Get Started</WhiteButton>
         </div>
       </section>
     </main>
