@@ -52,7 +52,7 @@ export default function AuthPage() {
           <img
             src={logoWhite}
             alt="LEND logo"
-            className="mx-auto h-24 w-auto md:mx-0 md:h-28 ml:1"
+            className="mx-auto h-24 w-auto md:mx-0 md:h-28"
           />
           <p className="mt-4 text-sm text-blue-100 sm:text-base">
             Lending Efficiency through Networked Data
@@ -63,7 +63,7 @@ export default function AuthPage() {
         </div>
 
         <div className="rounded-3xl bg-white/10 p-5 pt-0.5 backdrop-blur-sm sm:p-7 sm:pt-0.5">
-          <div className="mb-6 flex">
+          <div className="mb-6 flex gap-2">
             <Button
               type="button"
               onClick={() => setMode("login")}
