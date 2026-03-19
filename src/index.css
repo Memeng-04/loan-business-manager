@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@palette {
+  mainBlue: #0C0C91;
+  lightMainBlue: #112BD6;
+  lightBlueContainer: #6DB6FE
+}
