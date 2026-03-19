@@ -20,7 +20,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   blue: "bg-main-blue text-white hover:opacity-90 focus-visible:ring-light-main-blue focus-visible:ring-offset-main-blue",
   
   outline:
-    "border border-white bg-transparent text-main-blue hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
+    "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
