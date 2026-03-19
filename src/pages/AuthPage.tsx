@@ -62,8 +62,8 @@ export default function AuthPage() {
           </h1>
         </div>
 
-        <div className="rounded-3xl bg-white/10 p-5 pt-0.5 backdrop-blur-sm sm:p-7 sm:pt-0.5">
-          <div className="mb-6 flex gap-2">
+        <div className="rounded-3xl bg-white/10 p-7 pt-0.5 backdrop-blur-sm sm:p-7 sm:pt-0.5">
+          <div className="mb-6 flex gap-2 -mt-3">
             <Button
               type="button"
               onClick={() => setMode("login")}
