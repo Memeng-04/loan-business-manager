@@ -1,7 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
 @import "tailwindcss";
 
-@palette {
-  mainBlue: #0C0C91;
-  lightMainBlue: #112BD6;
-  lightBlueContainer: #6DB6FE
+@layer base {
+  html {
+    @apply font-poppins;
+  }
+}
+
+@theme {
+  --color-main-blue: #0c0c91;
+  --color-light-main-blue: #112bd6;
+  --color-light-blue-container: #6db6fe;
+  --font-poppins: "Poppins", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
 }
