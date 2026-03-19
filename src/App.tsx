@@ -1,4 +1,4 @@
-import logoWhite from "./assets/icons/192x192/logo-white.png";
+import logoWhite from "./assets/icons/192x192/lend-white.png";
 
 function App() {
   return (
@@ -9,18 +9,16 @@ function App() {
             <img  
               src={logoWhite}
               alt="LEND logo"
-              className="h-30 w-auto sm:h-30 lg:h-30"
+              className="h-30 w-auto sm:h-30 lg:h-40"
             />
           </div>
 
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl margin-top-">
-            LEND
-          </h1>
-          <p className="mt-2 text-sm font-small text-blue-100 sm:text-base">
+      
+          <p className="mt-2 text-sm font-small text-blue-100 sm:text-base sm:mt-2">
             Lending Efficiency through Networked Data
           </p>
 
-          <h2 className="mt-10 max-w-2xl text-2xl font-semibold leading-tight sm:mt-14 sm:text-3xl lg:text-3xl">
+          <h2 className="mt-8 max-w-2xl text-2xl font-semibold leading-tight sm:mt-8 sm:text-3xl lg:text-3xl">
             Because your lending business deserves better than a notebook.
           </h2>
 
