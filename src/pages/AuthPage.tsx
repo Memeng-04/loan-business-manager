@@ -37,9 +37,9 @@ export default function AuthPage() {
     }
 
     if (mode === "signup") {
-      setSuccessMessage(
-        "Account created. Check your email for confirmation if enabled.",
-      );
+      setMode("login");
+      setPassword("");
+      setSuccessMessage("Account created. You can log in now.");
     }
 
     setIsSubmitting(false);
@@ -58,7 +58,7 @@ export default function AuthPage() {
             Lending Efficiency through Networked Data
           </p>
           <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl">
-           Because your business deserves better than a notebook.
+            Because your business deserves better than a notebook.
           </h1>
         </div>
 

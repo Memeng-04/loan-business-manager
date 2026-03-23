@@ -30,7 +30,8 @@ export const WithForm = {
         <div className="text-center md:text-left">
           <h1 className="text-3xl font-semibold sm:text-4xl">Welcome</h1>
           <p className="mt-4 text-sm text-blue-100">
-            This is an example of the auth page layout with logo and branding on the left.
+            This is an example of the auth page layout with logo and branding on
+            the left.
           </p>
         </div>
 
@@ -85,9 +86,14 @@ export const WithLongContent = {
 
         <div className="mt-6 space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-white/20 bg-white/5 p-4">
+            <div
+              key={i}
+              className="rounded-xl border border-white/20 bg-white/5 p-4"
+            >
               <p className="text-sm font-semibold">Item {i + 1}</p>
-              <p className="mt-1 text-xs text-blue-100">Some additional details here</p>
+              <p className="mt-1 text-xs text-blue-100">
+                Some additional details here
+              </p>
             </div>
           ))}
         </div>
@@ -105,7 +111,9 @@ export const Centered = {
     <PageShell>
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold">Centered Content</h1>
-        <p className="text-lg">PageShell centers content both horizontally and vertically.</p>
+        <p className="text-lg">
+          PageShell centers content both horizontally and vertically.
+        </p>
       </div>
     </PageShell>
   ),

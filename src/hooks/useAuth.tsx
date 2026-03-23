@@ -23,6 +23,18 @@ type AuthContextValue = {
   signOut: () => Promise<{ error: string | null }>;
 };
 
+function mapAuthErrorMessage(message: string | null): string | null {
+  if (!message) {
+    return null;
+  }
+
+  if (message.toLowerCase().includes("email logins are disabled")) {
+    return "Email/password auth is disabled in Supabase. Enable it in Supabase Dashboard → Authentication → Providers → Email.";
+  }
+
+  return message;
+}
+
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -62,11 +74,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       signIn: async (email: string, password: string) => {
         const { error } = await signInWithEmailPassword(email, password);
-        return { error: error?.message ?? null };
+        return { error: mapAuthErrorMessage(error?.message ?? null) };
       },
       signUp: async (email: string, password: string) => {
         const { error } = await signUpWithEmailPassword(email, password);
-        return { error: error?.message ?? null };
+        return { error: mapAuthErrorMessage(error?.message ?? null) };
       },
       signOut: async () => {
         const { error } = await signOutService();
