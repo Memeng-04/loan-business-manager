@@ -1,7 +1,25 @@
 import logoWhite from "./assets/icons/192x192/lend-white.png";
 import WhiteButton from "./components/Button";
+import { useEffect } from 'react';
+import { supabase } from './lib/supabase';
 
 function App() {
+  useEffect(() => {
+    const testConnection = async () => {
+      try {
+        const { data, error } = await supabase.from('borrowers').select('*');
+        if (error) {
+          console.error("Supabase connection failed:", error.message);
+        } else {
+          console.log("Supabase connection successful! Data found:", data);
+        }
+      } catch (err) {
+        console.error("Unexpected error connecting to Supabase:", err);
+      }
+    };
+    testConnection();
+  }, []);
+
   return (
     <main className="min-h-svh bg-main-blue text-white">
       <section className="mx-auto flex min-h-svh w-full max-w-7xl flex-col items-center justify-center px-6 py-12 text-center sm:px-10 sm:py-16 lg:px-16 lg:py-20">
