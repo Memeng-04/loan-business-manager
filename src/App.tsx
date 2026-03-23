@@ -1,7 +1,7 @@
 import logoWhite from "./assets/icons/192x192/lend-white.png";
 import WhiteButton from "./components/Button";
 import { useEffect } from 'react';
-import { supabase } from './lib/supabase';
+import { supabase } from './services/supabase';
 
 function App() {
   useEffect(() => {
