@@ -5,7 +5,7 @@ import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
-
+// test
 function App() {
   useEffect(() => {
     const testConnection = async () => {
