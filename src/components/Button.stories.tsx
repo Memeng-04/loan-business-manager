@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import WhiteButton from "./Button";
+import Button from "./Button";
 
 const meta = {
-  title: "Components/WhiteButton",
-  component: WhiteButton,
+  title: "Components/Button",
+  component: Button,
   parameters: {
     layout: "centered",
   },
@@ -21,8 +21,18 @@ const meta = {
       control: "text",
       description: "Additional Tailwind classes",
     },
+    variant: {
+      control: "select",
+      options: ["white", "blue", "outline"],
+      description: "Visual style variant",
+    },
+    size: {
+      control: "select",
+      options: ["md", "lg"],
+      description: "Button size",
+    },
   },
-} satisfies Meta<typeof WhiteButton>;
+} satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -30,25 +40,40 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     children: "Get Started",
+    variant: "white",
+    size: "lg",
   },
 };
 
-export const WithDifferentText: Story = {
+export const BlueVariant: Story = {
   args: {
-    children: "Apply Now",
+    children: "Continue",
+    variant: "blue",
+    size: "lg",
   },
 };
 
-export const WithCustomClass: Story = {
+export const OutlineVariant: Story = {
   args: {
-    children: "Custom Button",
-    className: "mt-8",
+    children: "Learn More",
+    variant: "outline",
+    size: "lg",
+  },
+};
+
+export const MediumSize: Story = {
+  args: {
+    children: "Medium Button",
+    variant: "white",
+    size: "md",
   },
 };
 
 export const Interactive: Story = {
   args: {
     children: "Click Me",
+    variant: "blue",
+    size: "md",
   },
   play: async ({ canvasElement }) => {
     const button = canvasElement.querySelector("button");
