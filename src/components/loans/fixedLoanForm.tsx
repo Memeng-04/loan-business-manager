@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCreateLoan } from '../../hooks/useCreateLoan'
+import { useCreateLoan } from '../../hooks/useCreateFixedLoan'
 import {
   calculateInterest,
   calculatePaymentAmount

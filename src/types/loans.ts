@@ -25,3 +25,12 @@ export interface CreateLoanInput {
   term_days: number
   start_date: string
 }
+
+export interface CreatePercentageLoanInput {
+  borrower_id: string
+  principal: number
+  interest_rate: number
+  frequency: PaymentFrequency
+  term_days: number
+  start_date: string
+}

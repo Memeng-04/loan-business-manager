@@ -9,6 +9,15 @@ export const calculateInterest = (
   return { interest, interestRate }
 }
 
+export const calculateFromPercentage = (
+  principal: number,
+  interestRate: number
+) => {
+  const interest     = principal * (interestRate / 100)
+  const totalPayable = principal + interest
+  return { interest, totalPayable }
+}
+
 export const calculatePaymentAmount = (
   totalPayable: number,
   frequency: PaymentFrequency,
