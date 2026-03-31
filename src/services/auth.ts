@@ -1,5 +1,5 @@
 import type { AuthError, Session, User } from "@supabase/supabase-js";
-import { supabase } from "../lib/supabase";
+import { supabase } from '../services/supabase';
 
 export type AuthResponse = {
   user: User | null;
