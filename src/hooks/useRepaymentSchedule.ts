@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../services/supabase'
-import { generateSchedule } from '../strategies/ScheduleStrategy'
-import type {ScheduleEntry } from '../strategies/ScheduleStrategy'
+import { generateSchedule} from '../strategies/ScheduleStrategy'
+import type { ScheduleEntry } from '../strategies/ScheduleStrategy'
 import type { PaymentFrequency } from '../types/loans'
 
 export const useRepaymentSchedule = () => {
@@ -10,24 +10,39 @@ export const useRepaymentSchedule = () => {
   const [error, setError]       = useState<string | null>(null)
   const [saved, setSaved]       = useState(false)
 
-  const previewSchedule = (
-    startDate:    string,
-    totalPayable: number,
-    frequency:    PaymentFrequency,
-    termDays:     number
-  ) => {
-    const generated = generateSchedule(startDate, totalPayable, frequency, termDays)
-    setSchedule(generated)
-    setSaved(false)
-  }
+  const previewFromLoan = async (loanId: string) => {
+    setLoading(true)
+    setError(null)
 
-  const saveSchedule = async (
-    loanId:       string,
-    startDate:    string,
-    totalPayable: number,
-    frequency:    PaymentFrequency,
-    termDays:     number
-  ) => {
+    try {
+      const { data, error } = await supabase
+        .from('loans')
+        .select('total_payable, frequency, start_date, end_date')
+        .eq('id', loanId)
+        .single()
+
+      if (error) throw error
+
+      const start    = new Date(data.start_date)
+      const end      = new Date(data.end_date)
+      const termDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+
+      const generated = generateSchedule(
+        data.start_date,
+        data.total_payable,
+        data.frequency as PaymentFrequency,
+        termDays
+      )
+
+      setSchedule(generated)
+      setSaved(false)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+  const saveSchedule = async (loanId: string) => {
     setLoading(true)
     setError(null)
 
@@ -35,9 +50,15 @@ export const useRepaymentSchedule = () => {
       const { data, error } = await supabase.functions.invoke(
         'generate-repayment-schedule',
         {
-          body: { loanId, startDate, totalPayable, frequency, termDays }
+          body: { loanId },
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+          }
         }
       )
+
+      console.log('response data:', data)
+      console.log('response error:', error)
 
       if (error) throw error
       setSaved(true)
@@ -50,5 +71,5 @@ export const useRepaymentSchedule = () => {
     }
   }
 
-  return { schedule, previewSchedule, saveSchedule, loading, error, saved }
+  return { schedule, previewFromLoan, saveSchedule, loading, error, saved }
 }
