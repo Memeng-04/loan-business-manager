@@ -1,12 +1,41 @@
-import { RepaymentSchedule } from './components/loans/RepaymentSchedule'
+import { Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicOnlyRoute from "./components/PublicOnlyRoute";
+import AuthPage from "./pages/AuthPage";
+import DashboardPage from "./pages/DashboardPage";
+import { useEffect } from 'react';
+import { supabase } from './services/supabase';
 
 function App() {
+  useEffect(() => {
+    const testConnection = async () => {
+      try {
+        const { data, error } = await supabase.from('borrowers').select('*');
+        if (error) {
+          console.error("Supabase connection failed:", error.message);
+        } else {
+          console.log("Supabase connection successful! Data found:", data);
+        }
+      } catch (err) {
+        console.error("Unexpected error connecting to Supabase:", err);
+      }
+    };
+    testConnection();
+  }, []);
+
   return (
-    <RepaymentSchedule 
-      loanId="4df013cb-c333-477a-9fff-de60cb3a35f4"
-      borrowerId="5aa0f2d2-dbd9-47df-9369-42ee6aed83b2"
-    />
-  )
+    <Routes>
+      <Route element={<PublicOnlyRoute />}>
+        <Route path="/auth" element={<AuthPage />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/auth" replace />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
