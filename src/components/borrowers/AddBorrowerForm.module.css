@@ -61,7 +61,6 @@
 .secondaryButton,
 .primaryButton {
   margin-top: 0;
-  border-radius: 0.7rem;
 }
 
 .primaryButton:disabled {
