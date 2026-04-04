@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react";
-import PageShell from "./PageShell";
+import PageShell from "../PageShell";
 
 const meta = {
   title: "Components/PageShell",
