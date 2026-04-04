@@ -5,6 +5,7 @@ import logoWhite from "../assets/icons/192x192/lend-white.png";
 import Button from "../components/Button";
 import PageShell from "../components/PageShell";
 import { useAuth } from "../hooks/useAuth";
+import styles from "./styles/AuthPage.module.css";
 
 type AuthMode = "login" | "signup";
 
@@ -49,29 +50,25 @@ export default function AuthPage() {
 
   return (
     <PageShell>
-      <div className="mx-auto grid w-full max-w-5xl gap-8 md:grid-cols-2 md:items-center">
-        <div className="text-center md:text-left">
-          <img
-            src={logoWhite}
-            alt="LEND logo"
-            className="mx-auto h-24 w-auto md:mx-0 md:h-28"
-          />
-          <p className="mt-4 text-sm text-blue-100 sm:text-base">
+      <div className={styles.layout}>
+        <div className={styles.hero}>
+          <img src={logoWhite} alt="LEND logo" className={styles.logo} />
+          <p className={styles.tagline}>
             Lending Efficiency through Networked Data
           </p>
-          <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl">
+          <h1 className={styles.heading}>
             Because your business deserves better than a notebook.
           </h1>
         </div>
 
-        <div className="rounded-3xl bg-white/10 p-7 pt-0.5 backdrop-blur-sm sm:p-7 sm:pt-0.5">
-          <div className="mb-6 flex gap-2 -mt-3">
+        <div className={styles.panel}>
+          <div className={styles.authTabs}>
             <Button
               type="button"
               onClick={() => setMode("login")}
               variant={mode === "login" ? "white" : "outline"}
               size="md"
-              className="w-1/2"
+              className={styles.halfButton}
             >
               Log in
             </Button>
@@ -80,28 +77,28 @@ export default function AuthPage() {
               onClick={() => setMode("signup")}
               variant={mode === "signup" ? "white" : "outline"}
               size="md"
-              className="w-1/2"
+              className={styles.halfButton}
             >
               Sign up
             </Button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <label className="block">
-              <span className="mb-1 block text-sm text-blue-100">Email</span>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Email</span>
               <input
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
                 autoComplete="email"
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className={styles.input}
                 placeholder="you@example.com"
               />
             </label>
 
-            <label className="block">
-              <span className="mb-1 block text-sm text-blue-100">Password</span>
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Password</span>
               <input
                 type="password"
                 value={password}
@@ -111,21 +108,17 @@ export default function AuthPage() {
                 autoComplete={
                   mode === "login" ? "current-password" : "new-password"
                 }
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className={styles.input}
                 placeholder="••••••••"
               />
             </label>
 
             {errorMessage ? (
-              <p className="rounded-xl bg-white/15 px-3 py-2 text-sm">
-                {errorMessage}
-              </p>
+              <p className={styles.message}>{errorMessage}</p>
             ) : null}
 
             {successMessage ? (
-              <p className="rounded-xl bg-white/15 px-3 py-2 text-sm">
-                {successMessage}
-              </p>
+              <p className={styles.message}>{successMessage}</p>
             ) : null}
 
             <Button
@@ -133,7 +126,7 @@ export default function AuthPage() {
               disabled={isSubmitting}
               variant="white"
               size="lg"
-              className="w-full"
+              className={styles.submitButton}
             >
               {isSubmitting
                 ? "Please wait..."
