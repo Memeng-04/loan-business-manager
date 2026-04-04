@@ -1,13 +1,13 @@
 import { Menu } from "lucide-react";
+import lendHorizontal from "../../assets/icons/192x192/lend-horizontal.png";
 import styles from "./Header.module.css";
 
 type HeaderProps = {
   title: string;
-  subtitle?: string;
   onMenuClick?: () => void;
 };
 
-export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
+export default function Header({ title, onMenuClick }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
@@ -22,8 +22,9 @@ export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
 
         <div className={styles.textWrap}>
           <h1 className={styles.title}>{title}</h1>
-          {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
         </div>
+
+        <img src={lendHorizontal} alt="LEND" className={styles.logo} />
       </div>
     </header>
   );

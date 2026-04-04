@@ -20,16 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const WithSubtitle: Story = {
-  args: {
-    subtitle: "Overview coming soon",
-  },
-};
-
 export const MobileView: Story = {
-  args: {
-    subtitle: "Mobile layout",
-  },
   parameters: {
     viewport: {
       defaultViewport: "mobile1",
@@ -38,9 +29,6 @@ export const MobileView: Story = {
 };
 
 export const DesktopView: Story = {
-  args: {
-    subtitle: "Desktop layout",
-  },
   parameters: {
     viewport: {
       defaultViewport: "responsive",

@@ -2,10 +2,11 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   color: #ffffff;
   background-color: var(--color-main-blue);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-poppins);
 }
 
 .inner {
@@ -51,15 +52,18 @@
   flex: 1;
 }
 
+.logo {
+  height: 4rem;
+  width: auto;
+  flex: 0 0 auto;
+  margin-left: -2rem;
+  margin-right: 1rem;
+}
+
 .title {
   font-size: 1.5rem;
   line-height: 1.25;
   font-weight: 600;
-}
-
-.subtitle {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.75);
 }
 
 @media (min-width: 640px) {
@@ -71,10 +75,22 @@
   .title {
     font-size: 1.875rem;
   }
+
+
 }
 
 @media (min-width: 1024px) {
   .menuButton {
     display: inline-flex;
   }
+  
+}
+
+@media (min-width: 300px) {
+  .logo {
+    height: 3rem;
+    margin-left: -1.5rem;
+    margin-right: 0rem;
+  }
+  
 }
