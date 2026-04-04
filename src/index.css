@@ -6,6 +6,17 @@
   html {
     @apply font-poppins;
   }
+
+  body {
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  @supports (overflow-y: overlay) {
+    body {
+      overflow-y: overlay;
+    }
+  }
 }
 
 @theme {
