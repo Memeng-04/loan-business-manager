@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/HomePage";
+import BorrowersPage from "./pages/BorrowersPage";
 import { useEffect } from 'react';
 import { supabase } from './services/supabase';
 
@@ -31,6 +32,7 @@ function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/borrowers" element={<BorrowersPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />

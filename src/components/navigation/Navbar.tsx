@@ -5,6 +5,7 @@ import {
   PlusCircle,
   Users,
 } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.css";
 
 type NavbarProps = {
@@ -12,14 +13,19 @@ type NavbarProps = {
 };
 
 const navItems = [
-  { label: "Home", Icon: Home },
-  { label: "Loans", Icon: ClipboardList },
-  { label: "New", Icon: PlusCircle },
-  { label: "Borrowers", Icon: Users },
-  { label: "Reports", Icon: BarChart3 },
+  { label: "Home", Icon: Home, path: "/dashboard" },
+  { label: "Loans", Icon: ClipboardList, path: "/loans" },
+  { label: "New", Icon: PlusCircle, path: "/new" },
+  { label: "Borrowers", Icon: Users, path: "/borrowers" },
+  { label: "Reports", Icon: BarChart3, path: "/reports" },
 ];
 
 export default function Navbar({ isOpen }: NavbarProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
+
   return (
     <>
       <aside
@@ -31,7 +37,8 @@ export default function Navbar({ isOpen }: NavbarProps) {
             <button
               key={item.label}
               type="button"
-              className={`${styles.navButton} ${item.label === "Home" ? styles.navButtonActive : ""}`}
+              onClick={() => navigate(item.path)}
+              className={`${styles.navButton} ${isActive(item.path) ? styles.navButtonActive : ""}`}
             >
               <item.Icon className={styles.navIcon} />
               <span>{item.label}</span>
@@ -49,7 +56,8 @@ export default function Navbar({ isOpen }: NavbarProps) {
             <button
               key={item.label}
               type="button"
-              className={`${styles.mobileButton} ${item.label === "Home" ? styles.mobileButtonActive : ""}`}
+              onClick={() => navigate(item.path)}
+              className={`${styles.mobileButton} ${isActive(item.path) ? styles.mobileButtonActive : ""}`}
             >
               <item.Icon className={styles.mobileIcon} />
               <span>{item.label}</span>

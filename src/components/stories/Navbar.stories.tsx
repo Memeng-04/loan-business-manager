@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
 import Navbar from "../navigation/Navbar";
 
 const meta = {
@@ -10,6 +11,13 @@ const meta = {
   args: {
     isOpen: false,
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter initialEntries={["/dashboard"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 } satisfies Meta<typeof Navbar>;
 
 export default meta;
