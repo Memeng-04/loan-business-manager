@@ -19,7 +19,7 @@
 .topRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
 }
 
@@ -31,6 +31,7 @@
 
 .addButton {
   margin-top: 0;
+  flex-shrink: 0;
 }
 
 .stateText {
