@@ -10,7 +10,7 @@
 
 @media (min-width: 1024px) {
   .content {
-    min-height: calc(100svh - 5rem);
+    min-height: calc(100svh - 3.75rem);
     padding-bottom: 0;
   }
 }

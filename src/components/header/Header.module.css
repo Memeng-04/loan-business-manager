@@ -77,7 +77,7 @@
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1079px) {
+@media (min-width: 1024px) {
   .menuButton {
     display: inline-flex;
   }
