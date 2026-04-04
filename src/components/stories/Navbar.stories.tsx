@@ -9,14 +9,14 @@ const meta = {
   },
   args: {
     isOpen: false,
-    onClose: () => undefined,
   },
 } satisfies Meta<typeof Navbar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const MobileFooterBlank: Story = {
+export const MobileFooterOnly: Story = {
+  name: "MobileFooter",
   parameters: {
     viewport: {
       defaultViewport: "mobile1",
