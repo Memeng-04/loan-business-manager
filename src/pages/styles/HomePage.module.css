@@ -1,16 +1,19 @@
 .page {
   min-height: 100svh;
+  --header-height: 3.75rem;
+  --mobile-footer-height: 4.5rem;
   background-color: #ffffff;
 }
 
 .content {
-  min-height: calc(100svh - 4.5rem);
-  padding-bottom: 4.5rem;
+  box-sizing: border-box;
+  min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
+  padding-bottom: var(--mobile-footer-height);
 }
 
 @media (min-width: 1024px) {
   .content {
-    min-height: calc(100svh - 3.75rem);
+    min-height: calc(100svh - var(--header-height));
     padding-bottom: 0;
   }
 }

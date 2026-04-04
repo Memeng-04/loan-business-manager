@@ -4,14 +4,15 @@ import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/HomePage";
 import BorrowersPage from "./pages/BorrowersPage";
-import { useEffect } from 'react';
-import { supabase } from './services/supabase';
+import AddBorrowerPage from "./pages/AddBorrowerPage";
+import { useEffect } from "react";
+import { supabase } from "./services/supabase";
 
 function App() {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        const { data, error } = await supabase.from('borrowers').select('*');
+        const { data, error } = await supabase.from("borrowers").select("*");
         if (error) {
           console.error("Supabase connection failed:", error.message);
         } else {
@@ -33,6 +34,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
+        <Route path="/borrowers/new" element={<AddBorrowerPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />
