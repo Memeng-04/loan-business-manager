@@ -1,4 +1,5 @@
 import { supabase } from "../services/supabase";
+import { BorrowerFactory } from "../factories/BorrowerFactory";
 import type { Borrower, CreateBorrowerInput } from "../types/borrowers";
 
 export class BorrowerRepository {
@@ -13,13 +14,7 @@ export class BorrowerRepository {
   }
 
   static async create(input: CreateBorrowerInput): Promise<Borrower> {
-    const payload = {
-      full_name: input.full_name,
-      business_name: input.business_name || null,
-      address: input.address || null,
-      phone: input.phone || null,
-      notes: input.notes || null,
-    };
+    const payload = BorrowerFactory.create(input);
 
     const { data, error } = await supabase
       .from("borrowers")
