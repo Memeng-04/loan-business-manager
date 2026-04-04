@@ -2,8 +2,10 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 import AuthCard from "../components/auth/AuthCard";
+import logoWhite from "../assets/icons/192x192/lend-white.png";
 import type { AuthMode } from "../components/auth/AuthCard";
 import { useAuth } from "../hooks/useAuth";
+import styles from "./styles/AuthPage.module.css";
 
 export default function AuthPage() {
   const { user, signIn, signUp } = useAuth();
@@ -45,17 +47,33 @@ export default function AuthPage() {
   }
 
   return (
-    <AuthCard
-      mode={mode}
-      email={email}
-      password={password}
-      errorMessage={errorMessage}
-      successMessage={successMessage}
-      isSubmitting={isSubmitting}
-      onModeChange={setMode}
-      onEmailChange={setEmail}
-      onPasswordChange={setPassword}
-      onSubmit={handleSubmit}
-    />
+    <main className={styles.page}>
+      <section className={styles.shell}>
+        <div className={styles.layout}>
+          <div className={styles.hero}>
+            <img src={logoWhite} alt="LEND logo" className={styles.logo} />
+            <p className={styles.tagline}>
+              Lending Efficiency through Networked Data
+            </p>
+            <h1 className={styles.heading}>
+              Because your business deserves better than a notebook.
+            </h1>
+          </div>
+
+          <AuthCard
+            mode={mode}
+            email={email}
+            password={password}
+            errorMessage={errorMessage}
+            successMessage={successMessage}
+            isSubmitting={isSubmitting}
+            onModeChange={setMode}
+            onEmailChange={setEmail}
+            onPasswordChange={setPassword}
+            onSubmit={handleSubmit}
+          />
+        </div>
+      </section>
+    </main>
   );
 }
