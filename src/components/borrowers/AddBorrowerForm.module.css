@@ -4,6 +4,8 @@
   border: 1px solid #dbe4f0;
   border-radius: 1rem;
   padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
 .title {
