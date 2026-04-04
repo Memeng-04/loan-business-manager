@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import BorrowerCard from "../components/borrowers/BorrowerCard";
 import Header from "../components/header/Header";
 import Navbar from "../components/navigation/Navbar";
 import { useBorrowers } from "../hooks/useBorrowers.ts";
@@ -27,7 +28,7 @@ export default function BorrowersPage() {
               className={styles.addButton}
               onClick={() => navigate("/borrowers/new")}
             >
-            + Add
+              + Add
             </Button>
           </div>
 
@@ -43,25 +44,7 @@ export default function BorrowersPage() {
           {!loading && !error && borrowers.length > 0 ? (
             <ul className={styles.list}>
               {borrowers.map((borrower) => (
-                <li key={borrower.id} className={styles.card}>
-                  <h2 className={styles.borrowerName}>{borrower.full_name}</h2>
-                  {borrower.business_name ? (
-                    <p className={styles.metaLine}>
-                      Business: {borrower.business_name}
-                    </p>
-                  ) : null}
-                  {borrower.address ? (
-                    <p className={styles.metaLine}>
-                      Address: {borrower.address}
-                    </p>
-                  ) : null}
-                  {borrower.phone ? (
-                    <p className={styles.metaLine}>Number: {borrower.phone}</p>
-                  ) : null}
-                  {borrower.notes ? (
-                    <p className={styles.notesLine}>Notes: {borrower.notes}</p>
-                  ) : null}
-                </li>
+                <BorrowerCard key={borrower.id} borrower={borrower} />
               ))}
             </ul>
           ) : null}
