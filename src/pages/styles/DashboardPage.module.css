@@ -1,0 +1,16 @@
+.page {
+  min-height: 100svh;
+  background-color: #ffffff;
+}
+
+.content {
+  min-height: calc(100svh - 4.5rem);
+  padding-bottom: 4.5rem;
+}
+
+@media (min-width: 1024px) {
+  .content {
+    min-height: calc(100svh - 5rem);
+    padding-bottom: 0;
+  }
+}

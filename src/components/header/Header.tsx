@@ -4,9 +4,10 @@ import styles from "./Header.module.css";
 type HeaderProps = {
   title: string;
   subtitle?: string;
+  onMenuClick?: () => void;
 };
 
-export default function Header({ title, subtitle }: HeaderProps) {
+export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
@@ -14,6 +15,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
           type="button"
           aria-label="Open navigation menu"
           className={styles.menuButton}
+          onClick={onMenuClick}
         >
           <Menu className={styles.menuIcon} />
         </button>

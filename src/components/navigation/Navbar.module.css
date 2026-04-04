@@ -1,0 +1,40 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 18rem;
+  height: 100svh;
+  background-color: var(--color-main-blue);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.24s ease;
+  z-index: 40;
+  display: none;
+}
+
+.sidebarOpen {
+  transform: translateX(0);
+}
+
+.mobileFooter {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3.5rem;
+  background-color: var(--color-main-blue);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 30;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    display: block;
+    top: 5rem;
+    height: calc(100svh - 5rem);
+  }
+
+  .mobileFooter {
+    display: none;
+  }
+}

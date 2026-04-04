@@ -1,0 +1,44 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import Navbar from "../navigation/Navbar";
+
+const meta = {
+  title: "Components/Navbar",
+  component: Navbar,
+  parameters: {
+    layout: "fullscreen",
+  },
+  args: {
+    isOpen: false,
+    onClose: () => undefined,
+  },
+} satisfies Meta<typeof Navbar>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const MobileFooterBlank: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1",
+    },
+  },
+};
+
+export const DesktopClosed: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: "responsive",
+    },
+  },
+};
+
+export const DesktopOpen: Story = {
+  args: {
+    isOpen: true,
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: "responsive",
+    },
+  },
+};
