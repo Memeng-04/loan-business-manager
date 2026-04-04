@@ -16,6 +16,12 @@
   max-width: 72rem;
 }
 
+.loadingContainer {
+  min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
+  display: grid;
+  place-items: center;
+}
+
 .topRow {
   display: flex;
   align-items: center;
@@ -51,6 +57,10 @@
 }
 
 @media (min-width: 1024px) {
+  .loadingContainer {
+    min-height: calc(100svh - var(--header-height));
+  }
+
   .content {
     min-height: calc(100svh - var(--header-height));
     padding: 1.2rem 1.5rem;
