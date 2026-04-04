@@ -40,6 +40,8 @@ export default function AuthPage() {
       setMode("login");
       setPassword("");
       setSuccessMessage("Account created. You can log in now.");
+      setIsSubmitting(false);
+      return;
     }
 
     setIsSubmitting(false);
