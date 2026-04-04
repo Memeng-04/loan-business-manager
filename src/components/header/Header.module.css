@@ -75,15 +75,18 @@
   .title {
     font-size: 1.875rem;
   }
-
-
 }
 
 @media (min-width: 1024px) {
   .menuButton {
     display: inline-flex;
   }
-  
+
+  .logo {
+    height: 2.5rem;
+    margin-left: auto;
+    margin-right: 0;
+  }
 }
 
 @media (min-width: 300px) {
@@ -92,5 +95,12 @@
     margin-left: -1.5rem;
     margin-right: 0rem;
   }
-  
+}
+
+@media (min-width: 1080px) {
+  .logo {
+    height: 3.7rem;
+    margin-left: -2rem;
+    margin-right: -12rem;
+  }
 }
