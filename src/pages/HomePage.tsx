@@ -1,15 +1,15 @@
 import { useState } from "react";
 import Header from "../components/header/Header";
 import Navbar from "../components/navigation/Navbar";
-import styles from "./styles/DashboardPage.module.css";
+import styles from "./styles/HomePage.module.css";
 
-export default function DashboardPage() {
+export default function HomePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   return (
     <main className={styles.page}>
       <Header
-        title="Dashboard"
+        title="Home"
         onMenuClick={() => setIsNavOpen((prev) => !prev)}
       />
       <Navbar isOpen={isNavOpen} />

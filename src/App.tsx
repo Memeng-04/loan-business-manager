@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import AuthPage from "./pages/AuthPage";
-import DashboardPage from "./pages/DashboardPage";
+import DashboardPage from "./pages/HomePage";
 import { useEffect } from 'react';
 import { supabase } from './services/supabase';
 

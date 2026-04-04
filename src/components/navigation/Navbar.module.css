@@ -16,15 +16,84 @@
   transform: translateX(0);
 }
 
+.sidebarNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 2rem 0.75rem;
+}
+
+.navButton {
+  width: 100%;
+  border: 0;
+  border-radius: 0.8rem;
+  background: transparent;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.72rem 0.85rem;
+  font-family: var(--font-poppins);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.navButtonActive {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.navIcon {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+}
+
 .mobileFooter {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 3.5rem;
+  height: 4.5rem;
   background-color: var(--color-main-blue);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 30;
+}
+
+.mobileNav {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.mobileButton {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  font-family: var(--font-poppins);
+  font-size: 0.68rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.mobileButtonActive {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.mobileIcon {
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 @media (min-width: 1024px) {

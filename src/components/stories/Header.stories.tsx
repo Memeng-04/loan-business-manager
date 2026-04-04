@@ -8,7 +8,7 @@ const meta = {
     layout: "fullscreen",
   },
   args: {
-    title: "Dashboard",
+    title: "Header Title",
   },
   argTypes: {
     onMenuClick: { action: "menu-clicked" },
