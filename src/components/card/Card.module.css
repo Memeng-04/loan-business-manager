@@ -1,9 +1,43 @@
 .card {
   border: 1px solid #dbe4f0;
   border-radius: 1rem;
-  padding: 1rem 1.05rem;
   background-color: #ffffff;
   box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.variantDefault {
+  border-color: #dbe4f0;
+  background-color: #ffffff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.variantSubtle {
+  border-color: #e2e8f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.variantElevated {
+  border-color: #cbd5e1;
+  background-color: #ffffff;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+}
+
+
+.paddingNone {
+  padding: 0;
+}
+
+.paddingSm {
+  padding: 0.75rem 0.85rem;
+}
+
+.paddingMd {
+  padding: 1rem 1.05rem;
+}
+
+.paddingLg {
+  padding: 1.35rem 1.45rem;
 }
 
 .interactive {
