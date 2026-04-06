@@ -40,5 +40,9 @@ export const WhiteBackground: Story = {
     message: "Loading with white background...",
     fullScreen: false,
   },
- 
+  render: (args) => (
+    <div style={{ backgroundColor: "#ffffff", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <LoadingState {...args} />
+    </div>
+  ),
 };
