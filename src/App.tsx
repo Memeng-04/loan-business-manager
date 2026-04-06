@@ -1,10 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
-import AuthPage from "./pages/Auth/AuthPage";
-import DashboardPage from "./pages/Home/HomePage";
-import BorrowersPage from "./pages/Borrowers/BorrowersPage";
-import AddBorrowerPage from "./pages/Borrowers/AddBorrowerPage";
+import AuthPage from "./pages/auth/AuthPage";
+import DashboardPage from "./pages/home/HomePage";
+import BorrowersPage from "./pages/borrowers/BorrowersPage";
+import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage";
+import MorePage from "./pages/more/MorePage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
+        <Route path="/more" element={<MorePage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />
