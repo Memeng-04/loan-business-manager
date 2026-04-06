@@ -1,10 +1,4 @@
-import {
-  BarChart3,
-  ClipboardList,
-  Home,
-  PlusCircle,
-  Users,
-} from "lucide-react";
+import { ClipboardList, Home, PlusCircle, Users, LayoutGrid } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.css";
 
@@ -16,9 +10,9 @@ type NavbarProps = {
 const navItems = [
   { label: "Home", Icon: Home, path: "/dashboard" },
   { label: "Loans", Icon: ClipboardList, path: "/loans" },
-  { label: "New", Icon: PlusCircle, path: "/new" },
+  { label: "Add", Icon: PlusCircle, path: "/add" },
   { label: "Borrowers", Icon: Users, path: "/borrowers" },
-  { label: "Reports", Icon: BarChart3, path: "/reports" },
+  { label: "More", Icon: LayoutGrid, path: "/more" },
 ];
 
 export default function Navbar({ isOpen, onClose }: NavbarProps) {
@@ -32,6 +26,7 @@ export default function Navbar({ isOpen, onClose }: NavbarProps) {
 
     return location.pathname === path;
   };
+
 
   const handleNavigate = (path: string) => {
     navigate(path);
