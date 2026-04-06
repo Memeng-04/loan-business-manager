@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
-import LoadingState from "../components/LoadingState";
-import SearchBar from "../components/search/SearchBar.tsx";
-import BorrowerCard from "../components/borrowers/BorrowerCard";
-import Header from "../components/header/Header";
-import Navbar from "../components/navigation/Navbar";
-import { useBorrowers } from "../hooks/useBorrowers.ts";
-import styles from "./styles/BorrowersPage.module.css";
+import Button from "../../components/Button.tsx";
+import LoadingState from "../../components/LoadingState.tsx";
+import SearchBar from "../../components/search/SearchBar.tsx";
+import BorrowerCard from "../../components/borrowers/BorrowerCard.tsx";
+import Header from "../../components/header/Header.tsx";
+import Navbar from "../../components/navigation/Navbar.tsx";
+import { useBorrowers } from "../../hooks/useBorrowers.ts";
+import styles from "./BorrowersPage.module.css";
 
 export default function BorrowersPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);

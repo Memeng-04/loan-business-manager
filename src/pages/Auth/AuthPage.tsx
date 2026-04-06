@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate } from "react-router-dom";
-import AuthCard from "../components/auth/AuthCard";
-import logoWhite from "../assets/icons/192x192/lend-white.png";
-import type { AuthMode } from "../components/auth/AuthCard";
-import { useAuth } from "../hooks/useAuth";
-import styles from "./styles/AuthPage.module.css";
+import AuthCard from "../../components/auth/AuthCard";
+import logoWhite from "../../assets/icons/192x192/lend-white.png";
+import type { AuthMode } from "../../components/auth/AuthCard";
+import { useAuth } from "../../hooks/useAuth";
+import styles from "./AuthPage.module.css";
 
 export default function AuthPage() {
   const { user, signIn, signUp } = useAuth();
