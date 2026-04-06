@@ -38,7 +38,6 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
-        <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="/loans" element={<LoanPage />} />
