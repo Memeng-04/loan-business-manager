@@ -10,7 +10,7 @@ type NavbarProps = {
 const navItems = [
   { label: "Home", Icon: Home, path: "/dashboard" },
   { label: "Loans", Icon: ClipboardList, path: "/loans" },
-  { label: "New", Icon: PlusCircle, path: "/new" },
+  { label: "Add", Icon: PlusCircle, path: "/add" },
   { label: "Borrowers", Icon: Users, path: "/borrowers" },
   { label: "More", Icon: LayoutGrid, path: "/more" },
 ];

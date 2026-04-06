@@ -7,6 +7,7 @@ import BorrowersPage from "./pages/borrowers/BorrowersPage";
 import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage";
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
+import NewLoanPage from "./pages/add/NewLoanPage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
 
@@ -40,6 +41,7 @@ function App() {
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="/loans" element={<LoanPage />} />
+        <Route path="/add" element={<NewLoanPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />
