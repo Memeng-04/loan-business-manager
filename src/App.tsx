@@ -5,6 +5,7 @@ import AuthPage from "./pages/auth/AuthPage";
 import DashboardPage from "./pages/home/HomePage";
 import BorrowersPage from "./pages/borrowers/BorrowersPage";
 import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage";
+import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage";
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
@@ -39,6 +40,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
+        <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="/loans" element={<LoanPage />} />
         <Route path="/add" element={<NewLoanPage />} />

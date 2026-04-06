@@ -1,6 +1,6 @@
 import type { Borrower } from "../../types/borrowers";
 import { Link } from "react-router-dom";
-import Card from "../Card";
+import Card from "../card/Card";
 import styles from "./BorrowerCard.module.css";
 
 type BorrowerCardProps = {

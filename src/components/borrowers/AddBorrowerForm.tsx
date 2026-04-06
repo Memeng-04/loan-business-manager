@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import Button from "../Button";
-import Card from "../Card";
+import Card from "../card/Card";
 import type { CreateBorrowerInput } from "../../types/borrowers";
 import styles from "./AddBorrowerForm.module.css";
 

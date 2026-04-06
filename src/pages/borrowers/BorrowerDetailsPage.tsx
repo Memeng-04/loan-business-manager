@@ -1,16 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import Button from "../components/Button";
-import Card from "../components/Card";
-import Header from "../components/header/Header";
-import LoadingState from "../components/LoadingState";
-import Navbar from "../components/navigation/Navbar";
-import { BorrowerRepository } from "../repositories/BorrowerRepository";
-import { LoanRepository } from "../repositories/LoanRepository";
-import type { Borrower } from "../types/borrowers";
-import type { Loan } from "../types/loans";
-import styles from "./styles/BorrowerDetailsPage.module.css";
+import Button from "../../components/Button";
+import Card from "../../components/card/Card";
+import Header from "../../components/header/Header";
+import LoadingState from "../../components/LoadingState";
+import Navbar from "../../components/navigation/Navbar";
+import { BorrowerRepository } from "../../repositories/BorrowerRepository";
+import { LoanRepository } from "../../repositories/LoanRepository";
+import type { Borrower } from "../../types/borrowers";
+import type { Loan } from "../../types/loans";
+import styles from "./BorrowerDetailsPage.module.css";
+
+
+// import Button from "../../components/Button.tsx";
+// import LoadingState from "../../components/LoadingState.tsx";
+// import SearchBar from "../../components/search/SearchBar.tsx";
+// import BorrowerCard from "../../components/borrowers/BorrowerCard.tsx";
+// import Header from "../../components/header/Header.tsx";
+// import Navbar from "../../components/navigation/Navbar.tsx";
+// import { useBorrowers } from "../../hooks/useBorrowers.ts";
+// import styles from "./BorrowersPage.module.css";
 
 function formatDate(value?: string) {
   if (!value) {
