@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import Button from "../../components/Button";
-import Card from "../../components/card/Card";
-import Header from "../../components/header/Header";
-import LoadingState from "../../components/LoadingState";
-import Navbar from "../../components/navigation/Navbar";
-import { BorrowerRepository } from "../../repositories/BorrowerRepository";
-import { LoanRepository } from "../../repositories/LoanRepository";
-import type { Borrower } from "../../types/borrowers";
-import type { Loan } from "../../types/loans";
+import Button from "../../../components/Button";
+import Card from "../../../components/card/Card";
+import Header from "../../../components/header/Header";
+import LoadingState from "../../../components/LoadingState";
+import Navbar from "../../../components/navigation/Navbar";
+import { BorrowerRepository } from "../../../repositories/BorrowerRepository";
+import { LoanRepository } from "../../../repositories/LoanRepository";
+import type { Borrower } from "../../../types/borrowers";
+import type { Loan } from "../../../types/loans";
 import styles from "./BorrowerDetailsPage.module.css";
-
 
 // import Button from "../../components/Button.tsx";
 // import LoadingState from "../../components/LoadingState.tsx";

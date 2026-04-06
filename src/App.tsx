@@ -3,15 +3,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import AuthPage from "./pages/auth/AuthPage";
 import DashboardPage from "./pages/home/HomePage";
-import BorrowersPage from "./pages/borrowers/BorrowersPage";
-import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage";
-import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage";
+import BorrowersPage from "./pages/borrowers/BorrowersPage/BorrowersPage";
+import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage/AddBorrowerPage";
+import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerDetailsPage";
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
-
 
 function App() {
   useEffect(() => {
