@@ -1,9 +1,4 @@
-import {
-  ClipboardList,
-  Home,
-  PlusCircle,
-  Users,
-} from "lucide-react";
+import { ClipboardList, Home, PlusCircle, Users, LayoutGrid } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.css";
 
@@ -17,6 +12,7 @@ const navItems = [
   { label: "Loans", Icon: ClipboardList, path: "/loans" },
   { label: "New", Icon: PlusCircle, path: "/new" },
   { label: "Borrowers", Icon: Users, path: "/borrowers" },
+  { label: "More", Icon: LayoutGrid, path: "/more" },
 ];
 
 export default function Navbar({ isOpen, onClose }: NavbarProps) {
