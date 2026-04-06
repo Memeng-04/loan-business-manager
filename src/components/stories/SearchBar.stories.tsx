@@ -2,6 +2,18 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import SearchBar from "../search/SearchBar";
 
+type SearchBarProps = React.ComponentProps<typeof SearchBar>;
+
+function SearchBarStoryRender(args: SearchBarProps) {
+  const [value, setValue] = useState(args.value ?? "");
+
+  return (
+    <div style={{ width: "min(560px, 92vw)" }}>
+      <SearchBar {...args} value={value} onChange={setValue} />
+    </div>
+  );
+}
+
 const meta = {
   title: "Components/SearchBar",
   component: SearchBar,
@@ -11,16 +23,9 @@ const meta = {
   args: {
     value: "",
     placeholder: "Search borrowers",
+    onChange: () => {},
   },
-  render: (args) => {
-    const [value, setValue] = useState(args.value ?? "");
-
-    return (
-      <div style={{ width: "min(560px, 92vw)" }}>
-        <SearchBar {...args} value={value} onChange={setValue} />
-      </div>
-    );
-  },
+  render: (args) => <SearchBarStoryRender {...args} />,
 } satisfies Meta<typeof SearchBar>;
 
 export default meta;
