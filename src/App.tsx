@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
-import AuthPage from "./pages/AuthPage";
-import DashboardPage from "./pages/HomePage";
-import BorrowersPage from "./pages/BorrowersPage";
-import AddBorrowerPage from "./pages/AddBorrowerPage";
+import AuthPage from "./pages/Auth/AuthPage";
+import DashboardPage from "./pages/Home/HomePage";
+import BorrowersPage from "./pages/Borrowers/BorrowersPage";
+import AddBorrowerPage from "./pages/Borrowers/AddBorrowerPage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
 

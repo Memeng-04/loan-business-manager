@@ -27,6 +27,7 @@ export default function Navbar({ isOpen, onClose }: NavbarProps) {
     return location.pathname === path;
   };
 
+
   const handleNavigate = (path: string) => {
     navigate(path);
     onClose?.();
