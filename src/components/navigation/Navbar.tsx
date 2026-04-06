@@ -1,5 +1,4 @@
 import {
-  BarChart3,
   ClipboardList,
   Home,
   PlusCircle,
@@ -18,7 +17,6 @@ const navItems = [
   { label: "Loans", Icon: ClipboardList, path: "/loans" },
   { label: "New", Icon: PlusCircle, path: "/new" },
   { label: "Borrowers", Icon: Users, path: "/borrowers" },
-  { label: "Reports", Icon: BarChart3, path: "/reports" },
 ];
 
 export default function Navbar({ isOpen, onClose }: NavbarProps) {
