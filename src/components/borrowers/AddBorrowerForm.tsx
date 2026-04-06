@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import Button from "../Button";
+import Card from "../Card";
 import type { CreateBorrowerInput } from "../../types/borrowers";
 import styles from "./AddBorrowerForm.module.css";
 
@@ -36,7 +37,7 @@ export default function AddBorrowerForm({
   }
 
   return (
-    <div className={styles.formCard}>
+    <Card className={styles.formCard}>
       <h1 className={styles.title}>Borrower Details</h1>
 
       <form className={styles.form} onSubmit={handleSubmit}>
@@ -115,6 +116,6 @@ export default function AddBorrowerForm({
           </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }

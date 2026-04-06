@@ -5,6 +5,7 @@ import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/HomePage";
 import BorrowersPage from "./pages/BorrowersPage";
 import AddBorrowerPage from "./pages/AddBorrowerPage";
+import BorrowerDetailsPage from "./pages/BorrowerDetailsPage.tsx";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
 
@@ -34,6 +35,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
+        <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
       </Route>
 
