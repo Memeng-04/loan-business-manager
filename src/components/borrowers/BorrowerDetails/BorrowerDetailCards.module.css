@@ -98,7 +98,7 @@
 }
 
 .sectionHeading {
-  color: var(--color-blue-subheadings);
+  color: var(--color-grey-text);
   font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -148,6 +148,9 @@
   color: #000000;
   font-size: 1rem;
   line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .latestWrap {
@@ -201,7 +204,7 @@
 }
 
 .totalLabel {
-  color: var(--color-blue-subheadings);
+  color: var(--color-grey-text);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.04em;
