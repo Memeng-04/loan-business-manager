@@ -23,6 +23,7 @@ export default function AddBorrowerForm({
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [monthlyIncome, setMonthlyIncome] = useState(0);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -33,6 +34,7 @@ export default function AddBorrowerForm({
       address: address.trim(),
       phone: phone.trim(),
       notes: notes.trim(),
+      monthly_income: monthlyIncome,
     });
   }
 
@@ -53,18 +55,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Email (optional)</span>
-          <input
-            type="email"
-            className={styles.input}
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="Enter email address"
-          />
-        </label>
-
-        <label className={styles.field}>
-          <span className={styles.label}>Address (optional)</span>
+          <span className={styles.label}>Address</span>
           <input
             className={styles.input}
             value={address}
@@ -81,6 +72,27 @@ export default function AddBorrowerForm({
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
             placeholder="Enter contact number"
+          />
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Email (optional)</span>
+          <input
+            type="email"
+            className={styles.input}
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="Enter email address"
+          />
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Monthly Income (optional)</span>
+          <input
+            className={styles.input}
+            value={monthlyIncome}
+            onChange={(event) => setMonthlyIncome(event.target.value)}
+            placeholder="Enter monthly income"
           />
         </label>
 

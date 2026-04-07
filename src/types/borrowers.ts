@@ -6,12 +6,14 @@ export interface Borrower {
   phone?: string;
   notes?: string;
   created_at?: string;
+  monthly_income?: string;
 }
 
 export interface CreateBorrowerInput {
   full_name: string;
   email?: string;
   address?: string;
-  phone?: string;
+  phone: string;
   notes?: string;
+  monthly_income?: number;
 }

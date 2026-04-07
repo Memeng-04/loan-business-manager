@@ -27,10 +27,11 @@ export default function BorrowerInformationCard({
 
       <div className={styles.infoGrid}>
         <DataCell label="ADDRESS" value={borrower.address ?? "Not provided"} />
-        <DataCell label="NOTES" value={borrower.notes ?? "No notes"} />
         <DataCell label="PHONE" value={borrower.phone ?? "Not provided"} />
         <DataCell label="EMAIL" value={borrower.email ?? "No email"} />
-        <DataCell label="CREATED" value={createdDate} />
+        <DataCell label="MONTHLY INCOME" value={borrower.monthly_income ?? "Not provided"} />
+        <DataCell label="NOTES" value={borrower.notes ?? "No notes"} />
+        <DataCell label="CREATED AT" value={createdDate} />
       </div>
 
       <Button

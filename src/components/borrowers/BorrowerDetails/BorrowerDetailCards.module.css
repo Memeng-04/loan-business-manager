@@ -37,7 +37,7 @@
 
 .cardTitle {
   color: var(--color-light-main-blue);
-  font-size: larger;
+  font-size: medium;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
@@ -68,7 +68,7 @@
 
 .dataValue {
   color: #000000;
-  font-size: medium;
+  font-size: small;
   line-height: 1.2;
 }
 
