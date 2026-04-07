@@ -1,0 +1,176 @@
+.profileCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 0.8rem;
+}
+
+.sectionEyebrow {
+  color: #1f3ca8;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.profileName {
+  margin-top: 0.2rem;
+  color: #030712;
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.profileContact {
+  margin-top: 0.5rem;
+  color: #4b5563;
+}
+
+.profileBackButton {
+  margin-left: auto;
+}
+
+.infoCard,
+.summaryCard {
+  height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  border-radius: 0.8rem;
+}
+
+.cardTitle {
+  color: #1f3ca8;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.dataCell {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #9ca3af;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+}
+
+.dataLabel {
+  color: #67728f;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dataValue {
+  color: #111827;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.latestWrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #9ca3af;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+}
+
+.latestLabel {
+  color: #67728f;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.latestAmount {
+  margin-top: 0.2rem;
+  color: #030712;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.latestDate {
+  margin-top: 0.2rem;
+  color: #4b5563;
+  font-size: 0.85rem;
+}
+
+.statusBadge {
+  align-self: start;
+  padding: 0.24rem 0.7rem;
+  border: 1px solid #d4b96f;
+  border-radius: 999px;
+  background: #f5e5b3;
+  color: #063277;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.summaryMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.metricTile {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #9ca3af;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+}
+
+.metricTileLabel {
+  color: #67728f;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.metricTileValue {
+  color: #030712;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.primaryAction {
+  width: 100%;
+}
+
+.errorText {
+  color: #b91c1c;
+}
+
+@media (max-width: 640px) {
+  .cardTitle {
+    font-size: 1.3rem;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metricTileValue {
+    font-size: 1.65rem;
+  }
+}

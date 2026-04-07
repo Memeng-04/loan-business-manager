@@ -21,7 +21,7 @@ export const Default: Story = {
   args: {
     borrower: {
       full_name: "Juan Dela Cruz",
-      business_name: "JD Sari-Sari Store",
+      email: "juan@example.com",
       address: "Purok 3, San Jose",
       phone: "09171234567",
       notes: "Pays every Friday",

@@ -23,7 +23,7 @@ export default function BorrowersPage() {
 
     return [
       borrower.full_name,
-      borrower.business_name,
+      borrower.email,
       borrower.address,
       borrower.phone,
       borrower.notes,

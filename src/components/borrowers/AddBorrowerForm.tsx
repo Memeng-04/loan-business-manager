@@ -19,7 +19,7 @@ export default function AddBorrowerForm({
   error = null,
 }: AddBorrowerFormProps) {
   const [fullName, setFullName] = useState("");
-  const [businessName, setBusinessName] = useState("");
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
@@ -29,7 +29,7 @@ export default function AddBorrowerForm({
 
     await onSubmit({
       full_name: fullName.trim(),
-      business_name: businessName.trim(),
+      email: email.trim(),
       address: address.trim(),
       phone: phone.trim(),
       notes: notes.trim(),
@@ -53,12 +53,13 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Business Name (optional)</span>
+          <span className={styles.label}>Email (optional)</span>
           <input
+            type="email"
             className={styles.input}
-            value={businessName}
-            onChange={(event) => setBusinessName(event.target.value)}
-            placeholder="Enter business name"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="Enter email address"
           />
         </label>
 

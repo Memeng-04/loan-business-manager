@@ -6,7 +6,7 @@ export class BorrowerRepository {
   static async getAll(): Promise<Borrower[]> {
     const { data, error } = await supabase
       .from("borrowers")
-      .select("id, full_name, business_name, address, phone, notes, created_at")
+      .select("id, full_name, email, address, phone, notes, created_at")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -16,7 +16,7 @@ export class BorrowerRepository {
   static async getById(id: string): Promise<Borrower | null> {
     const { data, error } = await supabase
       .from("borrowers")
-      .select("id, full_name, business_name, address, phone, notes, created_at")
+      .select("id, full_name, email, address, phone, notes, created_at")
       .eq("id", id)
       .single();
 
@@ -37,7 +37,7 @@ export class BorrowerRepository {
     const { data, error } = await supabase
       .from("borrowers")
       .insert(payload)
-      .select("id, full_name, business_name, address, phone, notes, created_at")
+      .select("id, full_name, email, address, phone, notes, created_at")
       .single();
 
     if (error) throw error;

@@ -1,7 +1,7 @@
 export interface Borrower {
   id?: string;
   full_name: string;
-  business_name?: string;
+  email?: string;
   address?: string;
   phone?: string;
   notes?: string;
@@ -10,7 +10,7 @@ export interface Borrower {
 
 export interface CreateBorrowerInput {
   full_name: string;
-  business_name?: string;
+  email?: string;
   address?: string;
   phone?: string;
   notes?: string;

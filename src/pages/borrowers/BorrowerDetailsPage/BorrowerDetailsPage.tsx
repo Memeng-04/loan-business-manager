@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import Button from "../../../components/Button";
 import Card from "../../../components/card/Card";
 import Header from "../../../components/header/Header";
@@ -10,6 +9,9 @@ import { BorrowerRepository } from "../../../repositories/BorrowerRepository";
 import { LoanRepository } from "../../../repositories/LoanRepository";
 import type { Borrower } from "../../../types/borrowers";
 import type { Loan } from "../../../types/loans";
+import BorrowerInformationCard from "./components/BorrowerInformationCard";
+import BorrowerProfileCard from "./components/BorrowerProfileCard";
+import LoanSummaryCard from "./components/LoanSummaryCard";
 import styles from "./BorrowerDetailsPage.module.css";
 
 function formatDate(value?: string) {
@@ -51,22 +53,10 @@ export default function BorrowerDetailsPage() {
   const activeLoanCount = loans.filter(
     (loan) => loan.status === "active",
   ).length;
-  const completedLoanCount = loans.filter(
+  const doneLoanCount = loans.filter(
     (loan) => loan.status === "completed",
   ).length;
-  const defaultedLoanCount = loans.filter(
-    (loan) => loan.status === "defaulted",
-  ).length;
   const latestLoan = loans[0] ?? null;
-
-  const borrowerInitials = borrower
-    ? borrower.full_name
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase())
-        .join("") || "B"
-    : "B";
 
   useEffect(() => {
     let isMounted = true;
@@ -175,136 +165,35 @@ export default function BorrowerDetailsPage() {
       {!loading && !error && borrower ? (
         <main className={styles.content}>
           <section className={styles.container}>
-            <Card className={styles.hero}>
-              <div className={styles.heroText}>
-                <p className={styles.eyebrow}>Borrower profile</p>
-                <h2 className={styles.title}>{borrower.full_name}</h2>
-                <p className={styles.subtitle}>
-                  {borrower.business_name
-                    ? borrower.business_name
-                    : "No business name saved."}
-                </p>
-              </div>
+            <BorrowerProfileCard
+              name={borrower.full_name}
+              contact={
+                borrower.email ??
+                borrower.phone ??
+                "No contact details saved."
+              }
+              onBack={() => navigate("/borrowers")}
+            />
 
-              <Button
-                variant="outline"
-                size="md"
-                className={`mt-0! ${styles.backButton}`}
-                onClick={() => navigate("/borrowers")}
-              >
-                <ArrowLeft size={16} />
-                Back to borrowers
-              </Button>
-            </Card>
+            <div className={styles.detailsGrid}>
+              <BorrowerInformationCard
+                borrower={borrower}
+                createdDate={formatDate(borrower.created_at)}
+              />
 
-            <Card as="section" padding="none" className={styles.snapshotPanel}>
-              <div className={styles.sectionHeader}>
-                <div>
-                  <p className={styles.eyebrow}>Loan snapshot</p>
-                  <h3 className={styles.panelTitle}>Account activity</h3>
-                </div>
-
-                <p className={styles.snapshotMeta}>
-                  {loans.length > 0
-                    ? `${loans.length} loan${loans.length === 1 ? "" : "s"} on record`
-                    : "No loans yet"}
-                </p>
-              </div>
-
-              {loanError ? (
-                <p className={styles.noticeError}>{loanError}</p>
-              ) : null}
-
-              <div className={styles.metricsGrid}>
-                <div className={styles.metricCard}>
-                  <span className={styles.metricLabel}>Total loans</span>
-                  <strong className={styles.metricValue}>{loans.length}</strong>
-                </div>
-
-                <div className={styles.metricCard}>
-                  <span className={styles.metricLabel}>Active</span>
-                  <strong className={styles.metricValue}>
-                    {activeLoanCount}
-                  </strong>
-                </div>
-
-                <div className={styles.metricCard}>
-                  <span className={styles.metricLabel}>Completed</span>
-                  <strong className={styles.metricValue}>
-                    {completedLoanCount}
-                  </strong>
-                </div>
-
-                <div className={styles.metricCard}>
-                  <span className={styles.metricLabel}>Defaulted</span>
-                  <strong className={styles.metricValue}>
-                    {defaultedLoanCount}
-                  </strong>
-                </div>
-              </div>
-
-              {latestLoan ? (
-                <div className={styles.latestLoan}>
-                  <div>
-                    <p className={styles.latestLoanLabel}>Latest loan</p>
-                    <p className={styles.latestLoanValue}>
-                      {formatCurrency(latestLoan.principal)}
-                    </p>
-                  </div>
-
-                  <div className={styles.latestLoanMeta}>
-                    <span>{latestLoan.status}</span>
-                    <span>{formatDate(latestLoan.created_at)}</span>
-                  </div>
-                </div>
-              ) : null}
-            </Card>
-
-            <Card as="section" className={styles.panel}>
-              <h3 className={styles.panelTitle}>Borrower info</h3>
-
-              <dl className={styles.detailList}>
-                <div className={styles.detailItem}>
-                  <dt className={styles.label}>ID</dt>
-                  <dd className={styles.value}>{borrower.id ?? "—"}</dd>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <dt className={styles.label}>Business</dt>
-                  <dd className={styles.value}>
-                    {borrower.business_name ?? "Not provided"}
-                  </dd>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <dt className={styles.label}>Address</dt>
-                  <dd className={styles.value}>
-                    {borrower.address ?? "Not provided"}
-                  </dd>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <dt className={styles.label}>Phone</dt>
-                  <dd className={styles.value}>
-                    {borrower.phone ?? "Not provided"}
-                  </dd>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <dt className={styles.label}>Notes</dt>
-                  <dd className={styles.value}>
-                    {borrower.notes ?? "No notes saved yet."}
-                  </dd>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <dt className={styles.label}>Created</dt>
-                  <dd className={styles.value}>
-                    {formatDate(borrower.created_at)}
-                  </dd>
-                </div>
-              </dl>
-            </Card>
+              <LoanSummaryCard
+                loanError={loanError}
+                totalLoans={loans.length}
+                activeLoans={activeLoanCount}
+                doneLoans={doneLoanCount}
+                latestLoan={latestLoan}
+                latestLoanAmount={
+                  latestLoan ? formatCurrency(latestLoan.principal) : "—"
+                }
+                latestLoanCreatedAt={formatDate(latestLoan?.created_at)}
+                onSeeLoans={() => navigate("/loans")}
+              />
+            </div>
           </section>
         </main>
       ) : null}

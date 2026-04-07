@@ -14,10 +14,8 @@ export default function BorrowerCard({ borrower }: BorrowerCardProps) {
         <Link className={styles.cardLink} to={`/borrowers/${borrower.id}`}>
           <h2 className={styles.borrowerName}>{borrower.full_name}</h2>
 
-          {borrower.business_name ? (
-            <p className={styles.metaLine}>
-              Business: {borrower.business_name}
-            </p>
+          {borrower.email ? (
+            <p className={styles.metaLine}>Email: {borrower.email}</p>
           ) : null}
 
           {borrower.address ? (
@@ -36,10 +34,8 @@ export default function BorrowerCard({ borrower }: BorrowerCardProps) {
         <div>
           <h2 className={styles.borrowerName}>{borrower.full_name}</h2>
 
-          {borrower.business_name ? (
-            <p className={styles.metaLine}>
-              Business: {borrower.business_name}
-            </p>
+          {borrower.email ? (
+            <p className={styles.metaLine}>Email: {borrower.email}</p>
           ) : null}
 
           {borrower.address ? (
