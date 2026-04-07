@@ -22,12 +22,10 @@ export default function AddBorrowerForm({
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [sourceOfIncome, setSourceOfIncome] = useState("");
   const [secondaryContactNumber, setSecondaryContactNumber] = useState("");
   const [secondaryContactName, setSecondaryContactName] = useState("");
-  const [bankEwalletDetails, setBankEwalletDetails] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
   function isDigits(value: string) {
@@ -45,10 +43,8 @@ export default function AddBorrowerForm({
     const trimmedAddress = address.trim();
     const trimmedPhone = phone.trim();
     const trimmedEmail = email.trim();
-    const trimmedNotes = notes.trim();
     const trimmedSecondaryNumber = secondaryContactNumber.trim();
     const trimmedSecondaryName = secondaryContactName.trim();
-    const trimmedBankEwallet = bankEwalletDetails.trim();
     const trimmedSourceOfIncome = sourceOfIncome.trim();
     const trimmedMonthlyIncome = monthlyIncome.trim();
 
@@ -93,24 +89,6 @@ export default function AddBorrowerForm({
       return;
     }
 
-    if (trimmedBankEwallet) {
-      const [accountNumber, bankName] = trimmedBankEwallet
-        .split("-")
-        .map((part) => part.trim());
-
-      if (!accountNumber || !bankName || !isDigits(accountNumber)) {
-        setFormError(
-          "Bank/E-wallet details must be in this format: number - name of bank.",
-        );
-        return;
-      }
-    }
-
-    if (trimmedNotes.length > 20) {
-      setFormError("Notes must be 20 characters or less.");
-      return;
-    }
-
     if (trimmedMonthlyIncome && Number.isNaN(Number(trimmedMonthlyIncome))) {
       setFormError("Monthly income must be a valid number.");
       return;
@@ -123,14 +101,12 @@ export default function AddBorrowerForm({
       email: trimmedEmail,
       address: trimmedAddress,
       phone: trimmedPhone,
-      notes: trimmedNotes,
       monthly_income: trimmedMonthlyIncome
         ? Number(trimmedMonthlyIncome)
         : undefined,
       source_of_income: trimmedSourceOfIncome,
       secondary_contact_number: trimmedSecondaryNumber,
       secondary_contact_name: trimmedSecondaryName,
-      bank_ewallet_details: trimmedBankEwallet,
     });
   }
 
@@ -162,7 +138,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Number</span>
+          <span className={styles.label}>Phone Number</span>
           <input
             required
             inputMode="numeric"
@@ -228,29 +204,6 @@ export default function AddBorrowerForm({
             onChange={(event) => setSecondaryContactName(event.target.value)}
             placeholder="Enter secondary contact name"
           />
-        </label>
-
-        <label className={styles.field}>
-          <span className={styles.label}>Bank/E-wallet Details (optional)</span>
-          <input
-            className={styles.input}
-            value={bankEwalletDetails}
-            onChange={(event) => setBankEwalletDetails(event.target.value)}
-            placeholder="number - name of bank"
-          />
-        </label>
-
-        <label className={styles.field}>
-          <span className={styles.label}>Notes (optional)</span>
-          <textarea
-            className={styles.textarea}
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            placeholder="Any notes"
-            rows={4}
-            maxLength={20}
-          />
-          <small className={styles.counter}>{notes.length}/20</small>
         </label>
 
         {formError ? <p className={styles.errorText}>{formError}</p> : null}

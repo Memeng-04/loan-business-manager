@@ -1,5 +1,6 @@
 import Button from "../../Button";
 import Card from "../../card/Card";
+import StatusBadge from "../../status-badge/StatusBadge";
 import type { Loan } from "../../../types/loans";
 import styles from "./BorrowerDetailCards.module.css";
 
@@ -30,7 +31,14 @@ export default function LoanSummaryCard({
   latestLoanCreatedAt,
   onSeeLoans,
 }: LoanSummaryCardProps) {
-  const latestStatus = latestLoan?.status.toUpperCase() ?? "NONE";
+  const latestStatus = latestLoan?.status ?? "done";
+  const latestStatusLabel = latestStatus.toUpperCase();
+  const latestStatusTone =
+    latestStatus === "active"
+      ? "active"
+      : latestStatus === "done"
+        ? "done"
+        : "active";
 
   return (
     <Card as="section" className={styles.summaryCard}>
@@ -46,7 +54,11 @@ export default function LoanSummaryCard({
               <p className={styles.latestAmount}>{latestLoanAmount}</p>
               <p className={styles.latestDate}>{latestLoanCreatedAt}</p>
             </div>
-            <span className={styles.statusBadge}>{latestStatus}</span>
+            <StatusBadge
+              label={latestStatusLabel}
+              tone={latestStatusTone}
+              className={styles.latestStatus}
+            />
           </div>
 
           <div className={styles.summaryMetrics}>
@@ -55,24 +67,25 @@ export default function LoanSummaryCard({
               <div className={styles.metricTileValue}>{totalLoans}</div>
             </div>
             <div className={styles.metricTile}>
-              <span className={styles.dataLabel}>ACTIVE</span>
+              <span className={styles.dataLabelActive}>ACTIVE</span>
               <div className={styles.metricTileValue}>{activeLoans}</div>
             </div>
             <div className={styles.metricTile}>
-              <span className={styles.dataLabel}>DONE</span>
+              <span className={styles.dataLabelDone}>DONE</span>
               <div className={styles.metricTileValue}>{doneLoans}</div>
             </div>
           </div>
 
           <div className={styles.financialTotals}>
             <div className={styles.totalRow}>
+              <span className={styles.totalLabel}>Total repayment</span>
+              <div className={styles.totalValue}>{totalPayable}</div>
+            </div>
+            <div className={styles.totalRow}>
               <span className={styles.totalLabel}>Total principal</span>
               <div className={styles.totalValue}>{totalPrincipal}</div>
             </div>
-            <div className={styles.totalRow}>
-              <span className={styles.totalLabel}>Total payable</span>
-              <div className={styles.totalValue}>{totalPayable}</div>
-            </div>
+
             <div className={styles.totalRow}>
               <span className={styles.totalLabel}>Average loan</span>
               <div className={styles.totalValue}>{averageLoanAmount}</div>

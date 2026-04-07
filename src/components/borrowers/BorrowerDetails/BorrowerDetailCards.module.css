@@ -42,7 +42,7 @@
 
 .cardTitle {
   color: var(--color-light-main-blue);
-  font-size: 1.5rem;
+  font-size: large;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
@@ -52,6 +52,63 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.85rem;
+}
+
+.infoSections {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.editForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.formField {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.formInput {
+  width: 100%;
+  border: 1px solid #9ca3af;
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  color: #111827;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.editActions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-top: 0.2rem;
+}
+
+.editActionButton {
+  min-width: 9.5rem;
+}
+
+.sectionBlock {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.sectionHeading {
+  color: var(--color-blue-subheadings);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sectionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
 }
 
 .dataCell {
@@ -64,7 +121,23 @@
 }
 
 .dataLabel {
-  color: var(--color-grey-text);
+  color: black;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dataLabelActive {
+  color: var(--color-red-text-active);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dataLabelDone {
+  color: var(--color-green-text-active);
   font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -89,10 +162,10 @@
 
 .latestAmount {
   margin-top: 0.25rem;
-  color: #030712;
+  color: var(--color-light-main-blue);
   font-size: 1.5rem;
-  font-weight: 600;
   line-height: 1;
+  font-weight: 700;
 }
 
 .latestDate {
@@ -101,15 +174,8 @@
   font-size: 0.9rem;
 }
 
-.statusBadge {
+.latestStatus {
   align-self: start;
-  padding: 0.3rem 0.85rem;
-  border: 1px solid #d4b96f;
-  border-radius: 999px;
-  background: #f5e5b3;
-  color: #063277;
-  font-size: 1.2rem;
-  font-weight: 800;
 }
 
 .summaryMetrics {
@@ -120,7 +186,7 @@
 
 .financialTotals {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.9rem;
 }
 
 .totalRow {
@@ -135,8 +201,8 @@
 }
 
 .totalLabel {
-  color: var(--color-grey-text);
-  font-size: .9rem;
+  color: var(--color-blue-subheadings);
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -145,7 +211,6 @@
 .totalValue {
   color: #111827;
   font-size: 1.3rem;
-  font-weight: 500;
 }
 
 .metricTile {
@@ -161,7 +226,6 @@
   color: #030712;
   font-size: 1.5rem;
   line-height: 1;
-  font-weight: 500;
 }
 
 .primaryAction {
@@ -170,43 +234,109 @@
 }
 
 .summaryAction {
-  margin-top: 0;
+  margin-top: auto;
 }
 
 .errorText {
+  grid-column: 1 / -1;
   color: #b91c1c;
 }
 
 @media (max-width: 640px) {
-  .cardTitle {
-    font-size: 1.45rem;
+  .profileCard {
+    gap: 0.75rem;
   }
 
-  .dataValue {
+  .sectionEyebrow {
+    font-size: 0.9rem;
+  }
+
+  .profileName {
+    font-size: 1.65rem;
+  }
+
+  .profileBackButton {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .infoCard,
+  .summaryCard {
+    padding: 0.95rem;
+    gap: 0.75rem;
+  }
+
+  .cardTitle {
     font-size: 1.15rem;
   }
 
+  .dataLabel {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  .dataValue {
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+
   .latestAmount {
-    font-size: 2rem;
+    font-size: 1.55rem;
   }
 
   .latestDate {
-    font-size: 1rem;
+    font-size: 0.82rem;
   }
 
   .totalValue {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 
   .infoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .editForm {
     grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .editActions {
+    justify-content: stretch;
+  }
+
+  .editActionButton {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .infoSections {
+    gap: 0.75rem;
+  }
+
+  .sectionHeading {
+    font-size: 0.78rem;
+  }
+
+  .sectionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
   }
 
   .summaryMetrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
   }
 
   .metricTileValue {
-    font-size: 1.65rem;
+    font-size: 1.15rem;
+  }
+
+  .metricTile,
+  .totalRow,
+  .latestWrap,
+  .dataCell {
+    padding: 0.58rem 0.65rem;
   }
 }

@@ -14,6 +14,8 @@ import BorrowerProfileCard from "../../../components/borrowers/BorrowerDetails/B
 import LoanSummaryCard from "../../../components/borrowers/BorrowerDetails/LoanSummaryCard";
 import styles from "./BorrowerDetailsPage.module.css";
 import { ArrowLeft } from "lucide-react";
+import { useUpdateBorrower } from "../../../hooks/useUpdateBorrower";
+import type { CreateBorrowerInput } from "../../../types/borrowers";
 
 function formatDate(value?: string) {
   if (!value) {
@@ -50,6 +52,7 @@ export default function BorrowerDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loanError, setLoanError] = useState<string | null>(null);
+  const { updateBorrower, updating, error: updateError } = useUpdateBorrower();
 
   const activeLoanCount = loans.filter(
     (loan) => loan.status === "active",
@@ -129,6 +132,23 @@ export default function BorrowerDetailsPage() {
     };
   }, [id]);
 
+  async function handleSaveBorrower(
+    input: CreateBorrowerInput,
+  ): Promise<boolean> {
+    if (!id) {
+      return false;
+    }
+
+    const updated = await updateBorrower(id, input);
+
+    if (updated) {
+      setBorrower(updated);
+      return true;
+    }
+
+    return false;
+  }
+
   return (
     <div className={styles.page}>
       <Header
@@ -182,6 +202,9 @@ export default function BorrowerDetailsPage() {
               <BorrowerInformationCard
                 borrower={borrower}
                 createdDate={formatDate(borrower.created_at)}
+                onSave={handleSaveBorrower}
+                saving={updating}
+                saveError={updateError}
               />
 
               <LoanSummaryCard

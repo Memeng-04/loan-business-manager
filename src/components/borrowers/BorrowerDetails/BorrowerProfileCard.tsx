@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Button from "../../Button";
 import Card from "../../card/Card";
 import styles from "./BorrowerDetailCards.module.css";
@@ -26,7 +26,7 @@ export default function BorrowerProfileCard({
         className={`mt-0! ${styles.profileBackButton}`}
         onClick={onBack}
       >
-        <ArrowLeft size={16} />
+        <ChevronLeft size={20} />
         Back to borrowers
       </Button>
     </Card>

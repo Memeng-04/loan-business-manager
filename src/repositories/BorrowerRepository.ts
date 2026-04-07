@@ -7,7 +7,7 @@ export class BorrowerRepository {
     const { data, error } = await supabase
       .from("borrowers")
       .select(
-        "id, full_name, email, address, phone, notes, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name, bank_ewallet_details",
+        "id, full_name, email, address, phone, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name",
       )
       .order("created_at", { ascending: false });
 
@@ -19,7 +19,7 @@ export class BorrowerRepository {
     const { data, error } = await supabase
       .from("borrowers")
       .select(
-        "id, full_name, email, address, phone, notes, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name, bank_ewallet_details",
+        "id, full_name, email, address, phone, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name",
       )
       .eq("id", id)
       .single();
@@ -42,7 +42,26 @@ export class BorrowerRepository {
       .from("borrowers")
       .insert(payload)
       .select(
-        "id, full_name, email, address, phone, notes, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name, bank_ewallet_details",
+        "id, full_name, email, address, phone, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name",
+      )
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async update(
+    id: string,
+    input: CreateBorrowerInput,
+  ): Promise<Borrower> {
+    const payload = BorrowerFactory.create(input);
+
+    const { data, error } = await supabase
+      .from("borrowers")
+      .update(payload)
+      .eq("id", id)
+      .select(
+        "id, full_name, email, address, phone, created_at, monthly_income, source_of_income, secondary_contact_number, secondary_contact_name",
       )
       .single();
 

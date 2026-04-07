@@ -26,7 +26,6 @@ export default function BorrowersPage() {
       borrower.email,
       borrower.address,
       borrower.phone,
-      borrower.notes,
     ]
       .filter(Boolean)
       .some((value) => value!.toLowerCase().includes(normalizedQuery));

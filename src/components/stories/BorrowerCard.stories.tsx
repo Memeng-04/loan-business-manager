@@ -31,7 +31,6 @@ export const Default: Story = {
       email: "juan@example.com",
       address: "Purok 3, San Jose",
       phone: "09171234567",
-      notes: "Pays every Friday",
     },
   },
 };

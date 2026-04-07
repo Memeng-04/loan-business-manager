@@ -21,7 +21,6 @@
 }
 
 .field:nth-child(1),
-.field:nth-child(10),
 .actions,
 .errorText {
   grid-column: 1 / -1;
@@ -35,8 +34,7 @@
   font-weight: 500;
 }
 
-.input,
-.textarea {
+.input {
   width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 0.7rem;
@@ -44,18 +42,6 @@
   color: #0f172a;
   font-family: var(--font-poppins);
   font-size: 0.95rem;
-}
-
-.textarea {
-  resize: vertical;
-}
-
-.counter {
-  margin-top: 0.25rem;
-  display: block;
-  color: #64748b;
-  font-size: 0.78rem;
-  text-align: right;
 }
 
 .errorText {
@@ -85,7 +71,6 @@
   }
 
   .field:nth-child(1),
-  .field:nth-child(10),
   .actions,
   .errorText {
     grid-column: auto;
