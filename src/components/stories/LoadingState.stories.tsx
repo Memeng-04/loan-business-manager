@@ -19,7 +19,7 @@ export const Default: Story = {};
 
 export const WithCustomMessage: Story = {
   args: {
-    message: "Loading data...",
+    message: "Loading your data...",
   },
 };
 
@@ -33,16 +33,4 @@ export const Saving: Story = {
   args: {
     message: "Saving changes...",
   },
-};
-
-export const WhiteBackground: Story = {
-  args: {
-    message: "Loading with white background...",
-    fullScreen: false,
-  },
-  render: (args) => (
-    <div style={{ backgroundColor: "#ffffff", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <LoadingState {...args} />
-    </div>
-  ),
 };

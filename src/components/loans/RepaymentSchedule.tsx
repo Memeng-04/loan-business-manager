@@ -12,7 +12,7 @@ export const RepaymentSchedule = ({ loanId, borrowerId }: RepaymentScheduleProps
 
   useEffect(() => {
     if (loanId) previewFromLoan(loanId)
-  }, [loanId, previewFromLoan])
+  }, [loanId])
 
   const handleSave = async () => {
     if (!loanId) return

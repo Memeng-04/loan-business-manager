@@ -8,8 +8,11 @@ export default function HomePage() {
 
   return (
     <main className={styles.page}>
-      <Header title="Home" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+      <Header
+        title="Home"
+        onMenuClick={() => setIsNavOpen((prev) => !prev)}
+      />
+      <Navbar isOpen={isNavOpen} />
       <section className={styles.content} />
     </main>
   );
