@@ -8,7 +8,12 @@
 .content {
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
-  padding: 1rem 1rem var(--mobile-footer-height);
+  padding: 1rem;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stateText {
@@ -16,7 +21,6 @@
   max-width: 42rem;
   color: #475569;
   text-align: center;
-
 }
 
 .errorText {
@@ -25,9 +29,32 @@
   color: var(--color-text-error);
 }
 
+@media (min-width: 640px) {
+  .content {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 1.5rem;
+  }
+}
+
 @media (min-width: 1024px) {
+  .page {
+    --mobile-footer-height: 0;
+  }
+
   .content {
     min-height: calc(100svh - var(--header-height));
-    padding: 1.2rem 1.5rem;
+    padding: 2rem 1rem;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .content {
+    padding: 2rem;
   }
 }

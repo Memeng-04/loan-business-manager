@@ -47,7 +47,7 @@ export const useRepaymentSchedule = () => {
     setError(null)
 
     try {
-      const { data, error } = await supabase.functions.invoke(
+      const response = await supabase.functions.invoke(
         'generate-repayment-schedule',
         {
           body: { loanId },
@@ -57,14 +57,18 @@ export const useRepaymentSchedule = () => {
         }
       )
 
-      console.log('response data:', data)
-      console.log('response error:', error)
+      console.log('response:', response)
 
-      if (error) throw error
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to save schedule')
+      }
+
       setSaved(true)
-      return data
+      return response.data
     } catch (err: any) {
-      setError(err.message)
+      const errorMessage = err.message || 'Failed to save schedule'
+      setError(errorMessage)
+      console.error('Save error:', err)
       return null
     } finally {
       setLoading(false)

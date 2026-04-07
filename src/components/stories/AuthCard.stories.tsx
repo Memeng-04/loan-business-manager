@@ -13,7 +13,7 @@ const meta = {
       values: [
         {
           name: "main-blue",
-          value: "#012a6a",
+          value: "#022a6c",
         },
       ],
     },

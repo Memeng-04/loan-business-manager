@@ -104,9 +104,9 @@ export const RepaymentSchedule = ({ loanId, borrowerId }: RepaymentScheduleProps
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="bg-[#112bd6] hover:bg-[#012a6a] text-white p-3 rounded-xl font-semibold transition-colors disabled:opacity-50"
+                  className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Saving...' : 'Save Schedule'}
+                  {loading ? 'Confirming...' : 'Confirm'}
                 </button>
               )}
             </div>
