@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import AddBorrowerForm from "../borrowers/AddBorrowerForm";
+import AddBorrowerForm from "../borrowers/AddBorrowerForm/AddBorrowerForm";
 
 const meta = {
   title: "Components/AddBorrowerForm",

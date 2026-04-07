@@ -1,6 +1,6 @@
-import type { Borrower } from "../../types/borrowers";
+import type { Borrower } from "../../../types/borrowers";
 import { Link } from "react-router-dom";
-import Card from "../card/Card";
+import Card from "../../card/Card";
 import styles from "./BorrowerCard.module.css";
 
 type BorrowerCardProps = {
@@ -25,8 +25,6 @@ export default function BorrowerCard({ borrower }: BorrowerCardProps) {
           {borrower.phone ? (
             <p className={styles.metaLine}>Number: {borrower.phone}</p>
           ) : null}
-
-       
         </Link>
       ) : (
         <div>
@@ -43,7 +41,6 @@ export default function BorrowerCard({ borrower }: BorrowerCardProps) {
           {borrower.phone ? (
             <p className={styles.metaLine}>Number: {borrower.phone}</p>
           ) : null}
-          
         </div>
       )}
     </Card>
