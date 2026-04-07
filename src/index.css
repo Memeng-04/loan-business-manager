@@ -21,8 +21,12 @@
 
 @theme {
   --color-main-blue: #012a6a;
-  --color-light-main-blue: #112bd6;
+  --color-light-main-blue: #1f3ca8;
   --color-light-blue-container: #6db6fe;
+  --color-grey-text: #4b5563;
+  --color-blue-subheadings: #5269c1;
+  --color-green-text-active: #166534;
+  --color-red-text-active: #770606;
   --font-poppins: "Poppins", sans-serif;
   --color-text-error: #b91c1c
 }
