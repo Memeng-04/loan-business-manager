@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
-import AuthPage from "./pages/auth/AuthPage";
-import DashboardPage from "./pages/home/HomePage";
+import AuthPage from "./pages/Auth/AuthPage";
+import DashboardPage from "./pages/Home/HomePage";
 import BorrowersPage from "./pages/borrowers/BorrowersPage/BorrowersPage";
 import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage/AddBorrowerPage";
 import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerDetailsPage";
@@ -11,7 +11,7 @@ import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
-
+//something
 function App() {
   useEffect(() => {
     const testConnection = async () => {
