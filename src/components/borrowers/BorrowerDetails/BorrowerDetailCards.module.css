@@ -8,8 +8,8 @@
 }
 
 .sectionEyebrow {
-  color: #1f3ca8;
-  font-size: 1.05rem;
+  color: var(--color-light-main-blue);
+  font-size: medium;
   font-weight: 800;
   letter-spacing: 0.02em;
 }
@@ -17,14 +17,9 @@
 .profileName {
   margin-top: 0.2rem;
   color: #030712;
-  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-size: xx-large;
   font-weight: 800;
   line-height: 1.05;
-}
-
-.profileContact {
-  margin-top: 0.5rem;
-  color: #4b5563;
 }
 
 .profileBackButton {
@@ -41,8 +36,8 @@
 }
 
 .cardTitle {
-  color: #1f3ca8;
-  font-size: 2rem;
+  color: var(--color-light-main-blue);
+  font-size: larger;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
@@ -58,24 +53,23 @@
   display: grid;
   gap: 0.15rem;
   padding: 0.55rem 0.7rem;
-  border: 1px solid #9ca3af;
+  border: 0.01rem solid #9ca3af;
   border-radius: 0.7rem;
   background: #f8fafc;
 }
 
 .dataLabel {
-  color: #67728f;
-  font-size: 0.64rem;
+  color: var(--color-grey-text);
+  font-size: small;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .dataValue {
-  color: #111827;
-  font-size: 1.2rem;
+  color: #000000;
+  font-size: medium;
   line-height: 1.2;
-  word-break: break-word;
 }
 
 .latestWrap {
@@ -88,18 +82,12 @@
   background: #f8fafc;
 }
 
-.latestLabel {
-  color: #67728f;
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-}
 
 .latestAmount {
   margin-top: 0.2rem;
   color: #030712;
   font-size: clamp(1.7rem, 3vw, 2.3rem);
-  font-weight: 800;
+  font-weight: bold;
   line-height: 1.05;
 }
 
@@ -135,17 +123,9 @@
   background: #f8fafc;
 }
 
-.metricTileLabel {
-  color: #67728f;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .metricTileValue {
   color: #030712;
-  font-size: 2.2rem;
+  font-size: large;
   line-height: 1;
 }
 

@@ -1,6 +1,6 @@
-import Button from "../../../../components/Button";
-import Card from "../../../../components/card/Card";
-import type { Loan } from "../../../../types/loans";
+import Button from "../../Button";
+import Card from "../../card/Card";
+import type { Loan } from "../../../types/loans";
 import styles from "./BorrowerDetailCards.module.css";
 
 type LoanSummaryCardProps = {
@@ -36,7 +36,7 @@ export default function LoanSummaryCard({
         <>
           <div className={styles.latestWrap}>
             <div>
-              <p className={styles.latestLabel}>LATEST LOAN</p>
+              <p className={styles.dataLabel}>LATEST LOAN</p>
               <p className={styles.latestAmount}>{latestLoanAmount}</p>
               <p className={styles.latestDate}>{latestLoanCreatedAt}</p>
             </div>
@@ -45,15 +45,15 @@ export default function LoanSummaryCard({
 
           <div className={styles.summaryMetrics}>
             <div className={styles.metricTile}>
-              <span className={styles.metricTileLabel}>TOTAL LOANS</span>
+              <span className={styles.dataLabel}>LOANS</span>
               <strong className={styles.metricTileValue}>{totalLoans}</strong>
             </div>
             <div className={styles.metricTile}>
-              <span className={styles.metricTileLabel}>ACTIVE</span>
+              <span className={styles.dataLabel}>ACTIVE</span>
               <strong className={styles.metricTileValue}>{activeLoans}</strong>
             </div>
             <div className={styles.metricTile}>
-              <span className={styles.metricTileLabel}>DONE</span>
+              <span className={styles.dataLabel}>DONE</span>
               <strong className={styles.metricTileValue}>{doneLoans}</strong>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import BorrowerCard from "../borrowers/BorrowerCard";
+import BorrowerCard from "../borrowers/BorrowerCard/BorrowerCard";
 
 const meta = {
   title: "Components/BorrowerCard",
@@ -8,7 +8,14 @@ const meta = {
     layout: "centered",
   },
   render: (args) => (
-    <ul style={{ width: "min(720px, 92vw)", listStyle: "none", padding: 0, margin: 0 }}>
+    <ul
+      style={{
+        width: "min(720px, 92vw)",
+        listStyle: "none",
+        padding: 0,
+        margin: 0,
+      }}
+    >
       <BorrowerCard {...args} />
     </ul>
   ),

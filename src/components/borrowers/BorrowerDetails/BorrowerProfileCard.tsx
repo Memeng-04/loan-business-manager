@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
-import Button from "../../../../components/Button";
-import Card from "../../../../components/card/Card";
+import Button from "../../Button";
+import Card from "../../card/Card";
 import styles from "./BorrowerDetailCards.module.css";
 
 type BorrowerProfileCardProps = {
@@ -11,7 +11,6 @@ type BorrowerProfileCardProps = {
 
 export default function BorrowerProfileCard({
   name,
-  contact,
   onBack,
 }: BorrowerProfileCardProps) {
   return (
@@ -19,7 +18,6 @@ export default function BorrowerProfileCard({
       <div>
         <p className={styles.sectionEyebrow}>BORROWER PROFILE</p>
         <h2 className={styles.profileName}>{name}</h2>
-        <p className={styles.profileContact}>{contact}</p>
       </div>
 
       <Button

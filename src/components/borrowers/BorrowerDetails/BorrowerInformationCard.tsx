@@ -1,6 +1,6 @@
-import Button from "../../../../components/Button";
-import Card from "../../../../components/card/Card";
-import type { Borrower } from "../../../../types/borrowers";
+import Button from "../../Button";
+import Card from "../../card/Card";
+import type { Borrower } from "../../../types/borrowers";
 import styles from "./BorrowerDetailCards.module.css";
 
 type BorrowerInformationCardProps = {
@@ -33,7 +33,11 @@ export default function BorrowerInformationCard({
         <DataCell label="CREATED" value={createdDate} />
       </div>
 
-      <Button variant="blue" size="md" className={`mt-0! ${styles.primaryAction}`}>
+      <Button
+        variant="blue"
+        size="md"
+        className={`mt-0! ${styles.primaryAction}`}
+      >
         Edit Borrower details
       </Button>
     </Card>

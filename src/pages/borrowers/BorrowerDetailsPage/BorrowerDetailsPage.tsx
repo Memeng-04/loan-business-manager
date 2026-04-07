@@ -9,10 +9,11 @@ import { BorrowerRepository } from "../../../repositories/BorrowerRepository";
 import { LoanRepository } from "../../../repositories/LoanRepository";
 import type { Borrower } from "../../../types/borrowers";
 import type { Loan } from "../../../types/loans";
-import BorrowerInformationCard from "./components/BorrowerInformationCard";
-import BorrowerProfileCard from "./components/BorrowerProfileCard";
-import LoanSummaryCard from "./components/LoanSummaryCard";
+import BorrowerInformationCard from "../../../components/borrowers/BorrowerDetails/BorrowerInformationCard";
+import BorrowerProfileCard from "../../../components/borrowers/BorrowerDetails/BorrowerProfileCard";
+import LoanSummaryCard from "../../../components/borrowers/BorrowerDetails/LoanSummaryCard";
 import styles from "./BorrowerDetailsPage.module.css";
+import { ArrowLeft } from "lucide-react";
 
 function formatDate(value?: string) {
   if (!value) {
@@ -168,9 +169,7 @@ export default function BorrowerDetailsPage() {
             <BorrowerProfileCard
               name={borrower.full_name}
               contact={
-                borrower.email ??
-                borrower.phone ??
-                "No contact details saved."
+                borrower.email ?? borrower.phone ?? "No contact details saved."
               }
               onBack={() => navigate("/borrowers")}
             />
