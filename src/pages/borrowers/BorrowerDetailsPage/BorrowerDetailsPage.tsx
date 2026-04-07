@@ -12,15 +12,6 @@ import type { Borrower } from "../../../types/borrowers";
 import type { Loan } from "../../../types/loans";
 import styles from "./BorrowerDetailsPage.module.css";
 
-// import Button from "../../components/Button.tsx";
-// import LoadingState from "../../components/LoadingState.tsx";
-// import SearchBar from "../../components/search/SearchBar.tsx";
-// import BorrowerCard from "../../components/borrowers/BorrowerCard.tsx";
-// import Header from "../../components/header/Header.tsx";
-// import Navbar from "../../components/navigation/Navbar.tsx";
-// import { useBorrowers } from "../../hooks/useBorrowers.ts";
-// import styles from "./BorrowersPage.module.css";
-
 function formatDate(value?: string) {
   if (!value) {
     return "—";
