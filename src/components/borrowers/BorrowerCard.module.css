@@ -7,7 +7,7 @@
 
 .cardLink:focus-visible {
   border-radius: 0.75rem;
-  box-shadow: 0 0 0 3px rgba(64, 113, 228, 0.25);
+  box-shadow: 0 0 0 3px rgba(62, 109, 216, 0.25);
 }
 
 .borrowerName {
