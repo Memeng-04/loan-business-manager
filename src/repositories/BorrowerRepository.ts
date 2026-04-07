@@ -13,6 +13,24 @@ export class BorrowerRepository {
     return data ?? [];
   }
 
+  static async getById(id: string): Promise<Borrower | null> {
+    const { data, error } = await supabase
+      .from("borrowers")
+      .select("id, full_name, business_name, address, phone, notes, created_at")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null;
+      }
+
+      throw error;
+    }
+
+    return data;
+  }
+
   static async create(input: CreateBorrowerInput): Promise<Borrower> {
     const payload = BorrowerFactory.create(input);
 

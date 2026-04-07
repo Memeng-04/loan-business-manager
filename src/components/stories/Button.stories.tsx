@@ -23,7 +23,7 @@ const meta = {
     },
     variant: {
       control: "select",
-      options: ["white", "blue", "outline"],
+      options: ["white", "blue", "outline", "outlineWhiteText"],
       description: "Visual style variant",
     },
     size: {
@@ -81,4 +81,30 @@ export const Interactive: Story = {
       button.click();
     }
   },
+};
+
+export const OutlineWhiteText: Story = {
+    parameters: {
+    layout: "fullscreen",
+    backgrounds: {
+      default: "main-blue",
+      values: [
+        {
+          name: "main-blue",
+          value: "#012a6a",
+        },
+      ],
+    },
+  },
+  args: {
+    children: "Outline White Text",
+    variant: "outlineWhiteText",
+    size: "lg",
+  },
+  render: (args) => (
+    <div style={{ justifyContent: "center", display: "flex", alignItems: "center", width: "100%", height: "100vh", padding: "2rem" }}>
+      <Button {...args} />
+    </div>
+  ),
+
 };
