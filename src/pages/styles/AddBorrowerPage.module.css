@@ -8,12 +8,12 @@
 .content {
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
-  padding-bottom: var(--mobile-footer-height);
+  padding: 1rem 1rem var(--mobile-footer-height);
 }
 
 @media (min-width: 1024px) {
   .content {
     min-height: calc(100svh - var(--header-height));
-    padding-bottom: 0;
+    padding: 1.2rem 1.5rem;
   }
 }
