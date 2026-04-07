@@ -34,9 +34,9 @@ function formatDate(value?: string) {
 }
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en", {
+  return new Intl.NumberFormat("en-PH", {
     style: "currency",
-    currency: "USD",
+    currency: "PHP",
     maximumFractionDigits: 0,
   }).format(value);
 }
@@ -58,6 +58,10 @@ export default function BorrowerDetailsPage() {
     (loan) => loan.status === "completed",
   ).length;
   const latestLoan = loans[0] ?? null;
+  const totalPrincipal = loans.reduce((sum, loan) => sum + loan.principal, 0);
+  const totalPayable = loans.reduce((sum, loan) => sum + loan.total_payable, 0);
+  const averageLoanAmount =
+    loans.length > 0 ? totalPrincipal / loans.length : 0;
 
   useEffect(() => {
     let isMounted = true;
@@ -185,6 +189,9 @@ export default function BorrowerDetailsPage() {
                 totalLoans={loans.length}
                 activeLoans={activeLoanCount}
                 doneLoans={doneLoanCount}
+                totalPrincipal={formatCurrency(totalPrincipal)}
+                totalPayable={formatCurrency(totalPayable)}
+                averageLoanAmount={formatCurrency(averageLoanAmount)}
                 latestLoan={latestLoan}
                 latestLoanAmount={
                   latestLoan ? formatCurrency(latestLoan.principal) : "—"

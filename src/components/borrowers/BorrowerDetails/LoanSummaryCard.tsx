@@ -8,6 +8,9 @@ type LoanSummaryCardProps = {
   totalLoans: number;
   activeLoans: number;
   doneLoans: number;
+  totalPrincipal: string;
+  totalPayable: string;
+  averageLoanAmount: string;
   latestLoan: Loan | null;
   latestLoanAmount: string;
   latestLoanCreatedAt: string;
@@ -19,6 +22,9 @@ export default function LoanSummaryCard({
   totalLoans,
   activeLoans,
   doneLoans,
+  totalPrincipal,
+  totalPayable,
+  averageLoanAmount,
   latestLoan,
   latestLoanAmount,
   latestLoanCreatedAt,
@@ -46,15 +52,30 @@ export default function LoanSummaryCard({
           <div className={styles.summaryMetrics}>
             <div className={styles.metricTile}>
               <span className={styles.dataLabel}>LOANS</span>
-              <strong className={styles.metricTileValue}>{totalLoans}</strong>
+              <div className={styles.metricTileValue}>{totalLoans}</div>
             </div>
             <div className={styles.metricTile}>
               <span className={styles.dataLabel}>ACTIVE</span>
-              <strong className={styles.metricTileValue}>{activeLoans}</strong>
+              <div className={styles.metricTileValue}>{activeLoans}</div>
             </div>
             <div className={styles.metricTile}>
               <span className={styles.dataLabel}>DONE</span>
-              <strong className={styles.metricTileValue}>{doneLoans}</strong>
+              <div className={styles.metricTileValue}>{doneLoans}</div>
+            </div>
+          </div>
+
+          <div className={styles.financialTotals}>
+            <div className={styles.totalRow}>
+              <span className={styles.totalLabel}>Total principal</span>
+              <div className={styles.totalValue}>{totalPrincipal}</div>
+            </div>
+            <div className={styles.totalRow}>
+              <span className={styles.totalLabel}>Total payable</span>
+              <div className={styles.totalValue}>{totalPayable}</div>
+            </div>
+            <div className={styles.totalRow}>
+              <span className={styles.totalLabel}>Average loan</span>
+              <div className={styles.totalValue}>{averageLoanAmount}</div>
             </div>
           </div>
         </>
@@ -63,7 +84,7 @@ export default function LoanSummaryCard({
       <Button
         variant="blue"
         size="md"
-        className={`mt-0! ${styles.primaryAction}`}
+        className={`mt-0! ${styles.primaryAction} ${styles.summaryAction}`}
         onClick={onSeeLoans}
       >
         See Loans

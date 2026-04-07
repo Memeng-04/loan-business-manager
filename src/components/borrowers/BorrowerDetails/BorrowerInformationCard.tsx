@@ -29,7 +29,34 @@ export default function BorrowerInformationCard({
         <DataCell label="ADDRESS" value={borrower.address ?? "Not provided"} />
         <DataCell label="PHONE" value={borrower.phone ?? "Not provided"} />
         <DataCell label="EMAIL" value={borrower.email ?? "No email"} />
-        <DataCell label="MONTHLY INCOME" value={borrower.monthly_income ?? "Not provided"} />
+        <DataCell
+          label="MONTHLY INCOME"
+          value={
+            typeof borrower.monthly_income === "number"
+              ? new Intl.NumberFormat("en-PH", {
+                  style: "currency",
+                  currency: "PHP",
+                  maximumFractionDigits: 0,
+                }).format(borrower.monthly_income)
+              : "Not provided"
+          }
+        />
+        <DataCell
+          label="SOURCE OF INCOME"
+          value={borrower.source_of_income ?? "Not provided"}
+        />
+        <DataCell
+          label="SECONDARY CONTACT"
+          value={borrower.secondary_contact_number ?? "Not provided"}
+        />
+        <DataCell
+          label="SECONDARY NAME"
+          value={borrower.secondary_contact_name ?? "Not provided"}
+        />
+        <DataCell
+          label="BANK / E-WALLET"
+          value={borrower.bank_ewallet_details ?? "Not provided"}
+        />
         <DataCell label="NOTES" value={borrower.notes ?? "No notes"} />
         <DataCell label="CREATED AT" value={createdDate} />
       </div>

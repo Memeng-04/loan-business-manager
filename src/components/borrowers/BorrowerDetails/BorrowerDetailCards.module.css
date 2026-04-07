@@ -9,15 +9,15 @@
 
 .sectionEyebrow {
   color: var(--color-light-main-blue);
-  font-size: medium;
+  font-size: 1.2rem;
   font-weight: 800;
   letter-spacing: 0.02em;
 }
 
 .profileName {
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
   color: #030712;
-  font-size: xx-large;
+  font-size: 2.2rem;
   font-weight: 800;
   line-height: 1.05;
 }
@@ -29,15 +29,20 @@
 .infoCard,
 .summaryCard {
   height: 100%;
-  display: grid;
-  align-content: start;
-  gap: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   border-radius: 0.8rem;
+  padding: 1.3rem;
+}
+
+.infoCard {
+  align-self: stretch;
 }
 
 .cardTitle {
   color: var(--color-light-main-blue);
-  font-size: medium;
+  font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
@@ -46,13 +51,13 @@
 .infoGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.7rem;
+  gap: 0.85rem;
 }
 
 .dataCell {
   display: grid;
-  gap: 0.15rem;
-  padding: 0.55rem 0.7rem;
+  gap: 0.2rem;
+  padding: 0.72rem 0.9rem;
   border: 0.01rem solid #9ca3af;
   border-radius: 0.7rem;
   background: #f8fafc;
@@ -60,64 +65,93 @@
 
 .dataLabel {
   color: var(--color-grey-text);
-  font-size: small;
+  font-size: 0.9rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .dataValue {
   color: #000000;
-  font-size: small;
-  line-height: 1.2;
+  font-size: 1rem;
+  line-height: 1.1;
 }
 
 .latestWrap {
   display: flex;
   justify-content: space-between;
   gap: 0.7rem;
-  padding: 0.65rem 0.8rem;
+  padding: 0.85rem 1rem;
   border: 1px solid #9ca3af;
   border-radius: 0.7rem;
   background: #f8fafc;
 }
 
-
 .latestAmount {
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
   color: #030712;
-  font-size: clamp(1.7rem, 3vw, 2.3rem);
-  font-weight: bold;
-  line-height: 1.05;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .latestDate {
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
   color: #4b5563;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .statusBadge {
   align-self: start;
-  padding: 0.24rem 0.7rem;
+  padding: 0.3rem 0.85rem;
   border: 1px solid #d4b96f;
   border-radius: 999px;
   background: #f5e5b3;
   color: #063277;
-  font-size: 0.76rem;
+  font-size: 1.2rem;
   font-weight: 800;
 }
 
 .summaryMetrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.55rem;
+  gap: 0.75rem;
+}
+
+.financialTotals {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #9ca3af;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+}
+
+.totalLabel {
+  color: var(--color-grey-text);
+  font-size: .9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.totalValue {
+  color: #111827;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
 .metricTile {
   display: grid;
   gap: 0.2rem;
-  padding: 0.55rem 0.65rem;
+  padding: 0.75rem 0.8rem;
   border: 1px solid #9ca3af;
   border-radius: 0.7rem;
   background: #f8fafc;
@@ -125,12 +159,18 @@
 
 .metricTileValue {
   color: #030712;
-  font-size: large;
+  font-size: 1.5rem;
   line-height: 1;
+  font-weight: 500;
 }
 
 .primaryAction {
   width: 100%;
+  margin-top: auto;
+}
+
+.summaryAction {
+  margin-top: 0;
 }
 
 .errorText {
@@ -139,7 +179,23 @@
 
 @media (max-width: 640px) {
   .cardTitle {
-    font-size: 1.3rem;
+    font-size: 1.45rem;
+  }
+
+  .dataValue {
+    font-size: 1.15rem;
+  }
+
+  .latestAmount {
+    font-size: 2rem;
+  }
+
+  .latestDate {
+    font-size: 1rem;
+  }
+
+  .totalValue {
+    font-size: 1.25rem;
   }
 
   .infoGrid {
