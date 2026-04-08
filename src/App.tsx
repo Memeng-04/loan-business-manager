@@ -11,7 +11,7 @@ import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
-
+//something
 function App() {
   useEffect(() => {
     const testConnection = async () => {
