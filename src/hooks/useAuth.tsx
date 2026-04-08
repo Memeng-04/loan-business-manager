@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from '../services/supabase';
+import { supabase } from "../services/supabase";
 import {
   getCurrentSession,
   signInWithEmailPassword,
@@ -19,7 +19,7 @@ type AuthContextValue = {
   signUp: (
     email: string,
     password: string,
-  ) => Promise<{ error: string | null }>;
+  ) => Promise<{ error: string | null; hasSession: boolean }>;
   signOut: () => Promise<{ error: string | null }>;
 };
 
@@ -77,8 +77,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: mapAuthErrorMessage(error?.message ?? null) };
       },
       signUp: async (email: string, password: string) => {
-        const { error } = await signUpWithEmailPassword(email, password);
-        return { error: mapAuthErrorMessage(error?.message ?? null) };
+        const { error, session: nextSession } = await signUpWithEmailPassword(
+          email,
+          password,
+        );
+        return {
+          error: mapAuthErrorMessage(error?.message ?? null),
+          hasSession: Boolean(nextSession),
+        };
       },
       signOut: async () => {
         const { error } = await signOutService();

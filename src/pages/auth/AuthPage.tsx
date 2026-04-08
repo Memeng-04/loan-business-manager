@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import AuthCard from "../../components/auth/AuthCard";
 import logoWhite from "../../assets/icons/192x192/lend-white.png";
 import type { AuthMode } from "../../components/auth/AuthCard";
@@ -8,6 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 import styles from "./AuthPage.module.css";
 
 export default function AuthPage() {
+  const navigate = useNavigate();
   const { user, signIn, signUp } = useAuth();
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
@@ -26,19 +27,30 @@ export default function AuthPage() {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const authAction = mode === "login" ? signIn : signUp;
-    const { error } = await authAction(email, password);
+    if (mode === "signup") {
+      const { error, hasSession } = await signUp(email, password);
 
-    if (error) {
-      setErrorMessage(error);
+      if (error) {
+        setErrorMessage(error);
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (hasSession) {
+        navigate("/onboarding/profile", { replace: true });
+        setIsSubmitting(false);
+        return;
+      }
+
+      setSuccessMessage("Account created. Check your email to verify first.");
       setIsSubmitting(false);
       return;
     }
 
-    if (mode === "signup") {
-      setMode("login");
-      setPassword("");
-      setSuccessMessage("Account created. You can log in now.");
+    const { error } = await signIn(email, password);
+
+    if (error) {
+      setErrorMessage(error);
       setIsSubmitting(false);
       return;
     }

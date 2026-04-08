@@ -2,18 +2,159 @@
   min-height: 100svh;
   --header-height: 3.75rem;
   --mobile-footer-height: 4.5rem;
-  background-color: #ffffff;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(109, 182, 254, 0.18),
+      transparent 48%
+    ),
+    #f7faff;
 }
 
 .content {
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
-  padding-bottom: var(--mobile-footer-height);
+  padding: 1rem 1rem var(--mobile-footer-height);
+}
+
+.hero {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.greeting {
+  color: var(--color-main-blue);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.subtitle {
+  color: var(--color-grey-text);
+  font-size: 0.95rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.balanceCard,
+.revenueCard,
+.dueCard {
+  border-radius: 1rem;
+}
+
+.cardLabel {
+  color: var(--color-light-main-blue);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.balanceValue {
+  margin-top: 0.35rem;
+  color: #0f172a;
+  font-size: clamp(1.55rem, 4.5vw, 2.35rem);
+  font-weight: 800;
+}
+
+.balanceMeta {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.95rem;
+  font-size: 0.93rem;
+  color: #1e293b;
+}
+
+.cardHeaderRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.totalRevenueLabel {
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.chartWrap {
+  margin-top: 0.5rem;
+}
+
+.legendList {
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.legendItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.legendDot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+}
+
+.dueList {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.55rem;
+  max-height: 16rem;
+  overflow: auto;
+}
+
+.dueRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d9e3f3;
+  border-radius: 0.75rem;
+}
+
+.borrowerName {
+  color: #0f172a;
+  font-size: 0.93rem;
+}
+
+.emptyText {
+  margin-top: 0.85rem;
+  color: #475569;
+  font-size: 0.95rem;
 }
 
 @media (min-width: 1024px) {
   .content {
     min-height: calc(100svh - var(--header-height));
-    padding-bottom: 0;
+    padding: 1.35rem 1.35rem 1.2rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .balanceCard {
+    grid-column: span 5;
+  }
+
+  .revenueCard {
+    grid-column: span 7;
+  }
+
+  .dueCard {
+    grid-column: span 12;
   }
 }

@@ -9,6 +9,8 @@ import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerD
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
+import ProfileOnboardingPage from "./pages/onboarding/ProfileOnboardingPage";
+import CapitalOnboardingPage from "./pages/onboarding/CapitalOnboardingPage";
 import { useEffect } from "react";
 import { supabase } from "./services/supabase";
 //something
@@ -36,6 +38,8 @@ function App() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
+        <Route path="/onboarding/profile" element={<ProfileOnboardingPage />} />
+        <Route path="/onboarding/capital" element={<CapitalOnboardingPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
