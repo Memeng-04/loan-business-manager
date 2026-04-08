@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import Button from "../../../components/Button";
-import Card from "../../../components/card/Card";
 import Header from "../../../components/header/Header";
 import LoadingState from "../../../components/LoadingState";
 import Navbar from "../../../components/navigation/Navbar";
@@ -10,16 +7,12 @@ import { BorrowerRepository } from "../../../repositories/BorrowerRepository";
 import { LoanRepository } from "../../../repositories/LoanRepository";
 import type { Borrower } from "../../../types/borrowers";
 import type { Loan } from "../../../types/loans";
+import BorrowerInformationCard from "../../../components/borrowers/BorrowerDetails/BorrowerInformationCard";
+import BorrowerProfileCard from "../../../components/borrowers/BorrowerDetails/BorrowerProfileCard";
+import LoanSummaryCard from "../../../components/borrowers/BorrowerDetails/LoanSummaryCard";
 import styles from "./BorrowerDetailsPage.module.css";
-
-// import Button from "../../components/Button.tsx";
-// import LoadingState from "../../components/LoadingState.tsx";
-// import SearchBar from "../../components/search/SearchBar.tsx";
-// import BorrowerCard from "../../components/borrowers/BorrowerCard.tsx";
-// import Header from "../../components/header/Header.tsx";
-// import Navbar from "../../components/navigation/Navbar.tsx";
-// import { useBorrowers } from "../../hooks/useBorrowers.ts";
-// import styles from "./BorrowersPage.module.css";
+import { useUpdateBorrower } from "../../../hooks/useUpdateBorrower";
+import type { CreateBorrowerInput } from "../../../types/borrowers";
 
 function formatDate(value?: string) {
   if (!value) {
@@ -39,6 +32,14 @@ function formatDate(value?: string) {
   }).format(date);
 }
 
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 export default function BorrowerDetailsPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -48,6 +49,19 @@ export default function BorrowerDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loanError, setLoanError] = useState<string | null>(null);
+  const { updateBorrower, updating, error: updateError } = useUpdateBorrower();
+
+  const activeLoanCount = loans.filter(
+    (loan) => loan.status === "active",
+  ).length;
+  const doneLoanCount = loans.filter(
+    (loan) => loan.status === "completed",
+  ).length;
+  const latestLoan = loans[0] ?? null;
+  const totalPrincipal = loans.reduce((sum, loan) => sum + loan.principal, 0);
+  const totalPayable = loans.reduce((sum, loan) => sum + loan.total_payable, 0);
+  const averageLoanAmount =
+    loans.length > 0 ? totalPrincipal / loans.length : 0;
 
   useEffect(() => {
     let isMounted = true;
@@ -115,6 +129,23 @@ export default function BorrowerDetailsPage() {
     };
   }, [id]);
 
+  async function handleSaveBorrower(
+    input: CreateBorrowerInput,
+  ): Promise<boolean> {
+    if (!id) {
+      return false;
+    }
+
+    const updated = await updateBorrower(id, input);
+
+    if (updated) {
+      setBorrower(updated);
+      return true;
+    }
+
+    return false;
+  }
+
   return (
     <div className={styles.page}>
       <Header
@@ -137,18 +168,13 @@ export default function BorrowerDetailsPage() {
       {!loading && error ? (
         <main className={styles.content}>
           <section className={styles.container}>
-            <Card className={styles.errorPanel}>
-              <p className={styles.errorText}>{error}</p>
-              <Button
-                variant="outline"
-                size="md"
-                className={`mt-0! ${styles.backButton}`}
-                onClick={() => navigate("/borrowers")}
-              >
-                <ArrowLeft size={16} />
-                Back to borrowers
-              </Button>
-            </Card>
+            <LoadingState
+              variant="error"
+              message={error}
+              fullScreen={false}
+              actionLabel="Back to borrowers"
+              onAction={() => navigate("/borrowers")}
+            />
           </section>
         </main>
       ) : null}
@@ -156,111 +182,35 @@ export default function BorrowerDetailsPage() {
       {!loading && !error && borrower ? (
         <main className={styles.content}>
           <section className={styles.container}>
-            <Card className={styles.hero}>
-              <div>
-                <p className={styles.eyebrow}>Borrower profile</p>
-                <h2 className={styles.title}>{borrower.full_name}</h2>
-                <p className={styles.subtitle}>
-                  {borrower.business_name
-                    ? borrower.business_name
-                    : "No business name saved."}
-                </p>
-              </div>
-
-              <Button
-                variant="outline"
-                size="md"
-                className={`mt-0! ${styles.backButton}`}
-                onClick={() => navigate("/borrowers")}
-              >
-                <ArrowLeft size={16} />
-                Back to borrowers
-              </Button>
-            </Card>
+            <BorrowerProfileCard
+              name={borrower.full_name}
+              onBack={() => navigate("/borrowers")}
+            />
 
             <div className={styles.detailsGrid}>
-              <Card as="section" className={styles.panel}>
-                <h3 className={styles.panelTitle}>Borrower info</h3>
+              <BorrowerInformationCard
+                borrower={borrower}
+                createdDate={formatDate(borrower.created_at)}
+                onSave={handleSaveBorrower}
+                saving={updating}
+                saveError={updateError}
+              />
 
-                <dl className={styles.detailList}>
-                  <div className={styles.detailItem}>
-                    <dt className={styles.label}>ID</dt>
-                    <dd className={styles.value}>{borrower.id ?? "—"}</dd>
-                  </div>
-
-                  <div className={styles.detailItem}>
-                    <dt className={styles.label}>Business</dt>
-                    <dd className={styles.value}>
-                      {borrower.business_name ?? "Not provided"}
-                    </dd>
-                  </div>
-
-                  <div className={styles.detailItem}>
-                    <dt className={styles.label}>Address</dt>
-                    <dd className={styles.value}>
-                      {borrower.address ?? "Not provided"}
-                    </dd>
-                  </div>
-
-                  <div className={styles.detailItem}>
-                    <dt className={styles.label}>Phone</dt>
-                    <dd className={styles.value}>
-                      {borrower.phone ?? "Not provided"}
-                    </dd>
-                  </div>
-
-                  <div className={styles.detailItem}>
-                    <dt className={styles.label}>Notes</dt>
-                    <dd className={styles.value}>
-                      {borrower.notes ?? "No notes saved yet."}
-                    </dd>
-                  </div>
-
-                  <div className={styles.detailItem}>
-                    <dt className={styles.label}>Created</dt>
-                    <dd className={styles.value}>
-                      {formatDate(borrower.created_at)}
-                    </dd>
-                  </div>
-                </dl>
-              </Card>
-
-              <Card as="section" className={styles.panel}>
-                <h3 className={styles.panelTitle}>Loan history</h3>
-
-                {loanError ? (
-                  <p className={styles.errorText}>{loanError}</p>
-                ) : null}
-
-                {!loanError && loans.length === 0 ? (
-                  <p className={styles.emptyState}>No loans recorded yet.</p>
-                ) : null}
-
-                {!loanError && loans.length > 0 ? (
-                  <ul className={styles.historyList}>
-                    {loans.map((loan) => (
-                      <li key={loan.id} className={styles.historyItem}>
-                        <div>
-                          <p className={styles.historyTitle}>
-                            {loan.principal.toLocaleString()} total loan
-                          </p>
-                          <p className={styles.historyMeta}>
-                            {loan.frequency} payment plan · {loan.status}
-                          </p>
-                        </div>
-
-                        <div className={styles.historyMetaBlock}>
-                          <span>Started {formatDate(loan.start_date)}</span>
-                          <span>Ends {formatDate(loan.end_date)}</span>
-                          <span>
-                            Payable {loan.total_payable.toLocaleString()}
-                          </span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </Card>
+              <LoanSummaryCard
+                loanError={loanError}
+                totalLoans={loans.length}
+                activeLoans={activeLoanCount}
+                doneLoans={doneLoanCount}
+                totalPrincipal={formatCurrency(totalPrincipal)}
+                totalPayable={formatCurrency(totalPayable)}
+                averageLoanAmount={formatCurrency(averageLoanAmount)}
+                latestLoan={latestLoan}
+                latestLoanAmount={
+                  latestLoan ? formatCurrency(latestLoan.principal) : "—"
+                }
+                latestLoanCreatedAt={formatDate(latestLoan?.created_at)}
+                onSeeLoans={() => navigate("/loans")}
+              />
             </div>
           </section>
         </main>

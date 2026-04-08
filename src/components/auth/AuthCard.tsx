@@ -35,7 +35,7 @@ export default function AuthCard({
         <Button
           type="button"
           onClick={() => onModeChange("login")}
-          variant={mode === "login" ? "white" : "outline"}
+          variant={mode === "login" ? "white" : "outlineWhiteText"}
           size="md"
           className={styles.halfButton}
         >
@@ -44,7 +44,7 @@ export default function AuthCard({
         <Button
           type="button"
           onClick={() => onModeChange("signup")}
-          variant={mode === "signup" ? "white" : "outline"}
+          variant={mode === "signup" ? "white" : "outlineWhiteText"}
           size="md"
           className={styles.halfButton}
         >

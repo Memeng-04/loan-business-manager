@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type ButtonVariant = "white" | "blue" | "outline";
+type ButtonVariant = "white" | "blue" | "outline" | "outlineWhiteText";
 type ButtonSize = "md" | "lg";
 
 interface ButtonProps {
@@ -21,6 +21,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   
   outline:
     "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
+
+  outlineWhiteText:
+    "border border-white border-2 bg-transparent text-white hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue"
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
