@@ -4,16 +4,23 @@ import Navbar from "../../components/navigation/Navbar";
 import { CreateLoanWizard } from "../../components/loans/CreateLoanWizard";
 import { RepaymentSchedule } from "../../components/loans/RepaymentSchedule";
 import styles from "./NewLoanPage.module.css";
+import LoadingState from "../../components/LoadingState";
 
 export default function NewLoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [createdLoanData, setCreatedLoanData] = useState<{ loanId: string; borrowerId: string } | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleWizardSuccess = (loanData: { loanId: string; borrowerId: string }) => {
     setCreatedLoanData(loanData);
+    setIsTransitioning(true);
+    // Simulate loading time for the schedule generation
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 1500); 
   };
 
-  const handleWizardCancel = () => {
+  const handleReturnToWizard = () => {
     setCreatedLoanData(null);
   };
 
@@ -23,17 +30,19 @@ export default function NewLoanPage() {
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <section className={styles.content}>
-        {!createdLoanData && (
+        {!createdLoanData && !isTransitioning && (
           <CreateLoanWizard
             onSuccess={handleWizardSuccess}
-            onCancel={handleWizardCancel}
           />
         )}
 
-        {createdLoanData && (
+        {isTransitioning && <LoadingState message="Generating Repayment Schedule..." />}
+
+        {createdLoanData && !isTransitioning && (
           <RepaymentSchedule
-            borrowerId={createdLoanData.borrowerId}
             loanId={createdLoanData.loanId}
+            borrowerId={createdLoanData.borrowerId}
+            onScheduleSaved={handleReturnToWizard}
           />
         )}
       </section>

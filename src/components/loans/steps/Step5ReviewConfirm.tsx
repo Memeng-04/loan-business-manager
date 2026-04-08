@@ -14,8 +14,6 @@ import { useBorrowers } from '../../../hooks/useBorrowers'
  */
 export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
   state,
-  nextStep,
-  prevStep,
   isLoading,
   error
 }) => {
@@ -94,13 +92,10 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
   return (
     <div className="p-6 flex flex-col gap-6">
       {/* Section Title */}
-      <div>
-        <h3 className="text-lg font-bold text-[#012a6a] mb-2">
-          Review & Confirm
-        </h3>
-        <p className="text-sm text-gray-600">
-          Please review all details before submitting. You can go back to make
-          changes.
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-gray-800">Review & Confirm</h3>
+        <p className="text-sm text-gray-500 mt-1">
+          Please review all details before submitting.
         </p>
       </div>
 
@@ -265,8 +260,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
       {/* Info Box */}
       <div className="bg-blue-50 border border-[#6db6fe] rounded-2xl p-4">
         <p className="text-xs text-[#012a6a] font-medium">
-          ℹ️ After submission, you'll be able to create a repayment schedule for
-          this loan.
+          ℹ️ After submission, a repayment schedule will be generated for you to confirm.
         </p>
       </div>
     </div>

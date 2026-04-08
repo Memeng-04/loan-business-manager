@@ -166,6 +166,11 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
       )}
 
       {/* Calculation Preview */}
+      {isLoading && !preview && (
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
+          <p className="text-sm text-gray-500 animate-pulse">Loading Preview...</p>
+        </div>
+      )}
       {preview && (
         <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-4">
           <h4 className="font-bold text-green-900 mb-3">Loan Preview</h4>

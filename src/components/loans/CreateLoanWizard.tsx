@@ -10,11 +10,10 @@ import { Step2Borrower } from './steps/Step2Borrower'
 import { Step3LoanDetails } from './steps/Step3LoanDetails'
 import { Step4InterestDetails } from './steps/Step4InterestDetails'
 import { Step5ReviewConfirm } from './steps/Step5ReviewConfirm'
-import Card from '../card/Card'
+import Button from '../Button'
 
 interface CreateLoanWizardProps {
   onSuccess?: (loanData: { loanId: string; borrowerId: string }) => void
-  onCancel?: () => void
 }
 
 /**
@@ -27,15 +26,15 @@ interface CreateLoanWizardProps {
  * 5. Review & Submit
  */
 export const CreateLoanWizard = ({
-  onSuccess,
-  onCancel
+  onSuccess
 }: CreateLoanWizardProps) => {
   const [currentStep, setCurrentStep] = useState<WizardStep>(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
   const [successLoanId, setSuccessLoanId] = useState<string | null>(null)
-  const [successLoanData, setSuccessLoanData] = useState<any>(null)
+
+  const [countdown, setCountdown] = useState(3);
 
   const { createLoan: createFixedLoan, loading: fixedLoading } =
     useCreateLoan()
@@ -144,7 +143,6 @@ export const CreateLoanWizard = ({
         // Extract ID if loanId is an object (full loan data) or already a string
         const idString = typeof loanId === 'string' ? loanId : (loanId as any).id
         setSuccessLoanId(idString)
-        setSuccessLoanData(loanId)
         setIsSuccess(true)
       }
     } catch (error) {
@@ -157,11 +155,27 @@ export const CreateLoanWizard = ({
   }
   useEffect(() => {
     if (isSuccess) {
+      setCountdown(3); // Reset countdown on success
+      const interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev > 1) {
+            return prev - 1;
+          } else {
+            clearInterval(interval);
+            return 0;
+          }
+        });
+      }, 1000);
+
       const timer = setTimeout(() => {
-        setIsSuccess(false)
-        setSuccessLoanId(null)
-        setSuccessLoanData(null)
-        setCurrentStep(1)
+        // Call onSuccess callback to transition to the next screen
+        if (onSuccess && successLoanId) {
+          onSuccess({ loanId: successLoanId, borrowerId: state.borrowerId });
+        }
+        // Reset state after transition
+        setIsSuccess(false);
+        setSuccessLoanId(null);
+        setCurrentStep(1);
         setState({
           loanType: null,
           borrowerId: '',
@@ -172,15 +186,15 @@ export const CreateLoanWizard = ({
           totalPayable: '',
           interestRate: '',
           calculatedPreview: null
-        })
-        // Call onSuccess callback after reset
-        if (onSuccess && successLoanId) {
-          onSuccess({ loanId: successLoanId, borrowerId: state.borrowerId })
-        }
-      }, 3000)
-      return () => clearTimeout(timer)
+        });
+      }, 3000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timer);
+      };
     }
-  }, [isSuccess, successLoanId, successLoanData, onSuccess, state.borrowerId])
+  }, [isSuccess, successLoanId, onSuccess, state.borrowerId]);
 
   const isLoading = fixedLoading || percentageLoading || isSubmitting
 
@@ -218,30 +232,29 @@ export const CreateLoanWizard = ({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl overflow-hidden">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg flex flex-col">
         {/* Header */}
-        <div className="bg-[#012a6a] px-6 py-5 -m-4 mb-4">
-          <h1 className="text-white text-2xl font-bold">
-            {isSuccess ? 'Loan Created' : 'Create New Loan'}
-          </h1>
-          <p className="text-[#6db6fe] text-sm mt-1">
-            {isSuccess ? 'Success! Your loan has been created.' : `Step ${currentStep} of 5`}
+        <div className="px-8 py-6 border-b border-gray-200">
+          <h2 className="text-gray-800 text-3xl font-bold">Create New Loan</h2>
+          <p className="text-gray-500 text-sm mt-2">
+            Step {currentStep} of 5
           </p>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="px-6 flex gap-2 mb-6">
-          {[1, 2, 3, 4, 5].map(step => (
-            <div
-              key={step}
-              className={`flex-1 h-2 rounded-full transition-colors ${
-                step <= currentStep
-                  ? 'bg-[#112bd6]'
-                  : 'bg-gray-200'
-              }`}
-            />
-          ))}
+        {/* Progress Bar */}
+        <div className="px-8 pt-6 pb-4">
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5].map(step => (
+              <div key={step} className="flex-1 h-2 rounded-full bg-gray-200">
+                <div
+                  className={`h-full rounded-full bg-blue-600 transition-all duration-300 ${
+                    currentStep >= step ? 'w-full' : 'w-0'
+                  }`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Success Message */}
@@ -253,7 +266,7 @@ export const CreateLoanWizard = ({
             </h2>
             <p className="text-gray-600 mb-4">Loan ID: {successLoanId}</p>
             <p className="text-sm text-gray-500">
-              Resetting in 3 seconds...
+              Generating schedule in {countdown}...
             </p>
           </div>
         ) : (
@@ -262,39 +275,43 @@ export const CreateLoanWizard = ({
             {renderStep()}
 
             {/* Footer Navigation */}
-            <div className="px-6 pb-6 flex gap-3 justify-between border-t border-gray-200 pt-6">
-              {currentStep > 1 && (
-                <button
+            <div className="px-8 pb-8 pt-6 flex gap-4 justify-between items-center border-t border-gray-200">
+              {currentStep > 1 ? (
+                <Button
                   onClick={prevStep}
                   disabled={isLoading}
-                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-2xl hover:bg-gray-50 disabled:opacity-50 transition"
+                  variant="outline"
+                  size="lg"
                 >
                   Back
-                </button>
+                </Button>
+              ) : (
+                <div /> // Placeholder to keep "Next" button on the right
               )}
-              {currentStep === 1 && <div />}
 
               {currentStep < 5 ? (
-                <button
+                <Button
                   onClick={nextStep}
                   disabled={isLoading}
-                  className="px-6 py-2 bg-[#112bd6] text-white rounded-2xl hover:bg-[#0d1fa6] disabled:opacity-50 transition"
+                  variant="blue"
+                  size="lg"
                 >
                   Next
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className="px-6 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-700 disabled:opacity-50 transition"
+                  variant="blue"
+                  size="lg"
                 >
-                  {isLoading ? 'Submitting...' : 'Submit'}
-                </button>
+                  {isLoading ? 'Submitting...' : 'Confirm & Create Loan'}
+                </Button>
               )}
             </div>
           </>
         )}
-      </Card>
+      </div>
     </div>
   )
 }

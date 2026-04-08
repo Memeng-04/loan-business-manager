@@ -63,8 +63,8 @@ export const Step1LoanCategory: React.FC<WizardStepProps> = ({
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <option.icon className="w-6 h-6 text-[#112bd6]" />
-                  <h4 className="font-bold text-[#012a6a]">{option.title}</h4>
+                  <option.icon className="w-6 h-6 text-teal-600 group-hover:text-teal-500" />
+                  <div className="font-bold text-gray-800 group-hover:text-teal-600">{option.title}</div>
                 </div>
                 <p className="text-sm text-gray-600">{option.description}</p>
               </div>
