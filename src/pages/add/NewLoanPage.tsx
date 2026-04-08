@@ -17,14 +17,19 @@ export default function NewLoanPage() {
 
   return (
     <main className={styles.page}>
-      <Header title="Add Loan" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
+      <Header
+        title="Add Loan"
+        onMenuClick={() => setIsNavOpen((prev) => !prev)}
+      />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <section className={styles.content}>
         {loading ? (
           <LoadingState message="Loading..." fullScreen={false} />
         ) : null}
-        {error ? <p className={styles.errorText}>{error}</p> : null}
+        {error ? (
+          <LoadingState variant="error" message={error} fullScreen={false} />
+        ) : null}
         {!loading && !error && !selectedBorrowerId ? (
           <p className={styles.stateText}>Error</p>
         ) : null}

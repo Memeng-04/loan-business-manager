@@ -59,6 +59,10 @@
   gap: 0.9rem;
 }
 
+.editSections {
+  grid-column: 1 / -1;
+}
+
 .editForm {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -72,7 +76,7 @@
 
 .formInput {
   width: 100%;
-  border: 1px solid #9ca3af;
+  border: 1px solid var(--color-gray-200);
   border-radius: 0.65rem;
   padding: 0.55rem 0.7rem;
   color: #111827;
@@ -98,7 +102,7 @@
 }
 
 .sectionHeading {
-  color: var(--color-grey-text);
+  color: var(--color-light-main-blue);
   font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -115,13 +119,19 @@
   display: grid;
   gap: 0.2rem;
   padding: 0.72rem 0.9rem;
-  border: 0.01rem solid #9ca3af;
   border-radius: 0.7rem;
-  background: #f8fafc;
+  border: 1px solid var(--color-gray-200);
 }
 
 .dataLabel {
-  color: black;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dataLabelLoans {
+  color: var(--color-light-main-blue);
   font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -131,7 +141,7 @@
 .dataLabelActive {
   color: var(--color-red-text-active);
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -139,7 +149,7 @@
 .dataLabelDone {
   color: var(--color-green-text-active);
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -158,9 +168,8 @@
   justify-content: space-between;
   gap: 0.7rem;
   padding: 0.85rem 1rem;
-  border: 1px solid #9ca3af;
   border-radius: 0.7rem;
-  background: #f8fafc;
+  border: 1px solid var(--color-gray-200);
 }
 
 .latestAmount {
@@ -198,9 +207,8 @@
   justify-content: space-between;
   gap: 0.8rem;
   padding: 0.65rem 0.85rem;
-  border: 1px solid #9ca3af;
+  border: 1px solid var(--color-gray-200);
   border-radius: 0.7rem;
-  background: #f8fafc;
 }
 
 .totalLabel {
@@ -220,9 +228,8 @@
   display: grid;
   gap: 0.2rem;
   padding: 0.75rem 0.8rem;
-  border: 1px solid #9ca3af;
   border-radius: 0.7rem;
-  background: #f8fafc;
+  border: 1px solid var(--color-gray-200);
 }
 
 .metricTileValue {
@@ -273,8 +280,10 @@
     font-size: 1.15rem;
   }
 
-  .dataLabel {
-    font-size: 0.72rem;
+  .dataLabel,
+  .dataLabelActive,
+  .dataLabelDone {
+    font-size: 0.74rem;
     letter-spacing: 0.04em;
   }
 

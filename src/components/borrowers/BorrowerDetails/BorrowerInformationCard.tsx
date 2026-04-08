@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import Button from "../../Button";
 import Card from "../../card/Card";
+import FeedbackMessage from "../../feedback/FeedbackMessage";
 import type { Borrower, CreateBorrowerInput } from "../../../types/borrowers";
 import styles from "./BorrowerDetailCards.module.css";
 
@@ -47,6 +48,20 @@ export default function BorrowerInformationCard({
   const [secondaryContactNumber, setSecondaryContactNumber] = useState(
     borrower.secondary_contact_number ?? "",
   );
+
+  function resetFormFromBorrower() {
+    setFullName(borrower.full_name);
+    setAddress(borrower.address ?? "");
+    setPhone(borrower.phone ?? "");
+    setEmail(borrower.email ?? "");
+    setMonthlyIncome(
+      borrower.monthly_income ? String(borrower.monthly_income) : "",
+    );
+    setSourceOfIncome(borrower.source_of_income ?? "");
+    setSecondaryContactName(borrower.secondary_contact_name ?? "");
+    setSecondaryContactNumber(borrower.secondary_contact_number ?? "");
+    setFormError(null);
+  }
 
   function isDigits(value: string) {
     return /^\d+$/.test(value);
@@ -140,98 +155,121 @@ export default function BorrowerInformationCard({
 
       {isEditing ? (
         <form className={styles.editForm} onSubmit={handleSubmit}>
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Name</span>
-            <input
-              required
-              className={styles.formInput}
-              value={fullName}
-              onChange={(event) => setFullName(event.target.value)}
-            />
-          </label>
+          <div className={`${styles.infoSections} ${styles.editSections}`}>
+            <section className={styles.sectionBlock}>
+              <h4 className={styles.sectionHeading}>CONTACT INFO</h4>
+              <div className={styles.sectionGrid}>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Name</span>
+                  <input
+                    required
+                    className={styles.formInput}
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                  />
+                </label>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Address</span>
-            <input
-              required
-              className={styles.formInput}
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-            />
-          </label>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Address</span>
+                  <input
+                    required
+                    className={styles.formInput}
+                    value={address}
+                    onChange={(event) => setAddress(event.target.value)}
+                  />
+                </label>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Phone</span>
-            <input
-              required
-              inputMode="numeric"
-              className={styles.formInput}
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-            />
-          </label>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Phone</span>
+                  <input
+                    required
+                    inputMode="numeric"
+                    className={styles.formInput}
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                  />
+                </label>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Email</span>
-            <input
-              type="email"
-              className={styles.formInput}
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </label>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Email</span>
+                  <input
+                    type="email"
+                    className={styles.formInput}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
+                </label>
+              </div>
+            </section>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Monthly Income</span>
-            <input
-              inputMode="decimal"
-              className={styles.formInput}
-              value={monthlyIncome}
-              onChange={(event) => setMonthlyIncome(event.target.value)}
-            />
-          </label>
+            <section className={styles.sectionBlock}>
+              <h4 className={styles.sectionHeading}>FINANCIAL PROFILE</h4>
+              <div className={styles.sectionGrid}>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Monthly Income</span>
+                  <input
+                    inputMode="decimal"
+                    className={styles.formInput}
+                    value={monthlyIncome}
+                    onChange={(event) => setMonthlyIncome(event.target.value)}
+                  />
+                </label>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Source of Income</span>
-            <input
-              className={styles.formInput}
-              value={sourceOfIncome}
-              onChange={(event) => setSourceOfIncome(event.target.value)}
-            />
-          </label>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Source of Income</span>
+                  <input
+                    className={styles.formInput}
+                    value={sourceOfIncome}
+                    onChange={(event) => setSourceOfIncome(event.target.value)}
+                  />
+                </label>
+              </div>
+            </section>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Secondary Name</span>
-            <input
-              className={styles.formInput}
-              value={secondaryContactName}
-              onChange={(event) => setSecondaryContactName(event.target.value)}
-            />
-          </label>
+            <section className={styles.sectionBlock}>
+              <h4 className={styles.sectionHeading}>SECONDARY REFERENCE</h4>
+              <div className={styles.sectionGrid}>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Secondary Name</span>
+                  <input
+                    className={styles.formInput}
+                    value={secondaryContactName}
+                    onChange={(event) =>
+                      setSecondaryContactName(event.target.value)
+                    }
+                  />
+                </label>
 
-          <label className={styles.formField}>
-            <span className={styles.dataLabel}>Secondary Contact</span>
-            <input
-              inputMode="numeric"
-              className={styles.formInput}
-              value={secondaryContactNumber}
-              onChange={(event) =>
-                setSecondaryContactNumber(event.target.value)
-              }
-            />
-          </label>
+                <label className={styles.formField}>
+                  <span className={styles.dataLabel}>Secondary Contact</span>
+                  <input
+                    inputMode="numeric"
+                    className={styles.formInput}
+                    value={secondaryContactNumber}
+                    onChange={(event) =>
+                      setSecondaryContactNumber(event.target.value)
+                    }
+                  />
+                </label>
+              </div>
+            </section>
+          </div>
 
-          {formError ? <p className={styles.errorText}>{formError}</p> : null}
+          {formError ? <FeedbackMessage message={formError} /> : null}
           {!formError && saveError ? (
-            <p className={styles.errorText}>{saveError}</p>
+            <FeedbackMessage message={saveError} />
           ) : null}
 
           <div className={styles.editActions}>
             <Button
               variant="outline"
               size="md"
+              type="button"
               className={`mt-0! ${styles.editActionButton}`}
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                resetFormFromBorrower();
+                setIsEditing(false);
+              }}
             >
               Cancel
             </Button>
@@ -242,7 +280,7 @@ export default function BorrowerInformationCard({
               className={`mt-0! ${styles.editActionButton}`}
               disabled={saving}
             >
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? "Saving..." : "Save"}
             </Button>
           </div>
         </form>
@@ -307,19 +345,7 @@ export default function BorrowerInformationCard({
             size="md"
             className={`mt-0! ${styles.primaryAction}`}
             onClick={() => {
-              setFullName(borrower.full_name);
-              setAddress(borrower.address ?? "");
-              setPhone(borrower.phone ?? "");
-              setEmail(borrower.email ?? "");
-              setMonthlyIncome(
-                borrower.monthly_income ? String(borrower.monthly_income) : "",
-              );
-              setSourceOfIncome(borrower.source_of_income ?? "");
-              setSecondaryContactName(borrower.secondary_contact_name ?? "");
-              setSecondaryContactNumber(
-                borrower.secondary_contact_number ?? "",
-              );
-              setFormError(null);
+              resetFormFromBorrower();
               setIsEditing(true);
             }}
           >

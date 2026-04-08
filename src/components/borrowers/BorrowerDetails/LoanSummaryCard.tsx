@@ -1,5 +1,6 @@
 import Button from "../../Button";
 import Card from "../../card/Card";
+import FeedbackMessage from "../../feedback/FeedbackMessage";
 import StatusBadge from "../../status-badge/StatusBadge";
 import type { Loan } from "../../../types/loans";
 import styles from "./BorrowerDetailCards.module.css";
@@ -44,7 +45,7 @@ export default function LoanSummaryCard({
     <Card as="section" className={styles.summaryCard}>
       <h3 className={styles.cardTitle}>LOAN SUMMARY</h3>
 
-      {loanError ? <p className={styles.errorText}>{loanError}</p> : null}
+      {loanError ? <FeedbackMessage message={loanError} /> : null}
 
       {!loanError ? (
         <>

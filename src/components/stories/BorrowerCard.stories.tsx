@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import BorrowerCard from "../borrowers/BorrowerCard/BorrowerCard";
 
 const meta = {
-  title: "Components/BorrowerCard",
+  title: "Components/Borrowers/BorrowerCard",
   component: BorrowerCard,
   parameters: {
     layout: "centered",
@@ -31,15 +31,6 @@ export const Default: Story = {
       email: "juan@example.com",
       address: "Purok 3, San Jose",
       phone: "09171234567",
-    },
-  },
-};
-
-export const Minimal: Story = {
-  args: {
-    borrower: {
-      full_name: "Maria Santos",
-      phone: "09981234567",
     },
   },
 };
