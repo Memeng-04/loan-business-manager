@@ -15,10 +15,7 @@ import {
  */
 export const Step4InterestDetails: React.FC<WizardStepProps> = ({
   state,
-  updateState,
-  nextStep,
-  prevStep,
-  isLoading
+  updateState
 }) => {
   const handleTotalPayableChange = (value: string) => {
     // Allow only numbers and decimal point

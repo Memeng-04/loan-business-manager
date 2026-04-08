@@ -11,8 +11,6 @@ import { useBorrowers } from '../../../hooks/useBorrowers'
 export const Step2Borrower: React.FC<WizardStepProps> = ({
   state,
   updateState,
-  nextStep,
-  prevStep,
   isLoading
 }) => {
   const { borrowers, loading: borrowersLoading, error: borrowersError } =
@@ -25,8 +23,6 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
     updateState('borrowerId', borrowerId)
     setIsDropdownOpen(false)
   }
-
-  const canProceed = state.borrowerId && state.borrowerId.trim().length > 0
 
   const isLoading_ = isLoading || borrowersLoading
 
@@ -109,11 +105,6 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
                   <div className="font-medium text-[#012a6a]">
                     {borrower.full_name}
                   </div>
-                  {borrower.business_name && (
-                    <div className="text-xs text-gray-500">
-                      {borrower.business_name}
-                    </div>
-                  )}
                 </button>
               ))
             )}
@@ -132,16 +123,6 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
                 {selectedBorrower.full_name}
               </span>
             </div>
-            {selectedBorrower.business_name && (
-              <div className="flex items-start gap-3">
-                <span className="text-[#112bd6] font-bold min-w-fit">
-                  Business:
-                </span>
-                <span className="text-sm text-[#012a6a]">
-                  {selectedBorrower.business_name}
-                </span>
-              </div>
-            )}
             {selectedBorrower.phone && (
               <div className="flex items-start gap-3">
                 <span className="text-[#112bd6] font-bold min-w-fit">

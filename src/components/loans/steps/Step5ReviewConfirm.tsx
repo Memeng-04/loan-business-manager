@@ -14,7 +14,6 @@ import { useBorrowers } from '../../../hooks/useBorrowers'
  */
 export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
   state,
-  isLoading,
   error
 }) => {
   const { borrowers } = useBorrowers()
@@ -117,14 +116,6 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
               <span className="font-medium text-[#012a6a]">Name:</span> 
               <span className="ml-2 text-gray-700">{selectedBorrower.full_name}</span>
             </p>
-            {selectedBorrower.business_name && (
-              <p className="text-sm">
-                <span className="font-medium text-[#012a6a]">Business:</span>
-                <span className="ml-2 text-gray-700">
-                  {selectedBorrower.business_name}
-                </span>
-              </p>
-            )}
             {selectedBorrower.phone && (
               <p className="text-sm">
                 <span className="font-medium text-[#012a6a]">Phone:</span>
