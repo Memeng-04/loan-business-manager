@@ -47,7 +47,15 @@ export default function BorrowersPage() {
         </main>
       ) : null}
 
-      {!loading ? (
+      {!loading && error ? (
+        <main className={styles.content}>
+          <section className={styles.container}>
+            <LoadingState variant="error" message={error} fullScreen={false} />
+          </section>
+        </main>
+      ) : null}
+
+      {!loading && !error ? (
         <main className={styles.content}>
           <section className={styles.container}>
             <div className={styles.topRow}>
@@ -65,9 +73,6 @@ export default function BorrowersPage() {
                 + Add
               </Button>
             </div>
-
-            {error ? <p className={styles.errorText}>{error}</p> : null}
-
             {!loading && !error && borrowers.length === 0 ? (
               <p className={styles.stateText}>No borrowers yet.</p>
             ) : null}

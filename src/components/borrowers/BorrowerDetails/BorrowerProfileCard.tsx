@@ -5,7 +5,6 @@ import styles from "./BorrowerDetailCards.module.css";
 
 type BorrowerProfileCardProps = {
   name: string;
-  contact: string;
   onBack: () => void;
 };
 
