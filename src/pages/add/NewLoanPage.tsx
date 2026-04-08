@@ -29,23 +29,29 @@ export default function NewLoanPage() {
       <Header title="Add Loan" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
-      <section className={styles.content}>
-        {!createdLoanData && !isTransitioning && (
+      {!createdLoanData && !isTransitioning && (
+        <section className={styles.content}>
           <CreateLoanWizard
             onSuccess={handleWizardSuccess}
           />
-        )}
+        </section>
+      )}
 
-        {isTransitioning && <LoadingState message="Generating Repayment Schedule..." />}
+      {isTransitioning && (
+        <section className={styles.content}>
+          <LoadingState message="Generating Repayment Schedule..." fullScreen={false} />
+        </section>
+      )}
 
-        {createdLoanData && !isTransitioning && (
+      {createdLoanData && !isTransitioning && (
+        <section className={styles.content}>
           <RepaymentSchedule
             loanId={createdLoanData.loanId}
             borrowerId={createdLoanData.borrowerId}
             onScheduleSaved={handleReturnToWizard}
           />
-        )}
-      </section>
+        </section>
+      )}
     </main>
   );
 }
