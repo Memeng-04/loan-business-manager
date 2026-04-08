@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import Card from "../../components/card/Card";
+import { useNavigate } from "react-router-dom";
+import BalanceCard from "../../components/home/BalanceCard";
+import DueCard from "../../components/home/DueCard";
+import RevenueCard from "../../components/home/RevenueCard";
 import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
@@ -13,14 +15,6 @@ import {
 } from "../../repositories/DashboardRepository";
 import styles from "./HomePage.module.css";
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
 function getTodayDateKey() {
   const now = new Date();
   const year = now.getFullYear();
@@ -29,8 +23,6 @@ function getTodayDateKey() {
   return `${year}-${month}-${day}`;
 }
 
-const CHART_COLORS = ["#012A6A", "#1F3CA8", "#6DB6FE", "#93C5FD"];
-
 type RevenueChartDatum = {
   name: string;
   value: number;
@@ -38,18 +30,17 @@ type RevenueChartDatum = {
 
 export default function HomePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const navigate = useNavigate();
   const { profile } = useCurrentUserProfile();
   const [loans, setLoans] = useState<DashboardLoan[]>([]);
   const [borrowers, setBorrowers] = useState<DashboardBorrower[]>([]);
   const [dueSchedules, setDueSchedules] = useState<DashboardSchedule[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadDashboard() {
-      setIsLoading(true);
       setError(null);
 
       try {
@@ -72,10 +63,6 @@ export default function HomePage() {
               ? err.message
               : "Failed to load dashboard data.",
           );
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
         }
       }
     }
@@ -159,115 +146,28 @@ export default function HomePage() {
           <h2 className={styles.greeting}>
             Hi, {profile?.display_name ?? "there"}!
           </h2>
-          <p className={styles.subtitle}>
-            Here is your lending snapshot today.
-          </p>
+          <p className={styles.subtitle}>Here is your lending summary today.</p>
         </div>
 
         {error ? <FeedbackMessage message={error} /> : null}
 
         <div className={styles.grid}>
-          <Card className={styles.balanceCard} variant="default" padding="lg">
-            <p className={styles.cardLabel}>Outstanding Fund Balance</p>
-            <h3 className={styles.balanceValue}>
-              {formatCurrency(outstandingFundBalance)}
-            </h3>
+          <div className={styles.balanceCard}>
+            <BalanceCard
+              outstandingBalance={outstandingFundBalance}
+              initialCapital={profile?.initial_capital ?? 0}
+              initialProfit={profile?.initial_profit ?? 0}
+              onManageFunds={() => navigate("/funds")}
+            />
+          </div>
 
-            <div className={styles.balanceMeta}>
-              <span>
-                Capital: {formatCurrency(profile?.initial_capital ?? 0)}
-              </span>
-              <span>
-                Earned Profit: {formatCurrency(profile?.initial_profit ?? 0)}
-              </span>
-              <span>
-                Active Lent Out: {formatCurrency(totalActivePrincipal)}
-              </span>
-            </div>
-          </Card>
+          <div className={styles.revenueCard}>
+            <RevenueCard data={revenueChartData} totalRevenue={totalRevenue} />
+          </div>
 
-          <Card className={styles.revenueCard} variant="subtle" padding="lg">
-            <div className={styles.cardHeaderRow}>
-              <p className={styles.cardLabel}>Revenue Report by Frequency</p>
-              <strong className={styles.totalRevenueLabel}>
-                Total: {formatCurrency(totalRevenue)}
-              </strong>
-            </div>
-
-            {isLoading ? (
-              <p className={styles.emptyText}>Loading revenue data...</p>
-            ) : totalRevenue <= 0 ? (
-              <p className={styles.emptyText}>No loan revenue yet.</p>
-            ) : (
-              <div className={styles.chartWrap}>
-                <ResponsiveContainer width="100%" height={240}>
-                  <PieChart>
-                    <Pie
-                      data={revenueChartData}
-                      dataKey="value"
-                      nameKey="name"
-                      innerRadius={62}
-                      outerRadius={96}
-                      paddingAngle={2}
-                    >
-                      {revenueChartData.map((entry, index) => (
-                        <Cell
-                          key={`${entry.name}-${index}`}
-                          fill={CHART_COLORS[index % CHART_COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(value) => {
-                        const numeric = typeof value === "number" ? value : 0;
-                        return formatCurrency(numeric);
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-
-            <ul className={styles.legendList}>
-              {revenueChartData.map((item, index) => (
-                <li key={item.name} className={styles.legendItem}>
-                  <span
-                    className={styles.legendDot}
-                    style={{
-                      backgroundColor:
-                        CHART_COLORS[index % CHART_COLORS.length],
-                    }}
-                  />
-                  <span>{item.name}</span>
-                  <strong>{formatCurrency(item.value)}</strong>
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          <Card className={styles.dueCard} variant="default" padding="lg">
-            <p className={styles.cardLabel}>Due Today List</p>
-
-            {isLoading ? (
-              <p className={styles.emptyText}>Loading dues...</p>
-            ) : dueTodayItems.length === 0 ? (
-              <p className={styles.emptyText}>No repayments due today.</p>
-            ) : (
-              <ul className={styles.dueList}>
-                {dueTodayItems.map((item, index) => (
-                  <li
-                    key={`${item.borrowerName}-${index}`}
-                    className={styles.dueRow}
-                  >
-                    <span className={styles.borrowerName}>
-                      {item.borrowerName}
-                    </span>
-                    <strong>{formatCurrency(item.amountDue)}</strong>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
+          <div className={styles.dueCard}>
+            <DueCard items={dueTodayItems} />
+          </div>
         </div>
       </section>
     </main>

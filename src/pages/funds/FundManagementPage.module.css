@@ -1,0 +1,111 @@
+.page {
+  min-height: 100svh;
+  --header-height: 3.75rem;
+  --mobile-footer-height: 4.5rem;
+}
+
+.content {
+  box-sizing: border-box;
+  min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
+  padding: 1rem 1rem var(--mobile-footer-height);
+}
+
+.backButtonWrapper {
+  margin-bottom: 1rem;
+}
+
+.section {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.transactionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  color: var(--color-light-main-blue);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.balanceCardWrapper {
+  width: 100%;
+}
+
+.transactionList {
+  display: grid;
+  gap: 0.65rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.transactionRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.transactionDate {
+  color: #64748b;
+  font-weight: 500;
+  min-width: 85px;
+}
+
+.transactionType {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.transactionAmount {
+  color: #059669;
+  font-weight: 600;
+}
+
+.transactionBalance {
+  color: #0f172a;
+  text-align: right;
+  min-width: 110px;
+}
+
+.emptyText {
+  margin: 0;
+  padding: 1rem 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 1.5rem 1.5rem var(--mobile-footer-height);
+  }
+
+  .transactionHeaderRow {
+    gap: 1.5rem;
+  }
+
+  .transactionRow {
+    grid-template-columns: auto 1.25fr auto auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    min-height: calc(100svh - var(--header-height));
+    padding: 1.5rem 1.5rem 1.5rem;
+  }
+}

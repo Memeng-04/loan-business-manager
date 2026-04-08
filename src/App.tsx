@@ -9,6 +9,7 @@ import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerD
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
+import FundManagementPage from "./pages/funds/FundManagementPage";
 import ProfileOnboardingPage from "./pages/onboarding/ProfileOnboardingPage";
 import CapitalOnboardingPage from "./pages/onboarding/CapitalOnboardingPage";
 import { useEffect } from "react";
@@ -47,6 +48,7 @@ function App() {
         <Route path="/more" element={<MorePage />} />
         <Route path="/loans" element={<LoanPage />} />
         <Route path="/add" element={<NewLoanPage />} />
+        <Route path="/funds" element={<FundManagementPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />
