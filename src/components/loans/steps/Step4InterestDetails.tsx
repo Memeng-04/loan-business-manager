@@ -15,7 +15,8 @@ import {
  */
 export const Step4InterestDetails: React.FC<WizardStepProps> = ({
   state,
-  updateState
+  updateState,
+  isLoading
 }) => {
   const handleTotalPayableChange = (value: string) => {
     // Allow only numbers and decimal point
@@ -91,11 +92,6 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
 
   const isFixedLoan = state.loanType === 'fixed'
   const isPercentageLoan = state.loanType === 'percentage'
-
-  // Determine if we can proceed
-  const canProceed =
-    (isFixedLoan && state.totalPayable && Number(state.totalPayable) > Number(state.principal)) ||
-    (isPercentageLoan && state.interestRate && Number(state.interestRate) >= 0)
 
   return (
     <div className="p-6 flex flex-col gap-6">

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
-import type { Borrower } from '../../../types/borrowers'
 import { useBorrowers } from '../../../hooks/useBorrowers'
 
 /**

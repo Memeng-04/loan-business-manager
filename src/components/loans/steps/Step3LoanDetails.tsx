@@ -9,7 +9,8 @@ import type { PaymentFrequency } from '../../../types/loans'
  */
 export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   state,
-  updateState
+  updateState,
+  isLoading
 }) => {
   const frequencyOptions: PaymentFrequency[] = [
     'daily',
@@ -39,13 +40,6 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   const handleFrequencyChange = (frequency: PaymentFrequency) => {
     updateState('frequency', frequency)
   }
-
-  const isFormValid =
-    state.principal &&
-    state.startDate &&
-    state.termDays &&
-    Number(state.principal) > 0 &&
-    Number(state.termDays) > 0
 
   return (
     <div className="p-6 flex flex-col gap-6">
