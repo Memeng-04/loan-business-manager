@@ -11,6 +11,7 @@ type AddBorrowerFormProps = {
   onCancel: () => void;
   loading?: boolean;
   error?: string | null;
+  initialValues?: Partial<CreateBorrowerInput>;
 };
 
 export default function AddBorrowerForm({
@@ -18,15 +19,26 @@ export default function AddBorrowerForm({
   onCancel,
   loading = false,
   error = null,
+  initialValues,
 }: AddBorrowerFormProps) {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [monthlyIncome, setMonthlyIncome] = useState("");
-  const [sourceOfIncome, setSourceOfIncome] = useState("");
-  const [secondaryContactNumber, setSecondaryContactNumber] = useState("");
-  const [secondaryContactName, setSecondaryContactName] = useState("");
+  const [fullName, setFullName] = useState(initialValues?.full_name ?? "");
+  const [email, setEmail] = useState(initialValues?.email ?? "");
+  const [address, setAddress] = useState(initialValues?.address ?? "");
+  const [phone, setPhone] = useState(initialValues?.phone ?? "");
+  const [monthlyIncome, setMonthlyIncome] = useState(
+    typeof initialValues?.monthly_income === "number"
+      ? String(initialValues.monthly_income)
+      : "",
+  );
+  const [sourceOfIncome, setSourceOfIncome] = useState(
+    initialValues?.source_of_income ?? "",
+  );
+  const [secondaryContactNumber, setSecondaryContactNumber] = useState(
+    initialValues?.secondary_contact_number ?? "",
+  );
+  const [secondaryContactName, setSecondaryContactName] = useState(
+    initialValues?.secondary_contact_name ?? "",
+  );
   const [formError, setFormError] = useState<string | null>(null);
 
   function isDigits(value: string) {

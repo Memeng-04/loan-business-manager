@@ -184,9 +184,6 @@ export default function BorrowerDetailsPage() {
           <section className={styles.container}>
             <BorrowerProfileCard
               name={borrower.full_name}
-              contact={
-                borrower.email ?? borrower.phone ?? "No contact details saved."
-              }
               onBack={() => navigate("/borrowers")}
             />
 
