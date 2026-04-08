@@ -59,6 +59,10 @@
   gap: 0.9rem;
 }
 
+.editSections {
+  grid-column: 1 / -1;
+}
+
 .editForm {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -121,7 +125,7 @@
 
 .dataLabel {
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -137,7 +141,7 @@
 .dataLabelActive {
   color: var(--color-red-text-active);
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -145,7 +149,7 @@
 .dataLabelDone {
   color: var(--color-green-text-active);
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -276,12 +280,12 @@
     font-size: 1.15rem;
   }
 
-  .dataLabel,.dataLabelActive, .dataLabelDone {
+  .dataLabel,
+  .dataLabelActive,
+  .dataLabelDone {
     font-size: 0.74rem;
     letter-spacing: 0.04em;
   }
-
-
 
   .dataValue {
     font-size: 0.95rem;

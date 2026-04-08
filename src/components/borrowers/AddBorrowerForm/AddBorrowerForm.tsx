@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import Button from "../../Button";
 import Card from "../../card/Card";
+import FeedbackMessage from "../../feedback/FeedbackMessage";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
 import styles from "./AddBorrowerForm.module.css";
 
@@ -113,10 +114,13 @@ export default function AddBorrowerForm({
   return (
     <Card className={styles.formCard}>
       <h1 className={styles.title}>Borrower Details</h1>
+      <p className={styles.description}>
+        All fields marked with ✦ are required.
+      </p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.field}>
-          <span className={styles.label}>Name</span>
+          <span className={styles.label}>✦ Name</span>
           <input
             required
             className={styles.input}
@@ -127,7 +131,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Address</span>
+          <span className={styles.label}>✦ Address</span>
           <input
             required
             className={styles.input}
@@ -138,7 +142,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Phone Number</span>
+          <span className={styles.label}>✦ Phone Number</span>
           <input
             required
             inputMode="numeric"
@@ -150,7 +154,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Email (optional)</span>
+          <span className={styles.label}>Email </span>
           <input
             type="email"
             className={styles.input}
@@ -161,7 +165,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Monthly Income (optional)</span>
+          <span className={styles.label}>Monthly Income </span>
           <input
             inputMode="decimal"
             className={styles.input}
@@ -172,7 +176,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Source of Income (optional)</span>
+          <span className={styles.label}>Source of Income </span>
           <input
             className={styles.input}
             value={sourceOfIncome}
@@ -182,9 +186,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>
-            Secondary Contact Number (optional)
-          </span>
+          <span className={styles.label}>Secondary Contact Number</span>
           <input
             inputMode="numeric"
             className={styles.input}
@@ -195,9 +197,7 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>
-            Secondary Contact Name (optional)
-          </span>
+          <span className={styles.label}>Secondary Contact Name</span>
           <input
             className={styles.input}
             value={secondaryContactName}
@@ -206,10 +206,8 @@ export default function AddBorrowerForm({
           />
         </label>
 
-        {formError ? <p className={styles.errorText}>{formError}</p> : null}
-        {!formError && error ? (
-          <p className={styles.errorText}>{error}</p>
-        ) : null}
+        {formError ? <FeedbackMessage message={formError} /> : null}
+        {!formError && error ? <FeedbackMessage message={error} /> : null}
 
         <div className={styles.actions}>
           <Button

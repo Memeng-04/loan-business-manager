@@ -9,6 +9,12 @@
   font-weight: 700;
 }
 
+.description {
+  color: var(--color-gray-700);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
 .form {
   margin-top: 1rem;
   display: grid;

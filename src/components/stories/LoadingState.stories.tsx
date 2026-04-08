@@ -40,5 +40,13 @@ export const WhiteBackground: Story = {
     message: "Loading with white background...",
     fullScreen: false,
   },
- 
+};
+
+export const ErrorState: Story = {
+  args: {
+    variant: "error",
+    message: "Failed to load session  .",
+    fullScreen: false,
+    actionLabel: "Retry",
+  },
 };

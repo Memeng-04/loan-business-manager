@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
 import { useAuth } from "../../hooks/useAuth";
@@ -35,7 +36,7 @@ export default function MorePage() {
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <section className={styles.actionsSection}>
-        {logoutError ? <p className={styles.errorText}>{logoutError}</p> : null}
+        {logoutError ? <FeedbackMessage message={logoutError} /> : null}
 
         <Button
           variant="outline"

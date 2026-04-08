@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "../../../components/Button";
-import Card from "../../../components/card/Card";
 import Header from "../../../components/header/Header";
 import LoadingState from "../../../components/LoadingState";
 import Navbar from "../../../components/navigation/Navbar";
@@ -13,7 +11,6 @@ import BorrowerInformationCard from "../../../components/borrowers/BorrowerDetai
 import BorrowerProfileCard from "../../../components/borrowers/BorrowerDetails/BorrowerProfileCard";
 import LoanSummaryCard from "../../../components/borrowers/BorrowerDetails/LoanSummaryCard";
 import styles from "./BorrowerDetailsPage.module.css";
-import { ArrowLeft } from "lucide-react";
 import { useUpdateBorrower } from "../../../hooks/useUpdateBorrower";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
 
@@ -171,18 +168,13 @@ export default function BorrowerDetailsPage() {
       {!loading && error ? (
         <main className={styles.content}>
           <section className={styles.container}>
-            <Card className={styles.errorPanel}>
-              <p className={styles.errorText}>{error}</p>
-              <Button
-                variant="outline"
-                size="md"
-                className={`mt-0! ${styles.backButton}`}
-                onClick={() => navigate("/borrowers")}
-              >
-                <ArrowLeft size={16} />
-                Back to borrowers
-              </Button>
-            </Card>
+            <LoadingState
+              variant="error"
+              message={error}
+              fullScreen={false}
+              actionLabel="Back to borrowers"
+              onAction={() => navigate("/borrowers")}
+            />
           </section>
         </main>
       ) : null}
