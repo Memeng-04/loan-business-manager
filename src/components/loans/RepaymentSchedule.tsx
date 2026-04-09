@@ -3,7 +3,6 @@ import { useRepaymentSchedule } from '../../hooks/useRepaymentSchedule'
 import LoadingState from '../LoadingState'
 import type { ScheduleEntry } from '../../strategies/ScheduleStrategy'
 import { useBorrowers } from '../../hooks/useBorrowers'
-import Card from '../card/Card'
 import Button from '../Button'
 import styles from './RepaymentSchedule.module.css'
 
@@ -51,7 +50,7 @@ export const RepaymentSchedule = ({
 
   return (
     <div className={styles.scheduleContainer}>
-      <Card className={styles.scheduleCard} padding="none">
+      <div className={styles.scheduleWrapper}>
         {/* Loading State Overlay */}
         {loading && schedule.length === 0 && !error && (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
@@ -175,7 +174,7 @@ export const RepaymentSchedule = ({
             </Button>
           )}
         </div>
-      </Card>
+      </div>
     </div>
   )
 }
