@@ -189,8 +189,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
       {/* Info Box */}
       <div className={styles.infoBox}>
         <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-        Can't find the borrower? Create a new borrower in the Borrowers
-        section first.
+        Use the search box to find a borrower by name, phone, or address. If the borrower doesn't exist, create them in the Borrowers section first.
       </div>
     </div>
   )

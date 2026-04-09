@@ -80,8 +80,7 @@ export const Step1LoanCategory: React.FC<WizardStepProps> = ({
       {/* Info Box */}
       <div className={styles.infoBox}>
           <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          Tip: You can change your loan type even after selecting it, or
-        proceed with one for now.
+          Choose a loan type above to continue. You can change this later in the review step.
       </div>
     </div>
   )

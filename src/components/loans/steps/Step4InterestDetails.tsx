@@ -220,8 +220,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
       {/* Info Box */}
       <div className={styles.infoBox}>
           <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          The preview shows estimated payment amounts based on your selected
-        frequency. Review carefully before submitting.
+          Enter {isFixedLoan ? 'the total amount the borrower will repay (must be more than the principal)' : 'the annual interest rate as a percentage'} to see the payment preview on the right.
       </div>
     </div>
   )

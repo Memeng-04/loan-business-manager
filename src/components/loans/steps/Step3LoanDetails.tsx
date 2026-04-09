@@ -128,8 +128,7 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
         {/* Info Box - Below form on all sizes */}
         <div className={styles.infoBox}>
           <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          These details apply to all loan types. You'll specify the interest
-          structure in the next step.
+          Enter the principal amount and how often the borrower will make payments (daily, weekly, bi-monthly, or monthly). The start date is when the loan begins.
         </div>
       </div>
 
