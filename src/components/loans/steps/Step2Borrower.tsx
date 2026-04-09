@@ -42,7 +42,8 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
       {/* Error State */}
       {borrowersError && (
         <div className={styles.errorMessage}>
-          ❌ {borrowersError}
+          <AlertCircle size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+          {borrowersError}
         </div>
       )}
 
@@ -140,7 +141,8 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
 
       {/* Info Box */}
       <div className={styles.infoBox}>
-        💡 Can't find the borrower? Create a new borrower in the Borrowers
+        <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+        Can't find the borrower? Create a new borrower in the Borrowers
         section first.
       </div>
     </div>
