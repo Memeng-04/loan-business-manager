@@ -321,7 +321,13 @@ export const CreateLoanWizard = ({
             ))}
           </div>
           <div className={styles.stepLabel}>
-            Step {currentStep}: {['Loan Type', 'Borrower', 'Details', 'Interest', 'Review'][currentStep - 1]}
+            {[
+              'Choose the loan structure that best fits your needs.',
+              'Choose the borrower for this loan.',
+              'Enter the principal amount, frequency, term, and start date.',
+              'Enter the annual interest rate as a percentage.',
+              'Please review all details before submitting.'
+            ][currentStep - 1]}
           </div>
         </div>
 
