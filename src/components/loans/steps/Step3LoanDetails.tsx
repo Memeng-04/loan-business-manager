@@ -49,14 +49,6 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
 
   return (
     <div className={styles.stepContainer}>
-      {/* Section Title - Spans full width */}
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle}>Loan Details</h3>
-        <p className={styles.sectionDescription}>
-          Enter the principal amount, frequency, term, and start date.
-        </p>
-      </div>
-
       {/* Left Column: Form Inputs */}
       <div className={styles.inputGridWrapper}>
         <div className={styles.inputGrid}>

@@ -246,6 +246,15 @@ export const CreateLoanWizard = ({
 
   const isLoading = fixedLoading || percentageLoading || isSubmitting
 
+  // Step titles for each step
+  const stepTitles: Record<WizardStep, string> = {
+    1: 'Select Your Loan Type',
+    2: 'Select Borrower',
+    3: 'Loan Details',
+    4: 'Interest Details',
+    5: 'Review & Confirm'
+  }
+
   // Step rendering logic
   const renderStep = () => {
     const commonProps = {
@@ -283,7 +292,7 @@ export const CreateLoanWizard = ({
     <div className={styles.wizardContainer}>
       {/* Header */}
       <div className={styles.header}>
-        <h2 className={styles.headerTitle}>Create New Loan</h2>
+        <h2 className={styles.headerTitle}>{stepTitles[currentStep]}</h2>
         <p className={styles.headerSubtitle}>
           Step {currentStep} of 5
         </p>

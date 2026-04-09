@@ -35,16 +35,6 @@ export const Step1LoanCategory: React.FC<WizardStepProps> = ({
 
   return (
     <div className={styles.stepContainer}>
-      {/* Section Title */}
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle}>
-          Select Your Loan Type
-        </h3>
-        <p className={styles.sectionDescription}>
-          Choose the loan structure that best fits your needs.
-        </p>
-      </div>
-
       {/* Loan Type Cards Grid - Uses responsive auto-fit CSS Grid */}
       <div className={styles.cardsGrid}>
         {loanOptions.map(option => {

@@ -47,16 +47,6 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
 
   return (
     <div className={styles.stepContainer}>
-      {/* Section Title */}
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle}>
-          Select Borrower
-        </h3>
-        <p className={styles.sectionDescription}>
-          Choose the borrower for this loan.
-        </p>
-      </div>
-
       {/* Error State */}
       {borrowersError && (
         <div className={styles.errorMessage}>

@@ -98,16 +98,6 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
 
   return (
     <div className={styles.stepContainer}>
-      {/* Section Title */}
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle}>Interest Details</h3>
-        <p className={styles.sectionDescription}>
-          {isFixedLoan
-            ? 'Enter the total amount the borrower will repay (including interest).'
-            : 'Enter the annual interest rate as a percentage.'}
-        </p>
-      </div>
-
       {/* Content Grid: Left (Input), Right (Preview) */}
       <div className={styles.contentGrid}>
         {/* Left Column: Input */}

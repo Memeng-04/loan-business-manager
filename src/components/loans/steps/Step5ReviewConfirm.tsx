@@ -93,14 +93,6 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
 
   return (
     <div className={styles.stepContainer}>
-      {/* Section Title */}
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle}>Review & Confirm</h3>
-        <p className={styles.sectionDescription}>
-          Please review all details before submitting.
-        </p>
-      </div>
-
       {/* Error State */}
       {error && (
         <div className={styles.errorMessage}>
