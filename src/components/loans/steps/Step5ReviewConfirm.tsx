@@ -6,10 +6,13 @@ import {
   calculatePaymentAmount
 } from '../../../strategies/InterestStrategy'
 import { useBorrowers } from '../../../hooks/useBorrowers'
+import { AlertCircle, Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar } from 'lucide-react'
+import styles from './Step5ReviewConfirm.module.css'
 
 /**
  * Step 5: Review & Confirmation
- * Displays all entered loan information for final review.
+ * Displays all entered loan information in a high-density summary layout.
+ * Uses CSS Grid for space-efficient two-column layout on desktop.
  * User can submit or return to edit previous steps.
  */
 export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
@@ -84,175 +87,203 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString('en-PH', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric'
     })
 
   return (
-    <div className="p-6 flex flex-col gap-6">
+    <div className={styles.stepContainer}>
       {/* Section Title */}
-      <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-800">Review & Confirm</h3>
-        <p className="text-sm text-gray-500 mt-1">
+      <div className={styles.sectionHeader}>
+        <h3 className={styles.sectionTitle}>Review & Confirm</h3>
+        <p className={styles.sectionDescription}>
           Please review all details before submitting.
         </p>
       </div>
 
       {/* Error State */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-4 rounded-2xl">
-          ❌ {error}
+        <div className={styles.errorMessage}>
+          <AlertCircle size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+          {error}
         </div>
       )}
 
-      {/* Borrower Details Section */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-        <h4 className="font-bold text-[#012a6a] mb-3 flex items-center gap-2">
-          <span>👤</span> Borrower
-        </h4>
-        {selectedBorrower ? (
-          <div className="space-y-2">
-            <p className="text-sm">
-              <span className="font-medium text-[#012a6a]">Name:</span> 
-              <span className="ml-2 text-gray-700">{selectedBorrower.full_name}</span>
-            </p>
-            {selectedBorrower.phone && (
-              <p className="text-sm">
-                <span className="font-medium text-[#012a6a]">Phone:</span>
-                <span className="ml-2 text-gray-700">{selectedBorrower.phone}</span>
-              </p>
+      {/* Summary Grid - Two columns on desktop */}
+      <div className={styles.summaryGrid}>
+        
+        {/* Borrower Details */}
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryCardTitle}>
+            <span className={styles.summaryCardTitleEmoji}><User size={16} /></span> Borrower
+          </h4>
+          <div className={styles.summaryItems}>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryItemLabel}>Name:</span>
+              <span className={styles.summaryItemValue}>
+                {selectedBorrower?.full_name || '—'}
+              </span>
+            </div>
+            {selectedBorrower?.phone && (
+              <div className={styles.summaryItem}>
+                <span className={styles.summaryItemLabel}>Phone:</span>
+                <span className={styles.summaryItemValue}>
+                  {selectedBorrower.phone}
+                </span>
+              </div>
             )}
           </div>
-        ) : (
-          <p className="text-sm text-gray-500">No borrower selected</p>
+        </div>
+
+        {/* Loan Type */}
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryCardTitle}>
+            <span className={styles.summaryCardTitleEmoji}><Clipboard size={16} /></span> Type
+          </h4>
+          <div className={styles.summaryItems}>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryItemValue} style={{ fontWeight: 700 }}>
+                {state.loanType === 'fixed' ? 'Fixed Interest' : 'Percentage Interest'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Principal & Term */}
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryCardTitle}>
+            <span className={styles.summaryCardTitleEmoji}><DollarSign size={16} /></span> Principal
+          </h4>
+          <div className={styles.summaryItems}>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryItemValue} style={{ fontWeight: 700 }}>
+                ₱{formatCurrency(Number(state.principal))}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Frequency & Duration */}
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryCardTitle}>
+            <span className={styles.summaryCardTitleEmoji}><Clock size={16} /></span> Schedule
+          </h4>
+          <div className={styles.summaryItems}>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryItemLabel}>Frequency:</span>
+              <span className={styles.summaryItemValue} style={{ textTransform: 'capitalize' }}>
+                {state.frequency}
+              </span>
+            </div>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryItemLabel}>Term:</span>
+              <span className={styles.summaryItemValue}>
+                {state.termDays} days
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Interest Details */}
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryCardTitle}>
+            <span className={styles.summaryCardTitleEmoji}><BarChart3 size={16} /></span> Interest
+          </h4>
+          <div className={styles.summaryItems}>
+            {state.loanType === 'fixed' ? (
+              <>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryItemLabel}>Total Payable:</span>
+                  <span className={styles.summaryItemValue}>
+                    ₱{formatCurrency(Number(state.totalPayable))}
+                  </span>
+                </div>
+                {preview && (
+                  <div className={styles.summaryItem}>
+                    <span className={styles.summaryItemLabel}>Fixed Int:</span>
+                    <span className={styles.summaryItemValue}>
+                      ₱{formatCurrency(preview.interest)}
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryItemLabel}>Rate:</span>
+                  <span className={styles.summaryItemValue}>
+                    {state.interestRate}%
+                  </span>
+                </div>
+                {preview && (
+                  <div className={styles.summaryItem}>
+                    <span className={styles.summaryItemLabel}>Calc Int:</span>
+                    <span className={styles.summaryItemValue}>
+                      ₱{formatCurrency(preview.interest)}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Start Date */}
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryCardTitle}>
+            <span className={styles.summaryCardTitleEmoji}><Calendar size={16} /></span> Start Date
+          </h4>
+          <div className={styles.summaryItems}>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryItemValue} style={{ fontWeight: 600 }}>
+                {formatDate(state.startDate)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Payment Summary - Full Width */}
+        {preview && (
+          <div className={`${styles.paymentSummaryCard} ${styles.fullWidthCard}`}>
+            <h4 className={styles.paymentSummaryCardTitle}>
+              <Check size={16} style={{ display: 'inline', marginRight: '0.5rem' }} /> Payment Summary
+            </h4>
+            <div className={styles.paymentSummaryItems}>
+              <div className={styles.paymentSummaryItem}>
+                <span className={styles.paymentSummaryItemLabel}>Principal:</span>
+                <span className={styles.paymentSummaryItemValue}>
+                  ₱{formatCurrency(preview.principal)}
+                </span>
+              </div>
+              <div className={styles.paymentSummaryItem}>
+                <span className={styles.paymentSummaryItemLabel}>Total Interest:</span>
+                <span className={styles.paymentSummaryItemValue}>
+                  ₱{formatCurrency(preview.interest)}
+                </span>
+              </div>
+              <div className={styles.paymentSummaryDivider} />
+              <div className={styles.paymentSummaryItem}>
+                <span className={styles.paymentSummaryItemTotal}>Total to Repay:</span>
+                <span className={styles.paymentSummaryItemTotalValue}>
+                  ₱{formatCurrency(preview.totalPayable)}
+                </span>
+              </div>
+              <div className={styles.paymentSummaryItem}>
+                <span className={styles.paymentSummaryItemLabel}>
+                  Payment per {state.frequency}:
+                </span>
+                <span className={styles.paymentSummaryItemValue}>
+                  ₱{formatCurrency(preview.paymentAmount)}
+                </span>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
-      {/* Loan Type Section */}
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-        <h4 className="font-bold text-[#012a6a] mb-3 flex items-center gap-2">
-          <span>📋</span> Loan Type
-        </h4>
-        <p className="text-sm">
-          <span className="capitalize font-semibold text-[#012a6a]">
-            {state.loanType === 'fixed' ? 'Fixed Interest' : 'Percentage Interest'}
-          </span>
-        </p>
-      </div>
-
-      {/* Loan Details Section */}
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-        <h4 className="font-bold text-[#012a6a] mb-3 flex items-center gap-2">
-          <span>💰</span> Loan Details
-        </h4>
-        <div className="space-y-2">
-          <p className="text-sm">
-            <span className="font-medium text-[#012a6a]">Principal:</span>
-            <span className="ml-2 text-gray-700">₱{formatCurrency(Number(state.principal))}</span>
-          </p>
-          <p className="text-sm">
-            <span className="font-medium text-[#012a6a]">Payment Frequency:</span>
-            <span className="ml-2 capitalized text-gray-700">{state.frequency}</span>
-          </p>
-          <p className="text-sm">
-            <span className="font-medium text-[#012a6a]">Loan Term:</span>
-            <span className="ml-2 text-gray-700">{state.termDays} days</span>
-          </p>
-          <p className="text-sm">
-            <span className="font-medium text-[#012a6a]">Start Date:</span>
-            <span className="ml-2 text-gray-700">{formatDate(state.startDate)}</span>
-          </p>
-        </div>
-      </div>
-
-      {/* Interest Details Section */}
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-        <h4 className="font-bold text-[#012a6a] mb-3 flex items-center gap-2">
-          <span>📊</span> Interest Details
-        </h4>
-        <div className="space-y-2">
-          {state.loanType === 'fixed' ? (
-            <>
-              <p className="text-sm">
-                <span className="font-medium text-[#012a6a]">Total Payable:</span>
-                <span className="ml-2 text-gray-700">
-                  ₱{formatCurrency(Number(state.totalPayable))}
-                </span>
-              </p>
-              {preview && (
-                <p className="text-sm">
-                  <span className="font-medium text-[#012a6a]">
-                    Fixed Interest:
-                  </span>
-                  <span className="ml-2 text-gray-700">
-                    ₱{formatCurrency(preview.interest)}
-                  </span>
-                </p>
-              )}
-            </>
-          ) : (
-            <>
-              <p className="text-sm">
-                <span className="font-medium text-[#012a6a]">Interest Rate:</span>
-                <span className="ml-2 text-gray-700">{state.interestRate}%</span>
-              </p>
-              {preview && (
-                <p className="text-sm">
-                  <span className="font-medium text-[#012a6a]">
-                    Calculated Interest:
-                  </span>
-                  <span className="ml-2 text-gray-700">
-                    ₱{formatCurrency(preview.interest)}
-                  </span>
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Payment Schedule Preview Section */}
-      {preview && (
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-4">
-          <h4 className="font-bold text-green-900 mb-3 flex items-center gap-2">
-            <span>✅</span> Payment Summary
-          </h4>
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between items-center">
-              <span className="text-green-700">Principal:</span>
-              <span className="font-semibold text-green-900">
-                ₱{formatCurrency(preview.principal)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-green-700">Total Interest:</span>
-              <span className="font-semibold text-green-900">
-                ₱{formatCurrency(preview.interest)}
-              </span>
-            </div>
-            <div className="border-t border-green-300 pt-3 flex justify-between items-center">
-              <span className="font-bold text-green-900">Total Amount to Repay:</span>
-              <span className="font-bold text-lg text-green-900">
-                ₱{formatCurrency(preview.totalPayable)}
-              </span>
-            </div>
-            <div className="border-t border-green-300 pt-3 flex justify-between items-center">
-              <span className="font-medium text-green-700">
-                Payment per {state.frequency}:
-              </span>
-              <span className="font-bold text-green-900">
-                ₱{formatCurrency(preview.paymentAmount)}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Info Box */}
-      <div className="bg-blue-50 border border-[#6db6fe] rounded-2xl p-4">
-        <p className="text-xs text-[#012a6a] font-medium">
-          ℹ️ After submission, a repayment schedule will be generated for you to confirm.
-        </p>
+      <div className={styles.infoBox}>
+        ℹ️ After submission, a repayment schedule will be generated for you to confirm.
       </div>
     </div>
   )

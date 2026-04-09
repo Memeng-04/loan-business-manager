@@ -1,0 +1,208 @@
+.stepContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #012a6a;
+  margin: 0;
+}
+
+.sectionDescription {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .contentGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #012a6a;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input:disabled {
+  background-color: #f7fafc;
+  color: #a0aec0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.inputHelper {
+  font-size: 0.75rem;
+  color: #718096;
+  margin-top: 0.25rem;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+}
+
+.previewCard {
+  background: linear-gradient(135deg, #dcfce7 0%, #86efac 100%);
+  border: 2px solid #16a34a;
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.previewCard.loading {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.previewCardTitle {
+  font-weight: 700;
+  color: #166534;
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.previewItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  color: #166534;
+}
+
+.previewItem:last-child {
+  margin-bottom: 0;
+}
+
+.previewItemLabel {
+  font-weight: 500;
+  color: #16a34a;
+}
+
+.previewItemValue {
+  font-weight: 700;
+  color: #166534;
+}
+
+.previewDivider {
+  border-top: 2px solid #86efac;
+  margin: 0.75rem 0;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.previewItemTotal {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #166534;
+}
+
+.previewItemTotalValue {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.warningBox {
+  padding: 1rem;
+  background-color: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  color: #92400e;
+  font-weight: 500;
+  grid-column: 1 / -1;
+}
+
+.warningBox.error {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.infoBox {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  color: #012a6a;
+  font-weight: 500;
+}
+
+.loadingMessage {
+  padding: 1rem;
+  text-align: center;
+  background-color: #f7fafc;
+  border: 1px solid #cbd5e0;
+  border-radius: 0.75rem;
+  color: #718096;
+  font-size: 0.875rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (max-width: 640px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .previewCard {
+    margin-top: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1rem;
+  }
+}

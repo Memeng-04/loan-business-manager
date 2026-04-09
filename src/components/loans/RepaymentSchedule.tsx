@@ -5,6 +5,7 @@ import type { ScheduleEntry } from '../../strategies/ScheduleStrategy'
 import { useBorrowers } from '../../hooks/useBorrowers'
 import Card from '../card/Card'
 import Button from '../Button'
+import styles from './RepaymentSchedule.module.css'
 
 interface RepaymentScheduleProps {
   loanId: string
@@ -49,8 +50,8 @@ export const RepaymentSchedule = ({
   )
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-sans">
-      <Card className="w-full max-w-2xl h-auto max-h-[95vh] flex flex-col overflow-hidden">
+    <div className={styles.scheduleContainer}>
+      <Card className={styles.scheduleCard} padding="none">
         {/* Loading State Overlay */}
         {loading && schedule.length === 0 && !error && (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
@@ -59,95 +60,84 @@ export const RepaymentSchedule = ({
         )}
 
         {/* Header */}
-        <div className="px-8 py-6 border-b border-gray-200">
-          <h2 className="text-gray-800 text-3xl font-bold">
-            Repayment Schedule
-          </h2>
-          <p className="text-gray-500 text-sm mt-2">
+        <div className={styles.header}>
+          <h2 className={styles.headerTitle}>Repayment Schedule</h2>
+          <p className={styles.headerSubtitle}>
             Review the generated payment schedule below before confirming.
           </p>
         </div>
 
         {/* Borrower & Loan Info */}
-        <div className="px-8 py-5 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50">
-          <div>
-            <h3 className="text-xs text-gray-500 uppercase font-semibold tracking-wider">
-              Borrower
-            </h3>
-            <p className="text-lg font-bold text-[#012a6a] mt-1">
+        <div className={styles.infoSection}>
+          <div className={styles.infoBlock}>
+            <span className={styles.infoLabel}>Borrower</span>
+            <p className={styles.infoValue}>
               {borrower?.full_name || 'N/A'}
             </p>
-            <p className="text-sm text-gray-600">ID: {borrowerId}</p>
+            <p className={styles.infoSubvalue}>ID: {borrowerId}</p>
           </div>
-          <div className="text-left md:text-right">
-            <h3 className="text-xs text-gray-500 uppercase font-semibold tracking-wider">
-              Total Amount
-            </h3>
-            <p className="text-2xl font-bold text-green-600 mt-1">
+          <div className={styles.infoBlock} style={{ textAlign: 'left' }}>
+            <span className={styles.infoLabel}>Total Amount</span>
+            <p className={`${styles.infoValue} ${styles.totalAmountValue}`}>
               ₱{totalAmount.toLocaleString('en-PH', { minimumFractionDigits: 2 })}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className={styles.infoSubvalue}>
               {schedule.length} payments
             </p>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-8">
+        {/* Content Area */}
+        <div className={styles.contentArea}>
           {/* Error State */}
           {error && (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-              <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-6 rounded-2xl shadow-sm">
-                <h3 className="font-bold text-lg mb-2">
-                  <span role="img" aria-label="error">
-                    ❌
-                  </span>{' '}
-                  Error Fetching Schedule
+            <div className={styles.errorContainer}>
+              <div className={styles.errorBox}>
+                <h3 className={styles.errorTitle}>
+                  ❌ Error Fetching Schedule
                 </h3>
-                <p className="text-red-600">{error}</p>
+                <p className={styles.errorMessage}>{error}</p>
               </div>
             </div>
           )}
 
           {/* Schedule Table */}
           {schedule.length > 0 && (
-            <div className="border border-gray-200 rounded-xl overflow-hidden my-6">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-100">
+            <div className={styles.scheduleGrid}>
+              <table className={styles.scheduleTable}>
+                <thead className={styles.tableHeader}>
                   <tr>
-                    <th className="p-4 text-left font-semibold text-gray-600">#</th>
-                    <th className="p-4 text-left font-semibold text-gray-600">
-                      Due Date
-                    </th>
-                    <th className="p-4 text-right font-semibold text-gray-600">
+                    <th className={styles.tableHeaderCell}>#</th>
+                    <th className={styles.tableHeaderCell}>Due Date</th>
+                    <th className={`${styles.tableHeaderCell} ${styles.tableHeaderCellRight}`}>
                       Amount Due
                     </th>
-                    <th className="p-4 text-center font-semibold text-gray-600">
+                    <th className={`${styles.tableHeaderCell} ${styles.tableHeaderCellCenter}`}>
                       Status
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {schedule.map((entry: ScheduleEntry, index: number) => (
-                    <tr
-                      key={index}
-                      className="border-t border-gray-200 hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="p-4 text-gray-500 font-medium">{index + 1}</td>
-                      <td className="p-4 font-medium text-gray-800">
+                    <tr key={index} className={styles.tableRow}>
+                      <td className={`${styles.tableCell} ${styles.indexCell}`}>
+                        {index + 1}
+                      </td>
+                      <td className={`${styles.tableCell} ${styles.dateCell}`}>
                         {new Date(entry.due_date).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
                           day: 'numeric'
                         })}
                       </td>
-                      <td className="p-4 text-right font-bold text-lg text-[#012a6a]">
+                      <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.amountCell}`}>
                         ₱
                         {entry.amount_due.toLocaleString('en-PH', {
                           minimumFractionDigits: 2
                         })}
                       </td>
-                      <td className="p-4 text-center">
-                        <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">
+                      <td className={`${styles.tableCell} ${styles.tableCellCenter}`}>
+                        <span className={`${styles.statusBadge} ${styles[entry.status.toLowerCase()]}`}>
                           {entry.status}
                         </span>
                       </td>
@@ -157,16 +147,19 @@ export const RepaymentSchedule = ({
               </table>
             </div>
           )}
+
+          {!error && schedule.length === 0 && !loading && (
+            <div className={styles.emptyState}>
+              <p>Loading schedule or no payments found</p>
+            </div>
+          )}
         </div>
 
         {/* Footer with actions */}
-        <div className="px-8 pb-8 pt-6 border-t border-gray-200 bg-white flex-shrink-0">
+        <div className={styles.footerContainer}>
           {saved && (
-            <div className="bg-green-100 border-2 border-green-300 text-green-800 p-4 rounded-xl text-center font-semibold shadow-inner">
-              <span role="img" aria-label="check">
-                ✅
-              </span>{' '}
-              Schedule saved successfully!
+            <div className={styles.successMessage}>
+              ✅ Schedule saved successfully!
             </div>
           )}
 

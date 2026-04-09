@@ -11,6 +11,7 @@ import { Step3LoanDetails } from './steps/Step3LoanDetails'
 import { Step4InterestDetails } from './steps/Step4InterestDetails'
 import { Step5ReviewConfirm } from './steps/Step5ReviewConfirm'
 import Button from '../Button'
+import styles from './CreateLoanWizard.module.css'
 
 interface CreateLoanWizardProps {
   onSuccess?: (loanData: { loanId: string; borrowerId: string }) => void
@@ -232,50 +233,57 @@ export const CreateLoanWizard = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg flex flex-col">
-        {/* Header */}
-        <div className="px-8 py-6 border-b border-gray-200">
-          <h2 className="text-gray-800 text-3xl font-bold">Create New Loan</h2>
-          <p className="text-gray-500 text-sm mt-2">
-            Step {currentStep} of 5
-          </p>
-        </div>
+    <div className={styles.wizardContainer}>
+      {/* Header */}
+      <div className={styles.header}>
+        <h2 className={styles.headerTitle}>Create New Loan</h2>
+        <p className={styles.headerSubtitle}>
+          Step {currentStep} of 5
+        </p>
+      </div>
 
-        {/* Progress Bar */}
-        <div className="px-8 pt-6 pb-4">
-          <div className="flex space-x-2">
+      {/* Progress Bar */}
+      <div className={styles.progressSection}>
+          <div className={styles.progressBar}>
             {[1, 2, 3, 4, 5].map(step => (
-              <div key={step} className="flex-1 h-2 rounded-full bg-gray-200">
+              <div key={step} className={styles.progressStep}>
                 <div
-                  className={`h-full rounded-full bg-blue-600 transition-all duration-300 ${
-                    currentStep >= step ? 'w-full' : 'w-0'
-                  }`}
+                  className={styles.progressStepFill}
+                  style={{
+                    width: currentStep >= step ? '100%' : '0%'
+                  }}
                 />
               </div>
             ))}
+          </div>
+          <div className={styles.stepLabel}>
+            Step {currentStep}: {['Loan Type', 'Borrower', 'Details', 'Interest', 'Review'][currentStep - 1]}
           </div>
         </div>
 
         {/* Success Message */}
         {isSuccess ? (
-          <div className="px-6 py-8 text-center">
-            <div className="mb-4 text-5xl">✅</div>
-            <h2 className="text-2xl font-bold text-green-600 mb-2">
-              Loan Created Successfully!
-            </h2>
-            <p className="text-gray-600 mb-4">Loan ID: {successLoanId}</p>
-            <p className="text-sm text-gray-500">
-              Generating schedule in {countdown}...
-            </p>
+          <div className={styles.contentArea}>
+            <div className={styles.successMessage}>
+              <div className={styles.successEmoji}>✅</div>
+              <h2 className={styles.successTitle}>
+                Loan Created Successfully!
+              </h2>
+              <p className={styles.successText}>Loan ID: {successLoanId}</p>
+              <p className={styles.successCountdown}>
+                Generating schedule in {countdown}...
+              </p>
+            </div>
           </div>
         ) : (
           <>
             {/* Step Content */}
-            {renderStep()}
+            <div className={styles.contentArea}>
+              {renderStep()}
+            </div>
 
             {/* Footer Navigation */}
-            <div className="px-8 pb-8 pt-6 flex gap-4 justify-between items-center border-t border-gray-200">
+            <div className={styles.footerNav}>
               {currentStep > 1 ? (
                 <Button
                   onClick={prevStep}
@@ -286,32 +294,33 @@ export const CreateLoanWizard = ({
                   Back
                 </Button>
               ) : (
-                <div /> // Placeholder to keep "Next" button on the right
+                <div className={styles.navPlaceholder} />
               )}
 
-              {currentStep < 5 ? (
-                <Button
-                  onClick={nextStep}
-                  disabled={isLoading}
-                  variant="blue"
-                  size="lg"
-                >
-                  Next
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSubmit}
-                  disabled={isLoading}
-                  variant="blue"
-                  size="lg"
-                >
-                  {isLoading ? 'Submitting...' : 'Confirm & Create Loan'}
-                </Button>
-              )}
+              <div className={styles.navButtonGroup}>
+                {currentStep < 5 ? (
+                  <Button
+                    onClick={nextStep}
+                    disabled={isLoading}
+                    variant="blue"
+                    size="lg"
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                    variant="blue"
+                    size="lg"
+                  >
+                    {isLoading ? 'Submitting...' : 'Confirm & Create Loan'}
+                  </Button>
+                )}
+              </div>
             </div>
           </>
         )}
-      </div>
     </div>
   )
 }

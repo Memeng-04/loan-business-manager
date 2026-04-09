@@ -1,0 +1,212 @@
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #012a6a;
+  margin: 0;
+}
+
+.sectionDescription {
+  font-size: 1rem;
+  color: #4a5568;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* True responsive grid using auto-fit with minimum 450px cards */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Button wrapper that spans the grid cell and makes Card clickable */
+.loanCardButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.loanCardButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.loanCardButton:hover:not(:disabled) {
+  transform: translateY(-4px);
+}
+
+/* Card styling - now uses the Card component inside button */
+.loanCard {
+  display: flex !important;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #cbd5e0 !important;
+  border-radius: 1.25rem !important;
+  transition: all 0.3s ease;
+  background-color: #fff !important;
+}
+
+.loanCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.loanCardButton:hover:not(:disabled) .loanCard {
+  border-color: #2563eb !important;
+  background-color: #f0f8ff !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+}
+
+.loanCardButton.active .loanCard {
+  border-color: #2563eb !important;
+  background-color: #eff6ff !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+}
+
+.loanCardButton.active .loanCard::before {
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+}
+
+/* Card content layout */
+.loanCardContent {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.loanCardIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.loanCardText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.loanCardTitle {
+  font-weight: 700;
+  color: #012a6a;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.loanCardDescription {
+  font-size: 0.9rem;
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Selection indicator */
+.selectionRadio {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #cbd5e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  align-self: flex-end;
+}
+
+.loanCardButton:hover:not(:disabled) .selectionRadio {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.loanCardButton.active .selectionRadio {
+  border-color: #2563eb;
+  background-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.selectionCheckmark {
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+/* Info box */
+.infoBox {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+  border: 1px solid #93c5fd;
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  font-size: 0.95rem;
+  color: #1e3a8a;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Mobile responsiveness - stack vertically */
+@media (max-width: 640px) {
+  .stepContainer {
+    gap: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .sectionDescription {
+    font-size: 0.95rem;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .loanCardIcon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .loanCardTitle {
+    font-size: 1rem;
+  }
+
+  .loanCardDescription {
+    font-size: 0.85rem;
+  }
+
+  .infoBox {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}

@@ -1,11 +1,19 @@
 import React from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
 import type { PaymentFrequency } from '../../../types/loans'
+import { Lightbulb, Clipboard } from 'lucide-react'
+import { isValidCurrency, isValidPositiveInteger, formatCurrency, formatDate } from '../../../lib/formatters'
+import styles from './Step3LoanDetails.module.css'
 
 /**
- * Step 3: Common Loan Details
- * User enters principal amount, selects payment frequency, term days, and start date.
- * These fields are common to both fixed and percentage interest loans.
+ * Step 3: Common Loan Details - Dashboard Layout Version
+ * 
+ * NEW LAYOUT (Desktop):
+ * - Left column: Form inputs (principal, term, start date, frequency)
+ * - Right column: Sticky summary preview card that updates in real-time
+ * - Creates a spacious, modern dashboard-like experience
+ * 
+ * Mobile: Gracefully stacks to single column
  */
 export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   state,
@@ -20,15 +28,13 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   ]
 
   const handlePrincipalChange = (value: string) => {
-    // Allow only numbers and decimal point
-    if (value === '' || /^\d+(\.\d{0,2})?$/.test(value)) {
+    if (isValidCurrency(value)) {
       updateState('principal', value)
     }
   }
 
   const handleTermDaysChange = (value: string) => {
-    // Allow only positive integers
-    if (value === '' || /^\d+$/.test(value)) {
+    if (isValidPositiveInteger(value)) {
       updateState('termDays', value)
     }
   }
@@ -42,134 +48,124 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   }
 
   return (
-    <div className="p-6 flex flex-col gap-6">
-      {/* Section Title */}
-      <div>
-        <h3 className="text-lg font-bold text-[#012a6a] mb-2">
-          Loan Details
-        </h3>
-        <p className="text-sm text-gray-600">
+    <div className={styles.stepContainer}>
+      {/* Section Title - Spans full width */}
+      <div className={styles.sectionHeader}>
+        <h3 className={styles.sectionTitle}>Loan Details</h3>
+        <p className={styles.sectionDescription}>
           Enter the principal amount, frequency, term, and start date.
         </p>
       </div>
 
-      {/* Principal Amount */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-semibold text-[#012a6a]">
-          Principal Amount (₱)
-        </label>
-        <input
-          type="text"
-          placeholder="e.g. 50,000"
-          value={state.principal}
-          onChange={e => handlePrincipalChange(e.target.value)}
-          disabled={isLoading}
-          className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition disabled:opacity-50 disabled:bg-gray-50"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Enter the amount you wish to borrow
-        </p>
-      </div>
-
-      {/* Payment Frequency */}
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-[#012a6a]">
-          Payment Frequency
-        </label>
-        <div className="grid grid-cols-2 gap-2">
-          {frequencyOptions.map(freq => (
-            <button
-              key={freq}
-              onClick={() => handleFrequencyChange(freq)}
+      {/* Left Column: Form Inputs */}
+      <div className={styles.inputGridWrapper}>
+        <div className={styles.inputGrid}>
+          {/* Principal Amount */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Principal Amount (₱)</label>
+            <input
+              type="text"
+              placeholder="e.g. 50,000"
+              value={state.principal}
+              onChange={e => handlePrincipalChange(e.target.value)}
               disabled={isLoading}
-              className={`p-2 rounded-2xl border-2 transition capitalize text-sm font-medium ${
-                state.frequency === freq
-                  ? 'border-[#112bd6] bg-blue-50 text-[#012a6a]'
-                  : 'border-gray-200 bg-white text-gray-600 hover:border-[#112bd6]'
-              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {freq}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Term Days */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-semibold text-[#012a6a]">
-          Loan Term (Days)
-        </label>
-        <input
-          type="text"
-          placeholder="e.g. 365"
-          value={state.termDays}
-          onChange={e => handleTermDaysChange(e.target.value)}
-          disabled={isLoading}
-          className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition disabled:opacity-50 disabled:bg-gray-50"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Number of days before the loan is fully paid
-        </p>
-      </div>
-
-      {/* Start Date */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-semibold text-[#012a6a]">
-          Start Date
-        </label>
-        <input
-          type="date"
-          value={state.startDate}
-          onChange={e => handleStartDateChange(e.target.value)}
-          disabled={isLoading}
-          className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition disabled:opacity-50 disabled:bg-gray-50"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          When the loan begins
-        </p>
-      </div>
-
-      {/* Summary Card */}
-      {state.principal && state.termDays && (
-        <div className="bg-blue-50 border border-[#6db6fe] rounded-2xl p-4">
-          <h4 className="font-bold text-[#012a6a] mb-2">Summary</h4>
-          <div className="space-y-1 text-sm">
-            <p className="text-gray-600">
-              <span className="font-medium text-[#012a6a]">Principal:</span> ₱
-              {Number(state.principal).toLocaleString('en-PH', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })}
+              className={styles.input}
+            />
+            <p className={styles.inputHelper}>
+              Enter the amount you wish to borrow
             </p>
-            <p className="text-gray-600">
-              <span className="font-medium text-[#012a6a]">Frequency:</span>{' '}
-              <span className="capitalize">{state.frequency}</span>
+          </div>
+
+          {/* Loan Term (Days) */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Loan Term (Days)</label>
+            <input
+              type="text"
+              placeholder="e.g. 365"
+              value={state.termDays}
+              onChange={e => handleTermDaysChange(e.target.value)}
+              disabled={isLoading}
+              className={styles.input}
+            />
+            <p className={styles.inputHelper}>
+              Number of days before the loan is fully paid
             </p>
-            <p className="text-gray-600">
-              <span className="font-medium text-[#012a6a]">Term:</span>{' '}
-              {state.termDays} days
-            </p>
-            {state.startDate && (
-              <p className="text-gray-600">
-                <span className="font-medium text-[#012a6a]">Start Date:</span>{' '}
-                {new Date(state.startDate).toLocaleDateString('en-PH', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-            )}
+          </div>
+
+          {/* Start Date */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Start Date</label>
+            <input
+              type="date"
+              value={state.startDate}
+              onChange={e => handleStartDateChange(e.target.value)}
+              disabled={isLoading}
+              className={styles.input}
+            />
+            <p className={styles.inputHelper}>When the loan begins</p>
+          </div>
+
+          {/* Payment Frequency - Full Width */}
+          <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+            <label className={styles.label}>Payment Frequency</label>
+            <div className={styles.frequencyGrid}>
+              {frequencyOptions.map(freq => (
+                <button
+                  key={freq}
+                  onClick={() => handleFrequencyChange(freq)}
+                  disabled={isLoading}
+                  className={`${styles.frequencyButton} ${
+                    state.frequency === freq ? styles.active : ''
+                  }`}
+                >
+                  {freq}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Info Box */}
-      <div className="bg-blue-50 border border-[#6db6fe] rounded-lg p-4">
-        <p className="text-xs text-[#012a6a] font-medium">
-          💡 These details apply to all loan types. You'll specify the interest
+        {/* Info Box - Below form on all sizes */}
+        <div className={styles.infoBox}>
+          <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+          These details apply to all loan types. You'll specify the interest
           structure in the next step.
-        </p>
+        </div>
+      </div>
+
+      {/* Right Column: Sticky Summary Card */}
+      <div className={styles.summaryCardWrapper}>
+        <div className={styles.summaryCard}>
+          <h4 className={styles.summaryTitle}><Clipboard size={18} style={{ display: 'inline', marginRight: '0.5rem' }} />Summary</h4>
+          <div className={styles.summaryItem}>
+            <span className={styles.summaryLabel}>Principal:</span>
+            <span className={styles.summaryValue}>
+              {state.principal ? formatCurrency(Number(state.principal)) : <span style={{ color: '#a0aec0' }}>—</span>}
+            </span>
+          </div>
+          <div className={styles.summaryItem}>
+            <span className={styles.summaryLabel}>Frequency:</span>
+            <span className={styles.summaryValue} style={{ textTransform: 'capitalize' }}>
+              {state.frequency}
+            </span>
+          </div>
+          <div className={styles.summaryItem}>
+            <span className={styles.summaryLabel}>Term:</span>
+            <span className={styles.summaryValue}>
+              {state.termDays ? `${state.termDays} days` : '—'}
+            </span>
+          </div>
+          {state.startDate && (
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryLabel}>Start Date:</span>
+              <span className={styles.summaryValue}>
+                {formatDate(state.startDate)}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
 }
+
