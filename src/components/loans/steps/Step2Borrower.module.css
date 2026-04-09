@@ -137,11 +137,73 @@
   color: #012a6a;
 }
 
+.borrowerDropdownOptionPhone {
+  font-size: 0.75rem;
+  color: #718096;
+  margin-top: 0.25rem;
+}
+
 .borrowerDropdownEmpty {
   padding: 1rem;
   text-align: center;
   color: #718096;
   font-size: 0.875rem;
+}
+
+/* Search Input Styling */
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  background-color: #f7fafc;
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+.searchIcon {
+  color: #a0aec0;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #2d3748;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #a0aec0;
+}
+
+.searchClearButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.searchClearButton:hover {
+  color: #4a5568;
+}
+
+/* Borrowers List Container */
+.borrowersList {
+  max-height: calc(15rem - 3rem);
+  overflow-y: auto;
 }
 
 .errorMessage {

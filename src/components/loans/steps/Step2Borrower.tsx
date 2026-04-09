@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
 import { useBorrowers } from '../../../hooks/useBorrowers'
-import { AlertCircle, Lightbulb } from 'lucide-react'
+import { AlertCircle, Lightbulb, Search, X } from 'lucide-react'
 import styles from './Step2Borrower.module.css'
 
 /**
- * Step 2: Borrower Selection
- * User selects a borrower from a dropdown list. Selected borrower details are displayed in a card.
- * Styled with CSS modules for consistency with the new design system.
+ * Step 2: Borrower Selection with Search
+ * User selects a borrower from a searchable dropdown list. Selected borrower details are displayed in a card.
+ * Search feature filters borrowers by name, phone, or address for easier lookup.
  */
 export const Step2Borrower: React.FC<WizardStepProps> = ({
   state,
@@ -17,12 +17,30 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
   const { borrowers, loading: borrowersLoading, error: borrowersError } =
     useBorrowers()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const selectedBorrower = borrowers.find(b => b.id === state.borrowerId)
+
+  // Filter borrowers based on search query
+  const filteredBorrowers = useMemo(() => {
+    if (!searchQuery.trim()) return borrowers
+    
+    const query = searchQuery.toLowerCase()
+    return borrowers.filter(borrower => 
+      borrower.full_name.toLowerCase().includes(query) ||
+      borrower.phone?.toLowerCase().includes(query) ||
+      borrower.address?.toLowerCase().includes(query)
+    )
+  }, [borrowers, searchQuery])
 
   const handleSelectBorrower = (borrowerId: string) => {
     updateState('borrowerId', borrowerId)
     setIsDropdownOpen(false)
+    setSearchQuery('')
+  }
+
+  const handleClearSearch = () => {
+    setSearchQuery('')
   }
 
   const isLoading_ = isLoading || borrowersLoading
@@ -54,7 +72,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
         </div>
       )}
 
-      {/* Borrower Dropdown */}
+      {/* Borrower Dropdown with Search */}
       <div className={styles.formGroup}>
         <label className={styles.label}>Borrower</label>
         <div style={{ position: 'relative' }}>
@@ -83,28 +101,57 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
             </span>
           </button>
 
-          {/* Dropdown Menu */}
+          {/* Dropdown Menu with Search */}
           {isDropdownOpen && (
             <div className={styles.borrowerDropdownMenu}>
-              {borrowers.length === 0 ? (
-                <div className={styles.borrowerDropdownEmpty}>
-                  No borrowers found
-                </div>
-              ) : (
-                borrowers.map(borrower => (
+              {/* Search Input */}
+              <div className={styles.searchInputWrapper}>
+                <Search size={16} className={styles.searchIcon} />
+                <input
+                  type="text"
+                  placeholder="Search by name, phone, or address..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles.searchInput}
+                  autoFocus
+                />
+                {searchQuery && (
                   <button
-                    key={borrower.id}
-                    onClick={() => handleSelectBorrower(borrower.id!)}
-                    className={`${styles.borrowerDropdownOption} ${
-                      selectedBorrower?.id === borrower.id ? styles.active : ''
-                    }`}
+                    onClick={handleClearSearch}
+                    className={styles.searchClearButton}
                   >
-                    <div className={styles.borrowerDropdownOptionName}>
-                      {borrower.full_name}
-                    </div>
+                    <X size={16} />
                   </button>
-                ))
-              )}
+                )}
+              </div>
+
+              {/* Borrowers List */}
+              <div className={styles.borrowersList}>
+                {filteredBorrowers.length === 0 ? (
+                  <div className={styles.borrowerDropdownEmpty}>
+                    {searchQuery ? 'No borrowers match your search' : 'No borrowers found'}
+                  </div>
+                ) : (
+                  filteredBorrowers.map(borrower => (
+                    <button
+                      key={borrower.id}
+                      onClick={() => handleSelectBorrower(borrower.id!)}
+                      className={`${styles.borrowerDropdownOption} ${
+                        selectedBorrower?.id === borrower.id ? styles.active : ''
+                      }`}
+                    >
+                      <div className={styles.borrowerDropdownOptionName}>
+                        {borrower.full_name}
+                      </div>
+                      {borrower.phone && (
+                        <div className={styles.borrowerDropdownOptionPhone}>
+                          {borrower.phone}
+                        </div>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
             </div>
           )}
         </div>
