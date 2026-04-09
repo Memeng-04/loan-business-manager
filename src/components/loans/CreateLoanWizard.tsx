@@ -67,7 +67,15 @@ export const CreateLoanWizard = ({
 
     if (savedState) {
       try {
-        setState(JSON.parse(savedState))
+        const parsedState = JSON.parse(savedState)
+        // Sanitize principal and termDays to enforce length limits
+        if (parsedState.principal && parsedState.principal.length > 15) {
+          parsedState.principal = parsedState.principal.slice(0, 15)
+        }
+        if (parsedState.termDays && parsedState.termDays.length > 5) {
+          parsedState.termDays = parsedState.termDays.slice(0, 5)
+        }
+        setState(parsedState)
         console.log('✅ Restored wizard state from sessionStorage')
       } catch (error) {
         console.error('Failed to restore wizard state:', error)

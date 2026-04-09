@@ -28,14 +28,18 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   ]
 
   const handlePrincipalChange = (value: string) => {
-    if (isValidCurrency(value)) {
-      updateState('principal', value)
+    // Limit to 15 characters max - truncate if exceeds
+    const truncated = value.slice(0, 15)
+    if (isValidCurrency(truncated)) {
+      updateState('principal', truncated)
     }
   }
 
   const handleTermDaysChange = (value: string) => {
-    if (isValidPositiveInteger(value)) {
-      updateState('termDays', value)
+    // Limit to 5 characters max - truncate if exceeds
+    const truncated = value.slice(0, 5)
+    if (isValidPositiveInteger(truncated)) {
+      updateState('termDays', truncated)
     }
   }
 
@@ -60,11 +64,12 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
               placeholder="e.g. 50,000"
               value={state.principal}
               onChange={e => handlePrincipalChange(e.target.value)}
+              maxLength={15}
               disabled={isLoading}
               className={styles.input}
             />
             <p className={styles.inputHelper}>
-              Enter the amount you wish to borrow
+              Enter the amount you wish to borrow (max 15 digits)
             </p>
           </div>
 
@@ -76,11 +81,12 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
               placeholder="e.g. 365"
               value={state.termDays}
               onChange={e => handleTermDaysChange(e.target.value)}
+              maxLength={5}
               disabled={isLoading}
               className={styles.input}
             />
             <p className={styles.inputHelper}>
-              Number of days before the loan is fully paid
+              Number of days before the loan is fully paid (max 5 digits)
             </p>
           </div>
 
@@ -97,23 +103,22 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
             <p className={styles.inputHelper}>When the loan begins</p>
           </div>
 
-          {/* Payment Frequency - Full Width */}
-          <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+          {/* Payment Frequency - Dropdown Select */}
+          <div className={styles.formGroup}>
             <label className={styles.label}>Payment Frequency</label>
-            <div className={styles.frequencyGrid}>
+            <select
+              value={state.frequency}
+              onChange={e => handleFrequencyChange(e.target.value as PaymentFrequency)}
+              disabled={isLoading}
+              className={styles.select}
+            >
+              <option value="">Select a frequency...</option>
               {frequencyOptions.map(freq => (
-                <button
-                  key={freq}
-                  onClick={() => handleFrequencyChange(freq)}
-                  disabled={isLoading}
-                  className={`${styles.frequencyButton} ${
-                    state.frequency === freq ? styles.active : ''
-                  }`}
-                >
-                  {freq}
-                </button>
+                <option key={freq} value={freq}>
+                  {freq.charAt(0).toUpperCase() + freq.slice(1)}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
         </div>
 

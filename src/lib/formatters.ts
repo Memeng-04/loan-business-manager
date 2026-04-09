@@ -40,19 +40,23 @@ export const formatDate = (dateString: string): string => {
 }
 
 /**
- * Validate if a value is a valid currency (numbers and decimal point)
+ * Validate if a value is a valid currency (must be > 0)
  * @param value - Value to validate
  * @returns true if valid, false otherwise
  */
 export const isValidCurrency = (value: string): boolean => {
-  return value === '' || /^\d+(\.\d{0,2})?$/.test(value)
+  if (value === '') return true
+  if (!/^\d+(\.\d{0,2})?$/.test(value)) return false
+  return parseFloat(value) > 0
 }
 
 /**
- * Validate if a value is a valid positive integer
+ * Validate if a value is a valid positive integer (must be > 0)
  * @param value - Value to validate
  * @returns true if valid, false otherwise
  */
 export const isValidPositiveInteger = (value: string): boolean => {
-  return value === '' || /^\d+$/.test(value)
+  if (value === '') return true
+  if (!/^\d+$/.test(value)) return false
+  return parseInt(value, 10) > 0
 }
