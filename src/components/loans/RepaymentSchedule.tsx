@@ -10,12 +10,14 @@ interface RepaymentScheduleProps {
   loanId: string
   borrowerId: string
   onScheduleSaved: () => void
+  onBack?: () => void
 }
 
 export const RepaymentSchedule = ({
   loanId,
   borrowerId,
-  onScheduleSaved
+  onScheduleSaved,
+  onBack
 }: RepaymentScheduleProps) => {
   const { schedule, previewFromLoan, saveSchedule, loading, error, saved } =
     useRepaymentSchedule()
@@ -163,15 +165,27 @@ export const RepaymentSchedule = ({
           )}
 
           {!saved && schedule.length > 0 && (
-            <Button
-              onClick={handleSave}
-              disabled={loading}
-              variant="blue"
-              size="lg"
-              className="w-full"
-            >
-              {loading ? 'Confirming...' : 'Confirm and Save Schedule'}
-            </Button>
+            <div className={styles.buttonGroup}>
+              {onBack && (
+                <Button
+                  onClick={onBack}
+                  disabled={loading}
+                  variant="outline"
+                  size="lg"
+                >
+                  Back
+                </Button>
+              )}
+              <Button
+                onClick={handleSave}
+                disabled={loading}
+                variant="blue"
+                size="lg"
+                className="flex-1"
+              >
+                {loading ? 'Confirming...' : 'Confirm and Save Schedule'}
+              </Button>
+            </div>
           )}
         </div>
       </div>

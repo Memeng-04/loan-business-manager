@@ -49,6 +49,7 @@ export default function NewLoanPage() {
             loanId={createdLoanData.loanId}
             borrowerId={createdLoanData.borrowerId}
             onScheduleSaved={handleReturnToWizard}
+            onBack={handleReturnToWizard}
           />
         </section>
       )}

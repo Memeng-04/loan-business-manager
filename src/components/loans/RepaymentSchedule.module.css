@@ -263,6 +263,12 @@
   font-size: 0.875rem;
 }
 
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 .emptyState {
   display: flex;
   flex-direction: column;
