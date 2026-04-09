@@ -6,7 +6,7 @@ import {
   calculateFromPercentage,
   calculatePaymentAmount
 } from '../../../strategies/InterestStrategy'
-import { formatCurrency, formatNumber, isValidCurrency } from '../../../lib/formatters'
+import { formatCurrency, isValidCurrency } from '../../../lib/formatters'
 import styles from './Step4InterestDetails.module.css'
 
 /**
@@ -132,7 +132,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
               {state.totalPayable &&
                 Number(state.totalPayable) <= Number(state.principal) && (
                   <p className={styles.errorText}>
-                    <Check size={16} style={{ display: 'inline', marginRight: '0.5rem', rotation: '45deg', opacity: 0.7 }} />
+                    <Check size={16} style={{ display: 'inline', marginRight: '0.5rem', transform: 'rotate(45deg)', opacity: 0.7 }} />
                     Total payable must be greater than principal
                   </p>
                 )}
@@ -158,7 +158,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
               </p>
               {state.interestRate && Number(state.interestRate) < 0 && (
                 <p className={styles.errorText}>
-                  <Check size={16} style={{ display: 'inline', marginRight: '0.5rem', rotation: '45deg', opacity: 0.7 }} />
+                  <Check size={16} style={{ display: 'inline', marginRight: '0.5rem', transform: 'rotate(45deg)', opacity: 0.7 }} />
                   Interest rate cannot be negative
                 </p>
               )}
