@@ -35,8 +35,6 @@ export const CreateLoanWizard = ({
   const [isSuccess, setIsSuccess] = useState(false)
   const [successLoanId, setSuccessLoanId] = useState<string | null>(null)
 
-  const [countdown, setCountdown] = useState(3);
-
   const { createLoan: createFixedLoan, loading: fixedLoading } =
     useCreateLoan()
   const { createLoan: createPercentageLoan, loading: percentageLoading } =
@@ -156,27 +154,16 @@ export const CreateLoanWizard = ({
   }
   useEffect(() => {
     if (isSuccess) {
-      setCountdown(3); // Reset countdown on success
-      const interval = setInterval(() => {
-        setCountdown(prev => {
-          if (prev > 1) {
-            return prev - 1;
-          } else {
-            clearInterval(interval);
-            return 0;
-          }
-        });
-      }, 1000);
-
+      // Automatically redirect after 2 seconds
       const timer = setTimeout(() => {
         // Call onSuccess callback to transition to the next screen
         if (onSuccess && successLoanId) {
-          onSuccess({ loanId: successLoanId, borrowerId: state.borrowerId });
+          onSuccess({ loanId: successLoanId, borrowerId: state.borrowerId })
         }
         // Reset state after transition
-        setIsSuccess(false);
-        setSuccessLoanId(null);
-        setCurrentStep(1);
+        setIsSuccess(false)
+        setSuccessLoanId(null)
+        setCurrentStep(1)
         setState({
           loanType: null,
           borrowerId: '',
@@ -187,15 +174,12 @@ export const CreateLoanWizard = ({
           totalPayable: '',
           interestRate: '',
           calculatedPreview: null
-        });
-      }, 3000);
+        })
+      }, 2000)
 
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timer);
-      };
+      return () => clearTimeout(timer)
     }
-  }, [isSuccess, successLoanId, onSuccess, state.borrowerId]);
+  }, [isSuccess, successLoanId, onSuccess, state.borrowerId])
 
   const isLoading = fixedLoading || percentageLoading || isSubmitting
 
@@ -271,7 +255,7 @@ export const CreateLoanWizard = ({
               </h2>
               <p className={styles.successText}>Loan ID: {successLoanId}</p>
               <p className={styles.successCountdown}>
-                Generating schedule in {countdown}...
+                Redirecting to repayment schedule...
               </p>
             </div>
           </div>
