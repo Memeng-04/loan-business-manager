@@ -205,9 +205,6 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                   {formatCurrency(preview.paymentAmount)}
                 </span>
               </div>
-                  })}
-                </span>
-              </div>
             </div>
           )}
           {!preview && !isLoading && (
