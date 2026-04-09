@@ -34,6 +34,7 @@ export const CreateLoanWizard = ({
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
   const [successLoanId, setSuccessLoanId] = useState<string | null>(null)
+  const [isLoadingFromSession, setIsLoadingFromSession] = useState(true)
 
   const { createLoan: createFixedLoan, loading: fixedLoading } =
     useCreateLoan()
@@ -52,6 +53,64 @@ export const CreateLoanWizard = ({
     interestRate: '',
     calculatedPreview: null
   })
+
+  /**
+   * Load wizard state and current step from sessionStorage on mount
+   */
+  useEffect(() => {
+    const savedState = sessionStorage.getItem('wizardState')
+    const savedStep = sessionStorage.getItem('wizardStep')
+    
+    console.log('🔍 Wizard Mount - Checking sessionStorage...')
+    console.log('savedState:', savedState ? JSON.parse(savedState) : 'NOT FOUND')
+    console.log('savedStep:', savedStep ? parseInt(savedStep) : 'NOT FOUND')
+
+    if (savedState) {
+      try {
+        setState(JSON.parse(savedState))
+        console.log('✅ Restored wizard state from sessionStorage')
+      } catch (error) {
+        console.error('Failed to restore wizard state:', error)
+      }
+    }
+
+    if (savedStep) {
+      try {
+        const step = parseInt(savedStep) as WizardStep
+        if (step >= 1 && step <= 5) {
+          setCurrentStep(step)
+          console.log('✅ Restored step:', step)
+        }
+      } catch (error) {
+        console.error('Failed to restore wizard step:', error)
+      }
+    }
+
+    // Mark that we're done loading from session - now safe to save
+    setIsLoadingFromSession(false)
+  }, [])
+
+  /**
+   * Save wizard state to sessionStorage whenever it changes
+   * Skip saving during initial load to avoid overwriting restored state
+   */
+  useEffect(() => {
+    if (!isLoadingFromSession) {
+      sessionStorage.setItem('wizardState', JSON.stringify(state))
+      console.log('💾 Saved wizard state to sessionStorage:', state)
+    }
+  }, [state, isLoadingFromSession])
+
+  /**
+   * Save current step to sessionStorage whenever it changes
+   * Skip saving during initial load to avoid overwriting restored step
+   */
+  useEffect(() => {
+    if (!isLoadingFromSession) {
+      sessionStorage.setItem('wizardStep', currentStep.toString())
+      console.log('💾 Saved wizard step to sessionStorage:', currentStep)
+    }
+  }, [currentStep, isLoadingFromSession])
 
   /**
    * Update a single key in the wizard state.
@@ -143,6 +202,10 @@ export const CreateLoanWizard = ({
         const idString = typeof loanId === 'string' ? loanId : (loanId as any).id
         setSuccessLoanId(idString)
         setIsSuccess(true)
+        
+        // Clear saved wizard state after successful submission
+        sessionStorage.removeItem('wizardState')
+        sessionStorage.removeItem('wizardStep')
       }
     } catch (error) {
       const message =
