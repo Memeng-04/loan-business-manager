@@ -8,7 +8,6 @@ import styles from './Step1LoanCategory.module.css'
 export const Step1LoanCategory: React.FC<WizardStepProps> = ({
   state,
   updateState,
-  nextStep,
   isLoading
 }) => {
   const loanOptions = [
@@ -30,7 +29,6 @@ export const Step1LoanCategory: React.FC<WizardStepProps> = ({
 
   const handleSelectLoan = (loanType: 'fixed' | 'percentage') => {
     updateState('loanType', loanType)
-    nextStep()
   }
 
   return (
