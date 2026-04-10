@@ -95,14 +95,6 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
 
   return (
     <div className={styles.stepContainer}>
-      {/* Error State */}
-      {error && (
-        <div className={styles.errorMessage}>
-          <AlertCircle size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          {error}
-        </div>
-      )}
-
       {/* Summary Grid - Two columns on desktop */}
       <div className={styles.summaryGrid}>
         
@@ -270,6 +262,14 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
       <InfoBox icon={<Info size={16} />}>
         After submission, a repayment schedule will be generated for you to confirm.
       </InfoBox>
+
+      {/* Error State */}
+      {error && (
+        <div className={styles.errorMessage}>
+          <AlertCircle size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+          {error}
+        </div>
+      )}
     </div>
   )
 }
