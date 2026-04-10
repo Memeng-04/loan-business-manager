@@ -116,6 +116,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 value={state.totalPayable}
                 onChange={e => handleTotalPayableChange(e.target.value)}
                 disabled={isLoading}
+                maxLength={15}
                 className={styles.input}
               />
               <p className={styles.inputHelper}>
@@ -143,6 +144,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 value={state.interestRate}
                 onChange={e => handleInterestRateChange(e.target.value)}
                 disabled={isLoading}
+                maxLength={3}
                 className={styles.input}
               />
               <p className={styles.inputHelper}>
