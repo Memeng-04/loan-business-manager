@@ -126,7 +126,7 @@
 
 .previewItemValue {
   font-weight: 700;
-  color: #1e3a8a;
+  color: #000000;
 }
 
 .previewDivider {
@@ -145,7 +145,7 @@
 .previewItemTotalValue {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #2563eb;
+  color: #000000;
 }
 
 .warningBox {
