@@ -2,6 +2,7 @@ import React from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
 import { PieChart, TrendingUp, Lightbulb } from 'lucide-react'
 import Card from '../../card/Card'
+import { InfoBox } from '../InfoBox'
 import styles from './Step1LoanCategory.module.css'
 
 
@@ -66,10 +67,9 @@ export const Step1LoanCategory: React.FC<WizardStepProps> = ({
       </div>
 
       {/* Info Box */}
-      <div className={styles.infoBox}>
-          <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          Choose a loan type above to continue. You can change this later in the review step.
-      </div>
+      <InfoBox icon={<Lightbulb size={16} />}>
+        Choose a loan type above to continue. You can change this later in the review step.
+      </InfoBox>
     </div>
   )
 }

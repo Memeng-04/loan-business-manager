@@ -8,6 +8,7 @@ import {
 } from '../../../strategies/InterestStrategy'
 import { formatCurrency, isValidCurrency } from '../../../lib/formatters'
 import { SummaryCard } from '../SummaryCard'
+import { InfoBox } from '../InfoBox'
 import styles from './Step4InterestDetails.module.css'
 
 /**
@@ -200,10 +201,9 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
       </div>
 
       {/* Info Box */}
-      <div className={styles.infoBox}>
-          <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          Enter {isFixedLoan ? 'the total amount the borrower will repay (must be more than the principal)' : 'the annual interest rate as a percentage'} to see the payment preview on the right.
-      </div>
+      <InfoBox icon={<Lightbulb size={16} />}>
+        Enter {isFixedLoan ? 'the total amount the borrower will repay (must be more than the principal)' : 'the annual interest rate as a percentage'} to see the payment preview on the right.
+      </InfoBox>
     </div>
   )
 }

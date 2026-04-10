@@ -3,6 +3,7 @@ import type { WizardStepProps } from '../../../types/wizardTypes'
 import { useBorrowers } from '../../../hooks/useBorrowers'
 import { AlertCircle, Lightbulb, Search, X, User } from 'lucide-react'
 import { SummaryCard } from '../SummaryCard'
+import { InfoBox } from '../InfoBox'
 import styles from './Step2Borrower.module.css'
 
 /**
@@ -162,10 +163,9 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
       )}
 
       {/* Info Box */}
-      <div className={styles.infoBox}>
-        <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+      <InfoBox icon={<Lightbulb size={16} />}>
         Use the search box to find a borrower by name, phone, or address. If the borrower doesn't exist, create them in the Borrowers section first.
-      </div>
+      </InfoBox>
     </div>
   )
 }

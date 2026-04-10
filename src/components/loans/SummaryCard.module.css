@@ -51,7 +51,7 @@
 }
 
 .summaryItemLabel {
-  font-weight: 500;
+  font-weight: 400;
   color: #2563eb;
   flex-shrink: 0;
 }
@@ -62,7 +62,7 @@
 }
 
 .summaryItemValue {
-  font-weight: 700;
+  font-weight: 400;
   color: #000000;
   text-align: right;
   word-break: break-word;

@@ -4,6 +4,7 @@ import type { PaymentFrequency } from '../../../types/loans'
 import { Lightbulb, Clipboard } from 'lucide-react'
 import { isValidCurrency, isValidPositiveInteger, formatCurrency, formatDate } from '../../../lib/formatters'
 import { SummaryCard } from '../SummaryCard'
+import { InfoBox } from '../InfoBox'
 import styles from './Step3LoanDetails.module.css'
 
 /**
@@ -124,10 +125,9 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
         </div>
 
         {/* Info Box - Below form on all sizes */}
-        <div className={styles.infoBox}>
-          <Lightbulb size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+        <InfoBox icon={<Lightbulb size={16} />}>
           Enter the principal amount and how often the borrower will make payments (daily, weekly, bi-monthly, or monthly). The start date is when the loan begins.
-        </div>
+        </InfoBox>
       </div>
 
       {/* Right Column: Sticky Summary Card */}
