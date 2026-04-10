@@ -153,17 +153,6 @@
   color: #000000;
 }
 
-/* Error Message */
-.errorMessage {
-  grid-column: 1 / -1;
-  padding: 1rem;
-  background-color: #fee2e2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
-  font-size: 0.875rem;
-  border-radius: 0.75rem;
-}
-
 /* Info Box */
 .infoBox {
   grid-column: 1 / -1;

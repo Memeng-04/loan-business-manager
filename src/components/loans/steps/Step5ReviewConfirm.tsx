@@ -6,9 +6,10 @@ import {
   calculatePaymentAmount
 } from '../../../strategies/InterestStrategy'
 import { useBorrowers } from '../../../hooks/useBorrowers'
-import { AlertCircle, Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar, Info } from 'lucide-react'
+import { Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar, Info } from 'lucide-react'
 import { SummaryCard } from '../SummaryCard'
 import { InfoBox } from '../InfoBox'
+import FeedbackMessage from '../../feedback/FeedbackMessage'
 import styles from './Step5ReviewConfirm.module.css'
 
 /**
@@ -265,10 +266,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
 
       {/* Error State */}
       {error && (
-        <div className={styles.errorMessage}>
-          <AlertCircle size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          {error}
-        </div>
+        <FeedbackMessage message={error} variant="error" />
       )}
     </div>
   )
