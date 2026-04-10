@@ -6,7 +6,7 @@ import {
   calculatePaymentAmount
 } from '../../../strategies/InterestStrategy'
 import { useBorrowers } from '../../../hooks/useBorrowers'
-import { AlertCircle, Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar } from 'lucide-react'
+import { AlertCircle, Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar, Info } from 'lucide-react'
 import { SummaryCard } from '../SummaryCard'
 import styles from './Step5ReviewConfirm.module.css'
 
@@ -267,7 +267,8 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
 
       {/* Info Box */}
       <div className={styles.infoBox}>
-        ℹ️ After submission, a repayment schedule will be generated for you to confirm.
+        <Info size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
+        After submission, a repayment schedule will be generated for you to confirm.
       </div>
     </div>
   )
