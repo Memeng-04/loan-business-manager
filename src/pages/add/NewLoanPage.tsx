@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
 import { CreateLoanWizard } from "../../components/loans/CreateLoanWizard";
@@ -11,8 +11,24 @@ export default function NewLoanPage() {
   const [createdLoanData, setCreatedLoanData] = useState<{ loanId: string; borrowerId: string } | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Load loan data from sessionStorage on mount
+  useEffect(() => {
+    const savedLoanData = sessionStorage.getItem('createdLoanData');
+    if (savedLoanData) {
+      try {
+        const parsedData = JSON.parse(savedLoanData);
+        setCreatedLoanData(parsedData);
+      } catch (error) {
+        console.error('Failed to restore loan data from sessionStorage:', error);
+        sessionStorage.removeItem('createdLoanData');
+      }
+    }
+  }, []);
+
   const handleWizardSuccess = (loanData: { loanId: string; borrowerId: string }) => {
     setCreatedLoanData(loanData);
+    // Save to sessionStorage so it persists across page refreshes
+    sessionStorage.setItem('createdLoanData', JSON.stringify(loanData));
     setIsTransitioning(true);
     // Simulate loading time for the schedule generation
     setTimeout(() => {
@@ -22,6 +38,7 @@ export default function NewLoanPage() {
 
   const handleReturnToWizard = () => {
     setCreatedLoanData(null);
+    sessionStorage.removeItem('createdLoanData');
   };
 
   return (

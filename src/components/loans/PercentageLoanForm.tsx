@@ -168,14 +168,14 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
           {/* Error */}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg">
-              ❌ {error}
+               {error}
             </div>
           )}
 
           {/* Success */}
           {success && (
             <div className="bg-green-50 border border-green-200 text-green-600 text-sm p-3 rounded-lg">
-              ✅ Loan created successfully!
+               Loan created successfully!
             </div>
           )}
 
