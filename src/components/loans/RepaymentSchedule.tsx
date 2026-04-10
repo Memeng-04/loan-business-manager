@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { useRepaymentSchedule } from '../../hooks/useRepaymentSchedule'
-import LoadingState from '../LoadingState'
 import type { ScheduleEntry } from '../../strategies/ScheduleStrategy'
 import { useBorrowers } from '../../hooks/useBorrowers'
 import Button from '../Button'
@@ -53,13 +52,6 @@ export const RepaymentSchedule = ({
   return (
     <div className={styles.scheduleContainer}>
       <div className={styles.scheduleWrapper}>
-        {/* Loading State Overlay */}
-        {loading && schedule.length === 0 && !error && (
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
-            <LoadingState message="Loading Schedule Preview..." />
-          </div>
-        )}
-
         {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.headerTitle}>Repayment Schedule</h2>
@@ -94,7 +86,7 @@ export const RepaymentSchedule = ({
             <div className={styles.errorContainer}>
               <div className={styles.errorBox}>
                 <h3 className={styles.errorTitle}>
-                  ❌ Error Fetching Schedule
+                   Error Fetching Schedule
                 </h3>
                 <p className={styles.errorMessage}>{error}</p>
               </div>
