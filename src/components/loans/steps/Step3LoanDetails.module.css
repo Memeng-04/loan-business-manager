@@ -78,6 +78,12 @@
   width: 100%;
 }
 
+.inputGridWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
 @media (min-width: 768px) {
   .inputGrid {
     grid-template-columns: 1fr 1fr;
