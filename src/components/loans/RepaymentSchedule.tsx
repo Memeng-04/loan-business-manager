@@ -183,7 +183,7 @@ export const RepaymentSchedule = ({
                 size="lg"
                 className="flex-1"
               >
-                {loading ? 'Confirming...' : 'Confirm and Save Schedule'}
+                {loading ? 'Confirming...' : 'Confirm'}
               </Button>
             </div>
           )}
