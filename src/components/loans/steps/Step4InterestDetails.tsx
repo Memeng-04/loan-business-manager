@@ -160,11 +160,6 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
 
         {/* Right Column: Preview */}
         <div>
-          {isLoading && !preview && (
-            <div className={`${styles.previewCard} ${styles.loading}`}>
-              <div className={styles.loadingMessage}>Loading Preview...</div>
-            </div>
-          )}
           {preview && (
             <SummaryCard
               title="Loan Preview"

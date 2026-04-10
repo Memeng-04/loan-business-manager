@@ -75,7 +75,6 @@ export const RepaymentSchedule = ({
             <p className={styles.infoValue}>
               {borrower?.full_name || 'N/A'}
             </p>
-            <p className={styles.infoSubvalue}>ID: {borrowerId}</p>
           </div>
           <div className={styles.infoBlock} style={{ textAlign: 'left' }}>
             <span className={styles.infoLabel}>Total Amount</span>

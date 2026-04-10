@@ -3,6 +3,7 @@ import type {
   CreateLoanWizardState,
   WizardStep
 } from '../../types/wizardTypes'
+import { CheckCircle } from 'lucide-react'
 import { useCreateLoan } from '../../hooks/useCreateFixedLoan'
 import { useCreatePercentageLoan } from '../../hooks/useCreatePercentageLoan'
 import { Step1LoanCategory } from './steps/Step1LoanCategory'
@@ -299,15 +300,18 @@ export const CreateLoanWizard = ({
   return (
     <div className={styles.wizardContainer}>
       {/* Header */}
-      <div className={styles.header}>
-        <h2 className={styles.headerTitle}>{stepTitles[currentStep]}</h2>
-        <p className={styles.headerSubtitle}>
-          Step {currentStep} of 5
-        </p>
-      </div>
+      {!isSuccess && (
+        <div className={styles.header}>
+          <h2 className={styles.headerTitle}>{stepTitles[currentStep]}</h2>
+          <p className={styles.headerSubtitle}>
+            Step {currentStep} of 5
+          </p>
+        </div>
+      )}
 
       {/* Progress Bar */}
-      <div className={styles.progressSection}>
+      {!isSuccess && (
+        <div className={styles.progressSection}>
           <div className={styles.progressBar}>
             {[1, 2, 3, 4, 5].map(step => (
               <div key={step} className={styles.progressStep}>
@@ -330,12 +334,14 @@ export const CreateLoanWizard = ({
             ][currentStep - 1]}
           </div>
         </div>
+      )}
 
         {/* Success Message */}
         {isSuccess ? (
           <div className={styles.contentArea}>
             <div className={styles.successMessage}>
-              <div className={styles.successEmoji}>✅</div>
+              <div className={styles.successEmoji}><CheckCircle size={64} color="#16a34a" />
+              </div>
               <h2 className={styles.successTitle}>
                 Loan Created Successfully!
               </h2>
