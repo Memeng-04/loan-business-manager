@@ -384,7 +384,7 @@ export const CreateLoanWizard = ({
                     variant="blue"
                     size="lg"
                   >
-                    {isLoading ? 'Submitting...' : 'Confirm & Create Loan'}
+                    {isLoading ? 'Submitting...' : 'Confirm'}
                   </Button>
                 )}
               </div>

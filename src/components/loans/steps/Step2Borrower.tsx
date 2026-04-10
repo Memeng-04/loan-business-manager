@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
 import { useBorrowers } from '../../../hooks/useBorrowers'
-import { AlertCircle, Lightbulb, Search, X } from 'lucide-react'
+import { AlertCircle, Lightbulb, Search, X, User } from 'lucide-react'
+import { SummaryCard } from '../SummaryCard'
 import styles from './Step2Borrower.module.css'
 
 /**
@@ -149,31 +150,15 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
 
       {/* Selected Borrower Details Card */}
       {selectedBorrower && (
-        <div className={styles.detailsCard}>
-          <h4 className={styles.detailsCardTitle}>Borrower Details</h4>
-          <div className={styles.detailsItem}>
-            <span className={styles.detailsLabel}>Name:</span>
-            <span className={styles.detailsValue}>
-              {selectedBorrower.full_name}
-            </span>
-          </div>
-          {selectedBorrower.phone && (
-            <div className={styles.detailsItem}>
-              <span className={styles.detailsLabel}>Phone:</span>
-              <span className={styles.detailsValue}>
-                {selectedBorrower.phone}
-              </span>
-            </div>
-          )}
-          {selectedBorrower.address && (
-            <div className={styles.detailsItem}>
-              <span className={styles.detailsLabel}>Address:</span>
-              <span className={styles.detailsValue}>
-                {selectedBorrower.address}
-              </span>
-            </div>
-          )}
-        </div>
+        <SummaryCard
+          title="Borrower Details"
+          icon={<User size={18} />}
+          items={[
+            { label: 'Name:', value: selectedBorrower.full_name },
+            ...(selectedBorrower.phone ? [{ label: 'Phone:', value: selectedBorrower.phone }] : []),
+            ...(selectedBorrower.address ? [{ label: 'Address:', value: selectedBorrower.address }] : [])
+          ]}
+        />
       )}
 
       {/* Info Box */}

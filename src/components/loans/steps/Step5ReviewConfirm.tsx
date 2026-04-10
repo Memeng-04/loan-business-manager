@@ -7,6 +7,7 @@ import {
 } from '../../../strategies/InterestStrategy'
 import { useBorrowers } from '../../../hooks/useBorrowers'
 import { AlertCircle, Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar } from 'lucide-react'
+import { SummaryCard } from '../SummaryCard'
 import styles from './Step5ReviewConfirm.module.css'
 
 /**
@@ -236,39 +237,30 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
 
         {/* Payment Summary - Full Width */}
         {preview && (
-          <div className={`${styles.paymentSummaryCard} ${styles.fullWidthCard}`}>
-            <h4 className={styles.paymentSummaryCardTitle}>
-              <Check size={16} style={{ display: 'inline', marginRight: '0.5rem' }} /> Payment Summary
-            </h4>
-            <div className={styles.paymentSummaryItems}>
-              <div className={styles.paymentSummaryItem}>
-                <span className={styles.paymentSummaryItemLabel}>Principal:</span>
-                <span className={styles.paymentSummaryItemValue}>
-                  ₱{formatCurrency(preview.principal)}
-                </span>
-              </div>
-              <div className={styles.paymentSummaryItem}>
-                <span className={styles.paymentSummaryItemLabel}>Total Interest:</span>
-                <span className={styles.paymentSummaryItemValue}>
-                  ₱{formatCurrency(preview.interest)}
-                </span>
-              </div>
-              <div className={styles.paymentSummaryDivider} />
-              <div className={styles.paymentSummaryItem}>
-                <span className={styles.paymentSummaryItemTotal}>Total to Repay:</span>
-                <span className={styles.paymentSummaryItemTotalValue}>
-                  ₱{formatCurrency(preview.totalPayable)}
-                </span>
-              </div>
-              <div className={styles.paymentSummaryItem}>
-                <span className={styles.paymentSummaryItemLabel}>
-                  Payment per {state.frequency}:
-                </span>
-                <span className={styles.paymentSummaryItemValue}>
-                  ₱{formatCurrency(preview.paymentAmount)}
-                </span>
-              </div>
-            </div>
+          <div className={styles.fullWidthCard}>
+            <SummaryCard
+              title="Payment Summary"
+              icon={<Check size={16} />}
+              items={[
+                {
+                  label: 'Principal:',
+                  value: `₱${formatCurrency(preview.principal)}`
+                },
+                {
+                  label: 'Total Interest:',
+                  value: `₱${formatCurrency(preview.interest)}`
+                },
+                {
+                  label: 'Total to Repay:',
+                  value: `₱${formatCurrency(preview.totalPayable)}`,
+                  isTotal: true
+                },
+                {
+                  label: `Payment per ${state.frequency}:`,
+                  value: `₱${formatCurrency(preview.paymentAmount)}`
+                }
+              ]}
+            />
           </div>
         )}
       </div>

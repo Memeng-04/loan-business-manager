@@ -7,6 +7,7 @@ import {
   calculatePaymentAmount
 } from '../../../strategies/InterestStrategy'
 import { formatCurrency, isValidCurrency } from '../../../lib/formatters'
+import { SummaryCard } from '../SummaryCard'
 import styles from './Step4InterestDetails.module.css'
 
 /**
@@ -164,38 +165,29 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
             </div>
           )}
           {preview && (
-            <div className={styles.previewCard}>
-              <h4 className={styles.previewCardTitle}><BarChart3 size={18} style={{ display: 'inline', marginRight: '0.5rem' }} />Loan Preview</h4>
-              <div className={styles.previewItem}>
-                <span className={styles.previewItemLabel}>Principal:</span>
-                <span className={styles.previewItemValue}>
-                  {formatCurrency(preview.principal)}
-                </span>
-              </div>
-              <div className={styles.previewItem}>
-                <span className={styles.previewItemLabel}>
-                  {isFixedLoan ? 'Fixed' : 'Interest'} Amount:
-                </span>
-                <span className={styles.previewItemValue}>
-                  {isFixedLoan ? formatCurrency(preview.interest) : `${preview.interestRate?.toFixed(2)}%`}
-                </span>
-              </div>
-              <div className={styles.previewDivider} />
-              <div className={styles.previewItem}>
-                <span className={styles.previewItemTotal}>Total Payable:</span>
-                <span className={styles.previewItemTotalValue}>
-                  {formatCurrency(preview.totalPayable)}
-                </span>
-              </div>
-              <div className={styles.previewItem}>
-                <span className={styles.previewItemLabel}>
-                  Payment per {preview.frequency}:
-                </span>
-                <span className={styles.previewItemValue}>
-                  {formatCurrency(preview.paymentAmount)}
-                </span>
-              </div>
-            </div>
+            <SummaryCard
+              title="Loan Preview"
+              icon={<BarChart3 size={18} />}
+              items={[
+                {
+                  label: 'Principal:',
+                  value: formatCurrency(preview.principal)
+                },
+                {
+                  label: `${isFixedLoan ? 'Fixed' : 'Interest'} Amount:`,
+                  value: isFixedLoan ? formatCurrency(preview.interest) : `${preview.interestRate?.toFixed(2)}%`
+                },
+                {
+                  label: 'Total Payable:',
+                  value: formatCurrency(preview.totalPayable),
+                  isTotal: true
+                },
+                {
+                  label: `Payment per ${preview.frequency}:`,
+                  value: formatCurrency(preview.paymentAmount)
+                }
+              ]}
+            />
           )}
           {!preview && !isLoading && (
             <div className={styles.warningBox}>

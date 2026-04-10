@@ -3,6 +3,7 @@ import type { WizardStepProps } from '../../../types/wizardTypes'
 import type { PaymentFrequency } from '../../../types/loans'
 import { Lightbulb, Clipboard } from 'lucide-react'
 import { isValidCurrency, isValidPositiveInteger, formatCurrency, formatDate } from '../../../lib/formatters'
+import { SummaryCard } from '../SummaryCard'
 import styles from './Step3LoanDetails.module.css'
 
 /**
@@ -131,35 +132,25 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
 
       {/* Right Column: Sticky Summary Card */}
       <div className={styles.summaryCardWrapper}>
-        <div className={styles.summaryCard}>
-          <h4 className={styles.summaryTitle}><Clipboard size={18} style={{ display: 'inline', marginRight: '0.5rem' }} />Summary</h4>
-          <div className={styles.summaryItem}>
-            <span className={styles.summaryLabel}>Principal:</span>
-            <span className={styles.summaryValue}>
-              {state.principal ? formatCurrency(Number(state.principal)) : <span style={{ color: '#a0aec0' }}>—</span>}
-            </span>
-          </div>
-          <div className={styles.summaryItem}>
-            <span className={styles.summaryLabel}>Frequency:</span>
-            <span className={styles.summaryValue} style={{ textTransform: 'capitalize' }}>
-              {state.frequency}
-            </span>
-          </div>
-          <div className={styles.summaryItem}>
-            <span className={styles.summaryLabel}>Term:</span>
-            <span className={styles.summaryValue}>
-              {state.termDays ? `${state.termDays} days` : '—'}
-            </span>
-          </div>
-          {state.startDate && (
-            <div className={styles.summaryItem}>
-              <span className={styles.summaryLabel}>Start Date:</span>
-              <span className={styles.summaryValue}>
-                {formatDate(state.startDate)}
-              </span>
-            </div>
-          )}
-        </div>
+        <SummaryCard
+          title="Summary"
+          icon={<Clipboard size={18} />}
+          items={[
+            {
+              label: 'Principal:',
+              value: state.principal ? formatCurrency(Number(state.principal)) : '—'
+            },
+            {
+              label: 'Frequency:',
+              value: state.frequency.charAt(0).toUpperCase() + state.frequency.slice(1)
+            },
+            {
+              label: 'Term:',
+              value: state.termDays ? `${state.termDays} days` : '—'
+            },
+            ...(state.startDate ? [{ label: 'Start Date:', value: formatDate(state.startDate) }] : [])
+          ]}
+        />
       </div>
     </div>
   )

@@ -1,0 +1,74 @@
+.summaryCard {
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #93c5fd;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summaryCard.payment {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #93c5fd;
+}
+
+.summaryCardTitle {
+  font-weight: 700;
+  color: #012a6a;
+  margin: 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summaryCardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summaryItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #012a6a;
+}
+
+.summaryItem.totalItem {
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  border-top: 2px solid #bfdbfe;
+}
+
+.summaryItemLabel {
+  font-weight: 500;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.summaryItemLabel.totalLabel {
+  font-weight: 700;
+  color: #012a6a;
+}
+
+.summaryItemValue {
+  font-weight: 700;
+  color: #000000;
+  text-align: right;
+  word-break: break-word;
+}
+
+.summaryItemValue.totalValue {
+  font-size: 1.125rem;
+  color: #000000;
+}
