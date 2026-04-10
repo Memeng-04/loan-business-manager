@@ -66,14 +66,27 @@ export const useRepaymentSchedule = () => {
         }
       );
 
+      // Check if response has an error (from the function JSON response)
       if (response.error) {
         throw new Error(response.error.message || 'Failed to save schedule');
+      }
+
+      // Check if the data contains an error message
+      if (response.data && typeof response.data === 'object' && 'error' in response.data) {
+        throw new Error((response.data as { error: string }).error);
       }
 
       setSaved(true);
       return response.data;
     } catch (err: any) {
-      const errorMessage = err.message || 'Failed to save schedule';
+      let errorMessage = 'Failed to save schedule';
+      
+      if (err.message) {
+        errorMessage = err.message;
+      } else if (err.context?.error_description) {
+        errorMessage = err.context.error_description;
+      }
+      
       setError(errorMessage);
       console.error('Save error:', err);
       return null;

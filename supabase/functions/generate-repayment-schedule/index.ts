@@ -14,6 +14,13 @@ serve(async (req) => {
   try {
     const { loanId } = await req.json()
 
+    if (!loanId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing loanId parameter' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const supabase = createClient(
       Deno.env.get('DB_URL')!,
       Deno.env.get('DB_SERVICE_ROLE_KEY')!
@@ -26,7 +33,14 @@ serve(async (req) => {
       .eq('id', loanId)
       .single()
 
-    if (loanError) throw loanError
+    if (loanError) {
+      console.error('Loan fetch error:', loanError)
+      throw new Error(`Failed to fetch loan: ${loanError.message}`)
+    }
+
+    if (!loan) {
+      throw new Error(`No loan found with ID ${loanId}`)
+    }
 
     // Calculate term days
     const start    = new Date(loan.start_date)
