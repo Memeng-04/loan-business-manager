@@ -217,7 +217,7 @@
 .amountCell {
   font-weight: 700;
   font-size: 1rem;
-  color: #012a6a;
+  color: #000000;
 }
 
 .statusBadge {
@@ -231,8 +231,8 @@
 }
 
 .statusBadge.pending {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 .statusBadge.paid {
