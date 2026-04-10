@@ -67,17 +67,6 @@
   background-color: #fff !important;
 }
 
-.loanCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: transparent;
-  transition: background 0.3s ease;
-}
-
 .loanCardButton:hover:not(:disabled) .loanCard {
   border-color: #2563eb !important;
   background-color: #f0f8ff !important;
@@ -88,10 +77,6 @@
   border-color: #2563eb !important;
   background-color: #eff6ff !important;
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
-}
-
-.loanCardButton.active .loanCard::before {
-  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
 }
 
 /* Card content layout */
