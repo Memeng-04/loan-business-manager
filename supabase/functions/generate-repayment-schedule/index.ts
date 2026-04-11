@@ -7,12 +7,16 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  console.log('Function called with method:', req.method)
+  
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    console.log('Parsing request body...')
     const { loanId } = await req.json()
+    console.log('Received loanId:', loanId)
 
     if (!loanId) {
       return new Response(
@@ -21,6 +25,9 @@ serve(async (req) => {
       )
     }
 
+    // Get the authorization header from the request for audit purposes (optional)
+    const authHeader = req.headers.get('authorization')
+    
     const supabase = createClient(
       Deno.env.get('DB_URL')!,
       Deno.env.get('DB_SERVICE_ROLE_KEY')!
