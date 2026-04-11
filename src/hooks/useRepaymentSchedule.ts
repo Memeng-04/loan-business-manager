@@ -59,10 +59,7 @@ export const useRepaymentSchedule = () => {
       const response = await supabase.functions.invoke(
         'generate-repayment-schedule',
         {
-          body: { loanId },
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-          }
+          body: { loanId }
         }
       );
 
