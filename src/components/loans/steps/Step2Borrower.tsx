@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { WizardStepProps } from '../../../types/wizardTypes'
 import { useBorrowers } from '../../../hooks/useBorrowers'
-import { AlertCircle, Lightbulb, Search, X, User } from 'lucide-react'
+import { AlertCircle, Lightbulb, Search, X, User, Plus } from 'lucide-react'
 import { SummaryCard } from '../SummaryCard'
 import { InfoBox } from '../InfoBox'
+import Button from '../../Button'
 import styles from './Step2Borrower.module.css'
 
 /**
@@ -16,6 +18,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
   updateState,
   isLoading
 }) => {
+  const navigate = useNavigate()
   const { borrowers, loading: borrowersLoading, error: borrowersError } =
     useBorrowers()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -63,6 +66,19 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
           <p>Loading borrowers...</p>
         </div>
       )}
+
+      {/* Borrower Section Header with Create Button */}
+      <div style={{ marginBottom: '0.5rem', marginTop: '-0.5rem' }}>
+        <Button
+          onClick={() => navigate('/borrowers/add')}
+          variant="outline"
+          size="md"
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          <Plus size={16} />
+          Create Borrower
+        </Button>
+      </div>
 
       {/* Borrower Dropdown with Search */}
       <div className={styles.formGroup}>
@@ -164,7 +180,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
 
       {/* Info Box */}
       <InfoBox icon={<Lightbulb size={16} />}>
-        Use the search box to find a borrower by name, phone, or address. If the borrower doesn't exist, create them in the Borrowers section first.
+        Use the search box to find a borrower by name, phone, or address. If the borrower doesn't exist, click the "Create Borrower" button below to add a new one.
       </InfoBox>
     </div>
   )
