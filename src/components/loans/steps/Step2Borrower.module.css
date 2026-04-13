@@ -1,0 +1,291 @@
+.stepContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #012a6a;
+  margin: 0;
+}
+
+.sectionDescription {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #012a6a;
+}
+
+.borrowerDropdown {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 2.5rem;
+}
+
+.borrowerDropdown:hover:not(:disabled) {
+  border-color: #2563eb;
+}
+
+.borrowerDropdown:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.borrowerDropdown:disabled {
+  background-color: #f7fafc;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.borrowerDropdownText {
+  flex: 1;
+  text-align: left;
+}
+
+.borrowerDropdownPlaceholder {
+  color: #a0aec0;
+}
+
+.borrowerDropdownArrow {
+  color: #718096;
+  transition: transform 0.2s ease;
+  font-size: 0.75rem;
+}
+
+.borrowerDropdownArrow.open {
+  transform: rotate(180deg);
+}
+
+.borrowerDropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #cbd5e0;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 15rem;
+  overflow-y: auto;
+}
+
+.borrowerDropdownOption {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.borrowerDropdownOption:hover {
+  background-color: #eff6ff;
+}
+
+.borrowerDropdownOption:last-child {
+  border-bottom: none;
+}
+
+.borrowerDropdownOption.active {
+  background-color: #eff6ff;
+  border-left: 4px solid #2563eb;
+  padding-left: calc(1rem - 4px);
+  font-weight: 600;
+  color: #012a6a;
+}
+
+.borrowerDropdownOptionName {
+  font-weight: 600;
+  color: #012a6a;
+}
+
+.borrowerDropdownOptionPhone {
+  font-size: 0.75rem;
+  color: #718096;
+  margin-top: 0.25rem;
+}
+
+.borrowerDropdownEmpty {
+  padding: 1rem;
+  text-align: center;
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+/* Search Input Styling */
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  background-color: #f7fafc;
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+.searchIcon {
+  color: #a0aec0;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #2d3748;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #a0aec0;
+}
+
+.searchClearButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.searchClearButton:hover {
+  color: #4a5568;
+}
+
+/* Borrowers List Container */
+.borrowersList {
+  max-height: calc(15rem - 3rem);
+  overflow-y: auto;
+}
+
+.errorMessage {
+  padding: 0.75rem;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  display: grid;
+  grid-column: 1 / -1;
+}
+
+.loadingMessage {
+  padding: 1.5rem;
+  text-align: center;
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.detailsCard {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #dff0ff 100%);
+  border: 2px solid #2563eb;
+  border-radius: 1rem;
+}
+
+.detailsCardTitle {
+  font-weight: 700;
+  color: #012a6a;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+}
+
+.detailsItem {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.detailsItem:last-child {
+  margin-bottom: 0;
+}
+
+.detailsLabel {
+  font-weight: 600;
+  color: #2563eb;
+  min-width: fit-content;
+  flex-shrink: 0;
+}
+
+.detailsValue {
+  color: #000000;
+  word-break: break-word;
+}
+
+.infoBox {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  color: #012a6a;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .sectionTitle {
+    font-size: 1rem;
+  }
+
+  .borrowerDropdownMenu {
+    max-height: 12rem;
+  }
+
+  .detailsCard {
+    padding: 0.875rem;
+  }
+
+  .detailsItem {
+    font-size: 0.8125rem;
+  }
+}

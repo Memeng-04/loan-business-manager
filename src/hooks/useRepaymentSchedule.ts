@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { supabase } from '../services/supabase'
-import { generateSchedule} from '../strategies/ScheduleStrategy'
+import { generateSchedule } from '../strategies/ScheduleStrategy'
 import type { ScheduleEntry } from '../strategies/ScheduleStrategy'
 import type { PaymentFrequency } from '../types/loans'
 
@@ -10,18 +10,21 @@ export const useRepaymentSchedule = () => {
   const [error, setError]       = useState<string | null>(null)
   const [saved, setSaved]       = useState(false)
 
-  const previewFromLoan = async (loanId: string) => {
+  const previewFromLoan = useCallback(async (loanId: string) => {
     setLoading(true)
     setError(null)
+    setSchedule([])
+    setSaved(false)
 
     try {
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('loans')
         .select('total_payable, frequency, start_date, end_date')
         .eq('id', loanId)
         .single()
 
-      if (error) throw error
+      if (fetchError) throw new Error(`Failed to fetch loan details: ${fetchError.message}`)
+      if (!data)      throw new Error(`No loan found for ID ${loanId}`)
 
       const start    = new Date(data.start_date)
       const end      = new Date(data.end_date)
@@ -35,19 +38,24 @@ export const useRepaymentSchedule = () => {
       )
 
       setSchedule(generated)
-      setSaved(false)
     } catch (err: any) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
   const saveSchedule = async (loanId: string) => {
     setLoading(true)
     setError(null)
 
     try {
-      const { data, error } = await supabase.functions.invoke(
+      // Get JWT token from current session
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (!session) throw new Error('Not authenticated — please log in first')
+
+      const { data, error: invokeError } = await supabase.functions.invoke(
         'generate-repayment-schedule',
         {
           body: { loanId },
@@ -57,14 +65,18 @@ export const useRepaymentSchedule = () => {
         }
       )
 
-      console.log('response data:', data)
-      console.log('response error:', error)
+      if (invokeError) throw new Error(invokeError.message || 'Failed to save schedule')
 
-      if (error) throw error
+      if (data && typeof data === 'object' && 'error' in data) {
+        throw new Error((data as { error: string }).error)
+      }
+
       setSaved(true)
       return data
     } catch (err: any) {
-      setError(err.message)
+      const errorMessage = err.message || 'Failed to save schedule'
+      setError(errorMessage)
+      console.error('Save error:', err)
       return null
     } finally {
       setLoading(false)

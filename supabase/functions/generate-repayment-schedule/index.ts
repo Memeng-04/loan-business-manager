@@ -7,13 +7,27 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  console.log('Function called with method:', req.method)
+  
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    console.log('Parsing request body...')
     const { loanId } = await req.json()
+    console.log('Received loanId:', loanId)
 
+    if (!loanId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing loanId parameter' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Get the authorization header from the request for audit purposes (optional)
+    const authHeader = req.headers.get('authorization')
+    
     const supabase = createClient(
       Deno.env.get('DB_URL')!,
       Deno.env.get('DB_SERVICE_ROLE_KEY')!
@@ -26,7 +40,14 @@ serve(async (req) => {
       .eq('id', loanId)
       .single()
 
-    if (loanError) throw loanError
+    if (loanError) {
+      console.error('Loan fetch error:', loanError)
+      throw new Error(`Failed to fetch loan: ${loanError.message}`)
+    }
+
+    if (!loan) {
+      throw new Error(`No loan found with ID ${loanId}`)
+    }
 
     // Calculate term days
     const start    = new Date(loan.start_date)
@@ -70,8 +91,9 @@ serve(async (req) => {
     )
 
   } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
     return new Response(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: errorMessage }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }

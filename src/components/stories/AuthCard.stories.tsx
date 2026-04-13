@@ -1,7 +1,7 @@
 import type { Meta } from "@storybook/react";
 import logoWhite from "../../assets/icons/192x192/lend-white.png";
 import AuthCard from "../auth/AuthCard";
-import styles from "../../pages/styles/AuthPage.module.css";
+import styles from "../../pages/auth/AuthPage.module.css";
 
 const meta = {
   title: "Components/AuthCard",
@@ -13,7 +13,7 @@ const meta = {
       values: [
         {
           name: "main-blue",
-          value: "#012a6a",
+          value: "#022a6c",
         },
       ],
     },

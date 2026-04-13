@@ -40,9 +40,13 @@ export const WhiteBackground: Story = {
     message: "Loading with white background...",
     fullScreen: false,
   },
-  render: (args) => (
-    <div style={{ backgroundColor: "#ffffff", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <LoadingState {...args} />
-    </div>
-  ),
+};
+
+export const ErrorState: Story = {
+  args: {
+    variant: "error",
+    message: "Failed to load session  .",
+    fullScreen: false,
+    actionLabel: "Retry",
+  },
 };
