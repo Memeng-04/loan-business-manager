@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
+import { RecordPaymentForm } from "../../components/payments/RecordPaymentForm";
 import styles from "./LoanPage.module.css";
 
 export default function LoanPage() {
@@ -11,6 +12,9 @@ export default function LoanPage() {
       <Header title="Loans" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
+      <section className={styles.content}>
+        <RecordPaymentForm />
+      </section>
     </main>
   );
 }

@@ -1,5 +1,5 @@
 import { serve } from 'std/http/server.ts'
-import { createClient } from 'supabase/'
+import { createClient } from 'supabase'
 
 serve(async (req) => {
   if (req.method !== 'POST') {
@@ -74,7 +74,8 @@ serve(async (req) => {
     })
   } catch (error) {
     console.error('Unexpected error:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { 'Content-Type': 'application/json' },
       status: 500,
     })
