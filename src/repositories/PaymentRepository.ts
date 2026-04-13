@@ -13,11 +13,6 @@ export class PaymentRepository {
    * @throws Error if authentication fails or database error occurs
    */
   static async create(payment: CreatePaymentInput): Promise<Payment> {
-    const session = await supabase.auth.getSession();
-    if (!session.data.session?.user?.id) {
-      throw new Error('Authentication required to record payment');
-    }
-
     const { data, error } = await supabase
       .from('payments')
       .insert([
@@ -26,7 +21,6 @@ export class PaymentRepository {
           amount_paid: payment.amount_paid,
           payment_date: payment.payment_date,
           schedule_id: payment.schedule_id || null,
-          user_id: session.data.session.user.id,  // Automatically associate with current user
         },
       ])
       .select()
@@ -46,16 +40,10 @@ export class PaymentRepository {
    * @throws Error if database fetch fails
    */
   static async getByLoanId(loanId: string): Promise<Payment[]> {
-    const session = await supabase.auth.getSession();
-    if (!session.data.session?.user?.id) {
-      throw new Error('Authentication required to fetch payments');
-    }
-
     const { data, error } = await supabase
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
-      .eq('user_id', session.data.session.user.id)  // Filter by current user
       .order('payment_date', { ascending: false });
 
     if (error) {
@@ -76,16 +64,10 @@ export class PaymentRepository {
     loanId: string,
     date: string
   ): Promise<Payment | null> {
-    const session = await supabase.auth.getSession();
-    if (!session.data.session?.user?.id) {
-      throw new Error('Authentication required to fetch payment');
-    }
-
     const { data, error } = await supabase
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
-      .eq('user_id', session.data.session.user.id)  // Filter by current user
       .eq('payment_date', date)
       .single();
 
@@ -109,16 +91,10 @@ export class PaymentRepository {
     paymentId: string,
     updates: Partial<Payment>
   ): Promise<Payment> {
-    const session = await supabase.auth.getSession();
-    if (!session.data.session?.user?.id) {
-      throw new Error('Authentication required to update payment');
-    }
-
     const { data, error } = await supabase
       .from('payments')
       .update(updates)
       .eq('id', paymentId)
-      .eq('user_id', session.data.session.user.id)  // Ensure user owns this payment
       .select()
       .single();
 
@@ -140,17 +116,15 @@ export class PaymentRepository {
     count: number;
     latestPaymentDate: string | null;
   }> {
-    const session = await supabase.auth.getSession();
-    if (!session.data.session?.user?.id) {
-      throw new Error('Authentication required to fetch payment summary');
-    }
-
     const { data, error } = await supabase
       .from('payments')
       .select('amount_paid, payment_date')
       .eq('loan_id', loanId)
-      .eq('user_id', session.data.session.user.id)  // Filter by current user
       .not('amount_paid', 'is', null);
+
+    if (error) {
+      throw new Error(`Failed to fetch payment summary: ${error.message}`);
+    }
 
     if (error) {
       throw new Error(`Failed to fetch payment summary: ${error.message}`);

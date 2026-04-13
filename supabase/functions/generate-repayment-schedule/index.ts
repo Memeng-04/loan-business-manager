@@ -36,12 +36,18 @@ serve(async (req) => {
     
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      {
+        global: {
+          headers: {
+            Authorization: authHeader,
+          },
+        },
+      }
     )
 
-    // Get user from auth header
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token)
+    // Verify we have an authenticated user
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
     
     if (userError || !user?.id) {
       console.error('Auth error:', userError)
@@ -51,22 +57,12 @@ serve(async (req) => {
       )
     }
 
-    // Fetch loan data (verify user owns it)
+    // Fetch loan data (RLS will automatically filter by user)
     const { data: loan, error: loanError } = await supabase
       .from('loans')
-      .select('total_payable, frequency, start_date, end_date, user_id')
+      .select('total_payable, frequency, start_date, end_date')
       .eq('id', loanId)
-      .eq('user_id', user.id)  // Ensure user owns this loan
       .single()
-
-    if (loanError) {
-      console.error('Loan fetch error:', loanError)
-      throw new Error(`Failed to fetch loan: ${loanError.message}`)
-    }
-
-    if (!loan) {
-      throw new Error(`No loan found with ID ${loanId} for user ${user.id}`)
-    }
 
     // Calculate term days
     const start    = new Date(loan.start_date)

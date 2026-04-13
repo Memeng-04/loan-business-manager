@@ -49,19 +49,26 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Create Supabase client with service role (for admin access)
+    // Create Supabase client with user's JWT token (respects RLS policies)
+    // Pass Authorization header so that Supabase will use the user's JWT for auth
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') || '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+      Deno.env.get('SUPABASE_ANON_KEY') || '',
+      {
+        global: {
+          headers: {
+            Authorization: authHeader,
+          },
+        },
+      }
     );
 
-    // Get user from auth header JWT token
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    // Verify we have an authenticated user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
     if (userError || !user?.id) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Unauthorized: Invalid token' }),
+        JSON.stringify({ success: false, error: 'Unauthorized: No authenticated user' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -81,12 +88,11 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Step 1: Fetch loan data (verify user owns this loan)
+    // Step 1: Fetch loan data (RLS will automatically filter by user)
     const { data: loanData, error: loanError } = await supabase
       .from('loans')
       .select('*')
       .eq('id', loanId)
-      .eq('user_id', user.id)  // Ensure user owns this loan
       .single();
 
     if (loanError || !loanData) {

@@ -34,12 +34,11 @@ serve(async (req) => {
       })
     }
 
-    // Check if the loan belongs to the authenticated user
+    // Check if the loan exists (RLS will automatically filter by user)
     const { data: loan, error: loanError } = await supabase
       .from('loans')
-      .select('borrower_id, user_id')
+      .select('borrower_id')
       .eq('id', loanId)
-      .eq('user_id', user.id)  // Ensure user owns the loan
       .single()
 
     if (loanError) {

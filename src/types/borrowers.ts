@@ -9,6 +9,7 @@ export interface Borrower {
   source_of_income?: string;
   secondary_contact_number?: string;
   secondary_contact_name?: string;
+  user_id?: string;
 }
 
 export interface CreateBorrowerInput {
@@ -20,4 +21,5 @@ export interface CreateBorrowerInput {
   source_of_income?: string;
   secondary_contact_number?: string;
   secondary_contact_name?: string;
+  user_id?: string;
 }
