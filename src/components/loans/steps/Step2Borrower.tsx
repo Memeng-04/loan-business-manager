@@ -70,7 +70,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
       {/* Borrower Section Header with Create Button */}
       <div style={{ marginBottom: '0.5rem', marginTop: '-0.5rem' }}>
         <Button
-          onClick={() => navigate('/borrowers/add')}
+          onClick={() => navigate('/borrowers/new')}
           variant="outline"
           size="md"
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
