@@ -57,8 +57,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, updatedSession) => {
-      setSession(updatedSession);
-      setIsLoading(false);
+      if (isMounted) {
+        setSession(updatedSession);
+        setIsLoading(false);
+      }
     });
 
     return () => {
@@ -81,6 +83,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: mapAuthErrorMessage(error?.message ?? null) };
       },
       signOut: async () => {
+        // Clear local state immediately before calling service
+        // to prevent race condition where new user logs in before state clears
+        setSession(null);
+        setIsLoading(false);
+        
+        // Then clear Supabase session server-side
         const { error } = await signOutService();
         return { error: error?.message ?? null };
       },
