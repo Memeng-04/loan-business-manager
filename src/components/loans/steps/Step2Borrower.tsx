@@ -73,7 +73,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
           onClick={() => navigate('/borrowers/new')}
           variant="outline"
           size="md"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          className="gap-2"
         >
           <Plus size={16} />
           Create Borrower
