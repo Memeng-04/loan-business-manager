@@ -25,11 +25,21 @@ serve(async (req) => {
       { global: { headers: { 'Authorization': req.headers.get('Authorization')! } } }
     )
 
+    // Get authenticated user
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user?.id) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: No authenticated user' }), {
+        headers: { 'Content-Type': 'application/json' },
+        status: 401,
+      })
+    }
+
     // Check if the loan belongs to the authenticated user
     const { data: loan, error: loanError } = await supabase
       .from('loans')
-      .select('borrower_id')
+      .select('borrower_id, user_id')
       .eq('id', loanId)
+      .eq('user_id', user.id)  // Ensure user owns the loan
       .single()
 
     if (loanError) {
@@ -40,8 +50,7 @@ serve(async (req) => {
       })
     }
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user || user.id !== loan.borrower_id) {
+    if (!loan) {
       return new Response(JSON.stringify({ error: 'Unauthorized: Loan does not belong to the authenticated user.' }), {
         headers: { 'Content-Type': 'application/json' },
         status: 403,

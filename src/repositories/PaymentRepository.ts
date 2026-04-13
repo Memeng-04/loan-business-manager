@@ -1,19 +1,20 @@
 // src/repositories/PaymentRepository.ts
 // Repository for all payment-related Supabase operations (US-09: Record Payment)
+// Updated for multi-user support
 
 import { supabase } from '../services/supabase';
 import type { Payment, CreatePaymentInput } from '../types/payment';
 
 export class PaymentRepository {
   /**
-   * Create a new payment record
+   * Create a new payment record for the current authenticated user
    * @param payment - Payment data to save
    * @returns Created payment object with id
    * @throws Error if authentication fails or database error occurs
    */
   static async create(payment: CreatePaymentInput): Promise<Payment> {
     const session = await supabase.auth.getSession();
-    if (!session.data.session) {
+    if (!session.data.session?.user?.id) {
       throw new Error('Authentication required to record payment');
     }
 
@@ -25,6 +26,7 @@ export class PaymentRepository {
           amount_paid: payment.amount_paid,
           payment_date: payment.payment_date,
           schedule_id: payment.schedule_id || null,
+          user_id: session.data.session.user.id,  // Automatically associate with current user
         },
       ])
       .select()
@@ -38,14 +40,14 @@ export class PaymentRepository {
   }
 
   /**
-   * Fetch all payments for a specific loan
+   * Fetch all payments for a specific loan (only if user owns loan)
    * @param loanId - ID of the loan
    * @returns Array of payments for the loan, sorted by payment_date descending
    * @throws Error if database fetch fails
    */
   static async getByLoanId(loanId: string): Promise<Payment[]> {
     const session = await supabase.auth.getSession();
-    if (!session.data.session) {
+    if (!session.data.session?.user?.id) {
       throw new Error('Authentication required to fetch payments');
     }
 
@@ -53,6 +55,7 @@ export class PaymentRepository {
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
+      .eq('user_id', session.data.session.user.id)  // Filter by current user
       .order('payment_date', { ascending: false });
 
     if (error) {
@@ -63,7 +66,7 @@ export class PaymentRepository {
   }
 
   /**
-   * Fetch payment for a specific date and loan
+   * Fetch payment for a specific date and loan (only if user owns loan)
    * @param loanId - ID of the loan
    * @param date - Payment date (ISO format YYYY-MM-DD)
    * @returns Payment object or null if not found
@@ -74,7 +77,7 @@ export class PaymentRepository {
     date: string
   ): Promise<Payment | null> {
     const session = await supabase.auth.getSession();
-    if (!session.data.session) {
+    if (!session.data.session?.user?.id) {
       throw new Error('Authentication required to fetch payment');
     }
 
@@ -82,6 +85,7 @@ export class PaymentRepository {
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
+      .eq('user_id', session.data.session.user.id)  // Filter by current user
       .eq('payment_date', date)
       .single();
 
@@ -94,7 +98,7 @@ export class PaymentRepository {
   }
 
   /**
-   * Update payment status and allocation details
+   * Update payment status and allocation details (only if user owns payment)
    * Called after edge function processes the payment
    * @param paymentId - ID of the payment to update
    * @param updates - Partial payment object with fields to update
@@ -106,7 +110,7 @@ export class PaymentRepository {
     updates: Partial<Payment>
   ): Promise<Payment> {
     const session = await supabase.auth.getSession();
-    if (!session.data.session) {
+    if (!session.data.session?.user?.id) {
       throw new Error('Authentication required to update payment');
     }
 
@@ -114,6 +118,7 @@ export class PaymentRepository {
       .from('payments')
       .update(updates)
       .eq('id', paymentId)
+      .eq('user_id', session.data.session.user.id)  // Ensure user owns this payment
       .select()
       .single();
 
@@ -125,7 +130,7 @@ export class PaymentRepository {
   }
 
   /**
-   * Get payment summary for a loan (total paid, remaining, etc.)
+   * Get payment summary for a loan (only if user owns loan)
    * @param loanId - ID of the loan
    * @returns { totalPaid, count, latestPaymentDate }
    * @throws Error if database fetch fails
@@ -136,7 +141,7 @@ export class PaymentRepository {
     latestPaymentDate: string | null;
   }> {
     const session = await supabase.auth.getSession();
-    if (!session.data.session) {
+    if (!session.data.session?.user?.id) {
       throw new Error('Authentication required to fetch payment summary');
     }
 
@@ -144,6 +149,7 @@ export class PaymentRepository {
       .from('payments')
       .select('amount_paid, payment_date')
       .eq('loan_id', loanId)
+      .eq('user_id', session.data.session.user.id)  // Filter by current user
       .not('amount_paid', 'is', null);
 
     if (error) {

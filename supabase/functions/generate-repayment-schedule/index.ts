@@ -25,19 +25,38 @@ serve(async (req) => {
       )
     }
 
-    // Get the authorization header from the request for audit purposes (optional)
-    const _authHeader = req.headers.get('authorization')
+    // Get the authorization header and extract user from JWT
+    const authHeader = req.headers.get('authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
     
     const supabase = createClient(
-      Deno.env.get('DB_URL')!,
-      Deno.env.get('DB_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
-    // Fetch loan data
+    // Get user from auth header
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token)
+    
+    if (userError || !user?.id) {
+      console.error('Auth error:', userError)
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Fetch loan data (verify user owns it)
     const { data: loan, error: loanError } = await supabase
       .from('loans')
-      .select('total_payable, frequency, start_date, end_date')
+      .select('total_payable, frequency, start_date, end_date, user_id')
       .eq('id', loanId)
+      .eq('user_id', user.id)  // Ensure user owns this loan
       .single()
 
     if (loanError) {
@@ -46,7 +65,7 @@ serve(async (req) => {
     }
 
     if (!loan) {
-      throw new Error(`No loan found with ID ${loanId}`)
+      throw new Error(`No loan found with ID ${loanId} for user ${user.id}`)
     }
 
     // Calculate term days

@@ -55,6 +55,17 @@ Deno.serve(async (req: Request) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
     );
 
+    // Get user from auth header JWT token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    
+    if (userError || !user?.id) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized: Invalid token' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Parse request body
     const body: AllocatePaymentRequest = await req.json();
     const { loanId, amountPaid, paymentDate, scheduleId } = body;
@@ -70,11 +81,12 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Step 1: Fetch loan data
+    // Step 1: Fetch loan data (verify user owns this loan)
     const { data: loanData, error: loanError } = await supabase
       .from('loans')
       .select('*')
       .eq('id', loanId)
+      .eq('user_id', user.id)  // Ensure user owns this loan
       .single();
 
     if (loanError || !loanData) {
