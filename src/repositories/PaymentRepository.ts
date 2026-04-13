@@ -126,10 +126,6 @@ export class PaymentRepository {
       throw new Error(`Failed to fetch payment summary: ${error.message}`);
     }
 
-    if (error) {
-      throw new Error(`Failed to fetch payment summary: ${error.message}`);
-    }
-
     const payments = (data || []) as Array<{
       amount_paid: number;
       payment_date: string;

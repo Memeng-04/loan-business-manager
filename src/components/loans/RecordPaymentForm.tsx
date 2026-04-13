@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRecordPayment } from '../../hooks/useRecordPayment';
-import { Button } from '../Button'; // Assuming a Button component exists
-import classNames from 'classnames';
+import Button from '../Button';
 
 interface RecordPaymentFormProps {
     loanId: string;
@@ -26,7 +25,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({ loanId, on
 
         const newPayment = await recordPayment({
             loan_id: loanId,
-            amount: Number(amount),
+            amount_paid: Number(amount),
             payment_date: paymentDate,
         });
 
@@ -74,10 +73,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({ loanId, on
                 <Button
                     type="submit"
                     disabled={loading}
-                    className={classNames(
-                        "w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
-                        { 'opacity-50 cursor-not-allowed': loading }
-                    )}
+                    className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     {loading ? 'Recording...' : 'Record Payment'}
                 </Button>
