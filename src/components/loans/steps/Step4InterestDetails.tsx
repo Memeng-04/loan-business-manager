@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
-import { Lightbulb, BarChart3, AlertCircle, Check } from 'lucide-react'
+import { Lightbulb, BarChart3, Check } from 'lucide-react'
 import {
   calculateInterest,
   calculateFromPercentage,
@@ -186,13 +186,6 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 }
               ]}
             />
-          )}
-          {!preview && !isLoading && (
-            <div className={styles.warningBox}>
-              <AlertCircle size={16} style={{ display: 'inline', marginRight: '0.5rem', color: '#ca8a04' }} />
-              Enter valid {isFixedLoan ? 'total payable' : 'interest rate'} to
-              see preview
-            </div>
           )}
         </div>
       </div>
