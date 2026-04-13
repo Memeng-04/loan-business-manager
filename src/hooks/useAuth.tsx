@@ -90,6 +90,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Then clear Supabase session server-side
         const { error } = await signOutService();
+        
+        // Force hard redirect to release cached data from memory
+        window.location.href = '/auth';
+        
         return { error: error?.message ?? null };
       },
     }),

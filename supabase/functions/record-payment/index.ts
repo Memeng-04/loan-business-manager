@@ -1,10 +1,19 @@
 import { serve } from 'std/http/server.ts'
 import { createClient } from 'supabase'
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
 serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 405,
     })
   }
@@ -14,7 +23,7 @@ serve(async (req) => {
 
     if (!loanId || !amount || !paymentDate) {
       return new Response(JSON.stringify({ error: 'Missing required fields: loanId, amount, paymentDate' }), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       })
     }
@@ -29,7 +38,7 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.id) {
       return new Response(JSON.stringify({ error: 'Unauthorized: No authenticated user' }), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
       })
     }
@@ -44,14 +53,14 @@ serve(async (req) => {
     if (loanError) {
       console.error('Error fetching loan:', loanError)
       return new Response(JSON.stringify({ error: loanError.message }), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       })
     }
 
     if (!loan) {
       return new Response(JSON.stringify({ error: 'Unauthorized: Loan does not belong to the authenticated user.' }), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 403,
       })
     }
@@ -60,7 +69,7 @@ serve(async (req) => {
       .from('payments')
       .insert({
         loan_id: loanId,
-        amount: amount,
+        amount_paid: amount,
         payment_date: paymentDate,
       })
       .select()
@@ -69,7 +78,7 @@ serve(async (req) => {
     if (insertError) {
       console.error('Error inserting payment:', insertError)
       return new Response(JSON.stringify({ error: insertError.message }), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       })
     }
@@ -77,14 +86,14 @@ serve(async (req) => {
     // TODO: Implement logic to update loan balance and repayment schedule here
 
     return new Response(JSON.stringify({ success: true, payment }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 201,
     })
   } catch (error) {
     console.error('Unexpected error:', error)
     const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
     return new Response(JSON.stringify({ error: errorMessage }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     })
   }

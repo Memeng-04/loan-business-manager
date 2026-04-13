@@ -64,6 +64,13 @@ serve(async (req) => {
       .eq('id', loanId)
       .single()
 
+    if (loanError || !loan) {
+      return new Response(
+        JSON.stringify({ error: 'Loan not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     // Calculate term days
     const start    = new Date(loan.start_date)
     const end      = new Date(loan.end_date)
