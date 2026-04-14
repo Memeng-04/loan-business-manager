@@ -80,9 +80,8 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
           paymentDate,
         },
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.data.session.access_token}`,
-        },
+          Authorization: `Bearer ${session.data.session.access_token}`
+        }
       });
 
       if (error) {
