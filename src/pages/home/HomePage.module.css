@@ -2,18 +2,118 @@
   min-height: 100svh;
   --header-height: 3.75rem;
   --mobile-footer-height: 4.5rem;
-  background-color: #ffffff;
 }
 
 .content {
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
-  padding-bottom: var(--mobile-footer-height);
+  padding: 1rem 1rem var(--mobile-footer-height);
+}
+
+.hero {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.greeting {
+  color: var(--color-main-blue);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.subtitle {
+  color: var(--color-grey-text);
+  font-size: 0.95rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.balanceCard,
+.revenueCard,
+.dueCard {
+  min-height: auto;
+}
+
+.chartLegendRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.chartWrap {
+  margin-top: 0.5rem;
+  min-height: 240px;
+}
+
+.legendList {
+  margin-top: 0;
+  display: grid;
+  gap: 0.45rem;
+  align-content: center;
+}
+
+.legendItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.legendDot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+}
+
+.emptyText {
+  margin-top: 0.85rem;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .chartLegendRow {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+    gap: 1rem;
+  }
+
+  .chartWrap {
+    margin-top: 0.2rem;
+  }
+
+  .legendList {
+    min-height: 240px;
+    align-self: center;
+  }
 }
 
 @media (min-width: 1024px) {
   .content {
     min-height: calc(100svh - var(--header-height));
-    padding-bottom: 0;
+    padding: 1.35rem 1.35rem 1.2rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .balanceCard {
+    grid-column: span 5;
+  }
+
+  .revenueCard {
+    grid-column: span 7;
+  }
+
+  .dueCard {
+    grid-column: span 12;
   }
 }
