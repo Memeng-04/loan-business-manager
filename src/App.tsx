@@ -9,26 +9,7 @@ import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerD
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
-import { useEffect } from "react";
-import { supabase } from "./services/supabase";
-//something
 function App() {
-  useEffect(() => {
-    const testConnection = async () => {
-      try {
-        const { data, error } = await supabase.from("borrowers").select("*");
-        if (error) {
-          console.error("Supabase connection failed:", error.message);
-        } else {
-          console.log("Supabase connection successful! Data found:", data);
-        }
-      } catch (err) {
-        console.error("Unexpected error connecting to Supabase:", err);
-      }
-    };
-    testConnection();
-  }, []);
-
   return (
     <Routes>
       <Route element={<PublicOnlyRoute />}>

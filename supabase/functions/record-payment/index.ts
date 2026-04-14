@@ -71,13 +71,14 @@ serve(async (req) => {
         loan_id: loanId,
         amount_paid: amount,
         payment_date: paymentDate,
+        user_id: user.id,
       })
       .select()
       .single()
 
-    if (insertError) {
+    if (insertError || !payment) {
       console.error('Error inserting payment:', insertError)
-      return new Response(JSON.stringify({ error: insertError.message }), {
+      return new Response(JSON.stringify({ error: insertError?.message || 'Failed to insert payment' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       })

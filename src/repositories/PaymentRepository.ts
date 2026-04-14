@@ -1,18 +1,18 @@
 // src/repositories/PaymentRepository.ts
 // Repository for all payment-related Supabase operations (US-09: Record Payment)
-// Updated for multi-user support
+// Updated for multi-user support with explicit user_id filtering
 
 import { supabase } from '../services/supabase';
+import { getCurrentUserId } from '../services/auth';
 import type { Payment, CreatePaymentInput } from '../types/payment';
 
 export class PaymentRepository {
   /**
    * Create a new payment record for the current authenticated user
-   * @param payment - Payment data to save
-   * @returns Created payment object with id
-   * @throws Error if authentication fails or database error occurs
    */
   static async create(payment: CreatePaymentInput): Promise<Payment> {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from('payments')
       .insert([
@@ -21,6 +21,7 @@ export class PaymentRepository {
           amount_paid: payment.amount_paid,
           payment_date: payment.payment_date,
           schedule_id: payment.schedule_id || null,
+          user_id: userId,
         },
       ])
       .select()
@@ -35,15 +36,15 @@ export class PaymentRepository {
 
   /**
    * Fetch all payments for a specific loan (only if user owns loan)
-   * @param loanId - ID of the loan
-   * @returns Array of payments for the loan, sorted by payment_date descending
-   * @throws Error if database fetch fails
    */
   static async getByLoanId(loanId: string): Promise<Payment[]> {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
+      .eq('user_id', userId)
       .order('payment_date', { ascending: false });
 
     if (error) {
@@ -55,24 +56,22 @@ export class PaymentRepository {
 
   /**
    * Fetch payment for a specific date and loan (only if user owns loan)
-   * @param loanId - ID of the loan
-   * @param date - Payment date (ISO format YYYY-MM-DD)
-   * @returns Payment object or null if not found
-   * @throws Error if database fetch fails
    */
   static async getByDate(
     loanId: string,
     date: string
   ): Promise<Payment | null> {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
       .eq('payment_date', date)
+      .eq('user_id', userId)
       .single();
 
     if (error && error.code !== 'PGRST116') {
-      // PGRST116 is "not found" error, which is okay
       throw new Error(`Failed to fetch payment: ${error.message}`);
     }
 
@@ -81,20 +80,18 @@ export class PaymentRepository {
 
   /**
    * Update payment status and allocation details (only if user owns payment)
-   * Called after edge function processes the payment
-   * @param paymentId - ID of the payment to update
-   * @param updates - Partial payment object with fields to update
-   * @returns Updated payment object
-   * @throws Error if update fails
    */
   static async update(
     paymentId: string,
     updates: Partial<Payment>
   ): Promise<Payment> {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from('payments')
       .update(updates)
       .eq('id', paymentId)
+      .eq('user_id', userId)
       .select()
       .single();
 
@@ -107,19 +104,19 @@ export class PaymentRepository {
 
   /**
    * Get payment summary for a loan (only if user owns loan)
-   * @param loanId - ID of the loan
-   * @returns { totalPaid, count, latestPaymentDate }
-   * @throws Error if database fetch fails
    */
   static async getSummary(loanId: string): Promise<{
     totalPaid: number;
     count: number;
     latestPaymentDate: string | null;
   }> {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from('payments')
       .select('amount_paid, payment_date')
       .eq('loan_id', loanId)
+      .eq('user_id', userId)
       .not('amount_paid', 'is', null);
 
     if (error) {
@@ -141,66 +138,5 @@ export class PaymentRepository {
             )[0].payment_date
           : null,
     };
-  }
-
-  /**
-   * Legacy method for backward compatibility - calls edge function for payment recording
-   * @deprecated Use create() instead
-   */
-  async recordPayment(paymentInput: CreatePaymentInput): Promise<Payment | null> {
-    try {
-      const { loan_id, amount_paid, payment_date } = paymentInput;
-
-      // Call the Supabase Edge Function to record the payment
-      const { data, error } = await supabase.functions.invoke('record-payment', {
-        body: JSON.stringify({
-          loanId: loan_id,
-          amount: amount_paid,
-          paymentDate: payment_date,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (error) {
-        console.error('Error invoking record-payment function:', error);
-        throw new Error(`Failed to record payment: ${error.message}`);
-      }
-
-      if (data && data.success) {
-        return data.payment as Payment;
-      } else {
-        console.error('record-payment function returned an error:', data);
-        throw new Error(`Failed to record payment: ${data?.error || 'Unknown error'}`);
-      }
-    } catch (error: any) {
-      console.error('PaymentRepository.recordPayment error:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Legacy method for backward compatibility
-   * @deprecated Use getByLoanId() instead
-   */
-  async getPaymentsByLoanId(loanId: string): Promise<Payment[]> {
-    try {
-      const { data, error } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('loan_id', loanId)
-        .order('payment_date', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching payments:', error);
-        throw new Error(`Failed to fetch payments: ${error.message}`);
-      }
-
-      return data as Payment[];
-    } catch (error: any) {
-      console.error('PaymentRepository.getPaymentsByLoanId error:', error);
-      throw error;
-    }
   }
 }

@@ -2,7 +2,7 @@
 // Custom hook for payment recording and allocation (US-09, US-10, US-11)
 
 import { useState } from 'react';
-import { supabase } from '../services/supabase';
+import { getAccessToken } from '../services/auth';
 import { PaymentRepository } from '../repositories/PaymentRepository';
 import type { CreatePaymentInput, Payment, PaymentAllocationResult } from '../types/payment';
 
@@ -66,27 +66,36 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
     paymentDate: string
   ): Promise<PaymentAllocationResult | null> => {
     try {
-      const session = await supabase.auth.getSession();
-      if (!session.data.session) {
-        throw new Error('Authentication required');
-      }
+      // Get a FRESH access token from the Supabase client
+      const accessToken = await getAccessToken();
 
-      // Call the allocate-payment edge function
-      const { data, error } = await supabase.functions.invoke('allocate-payment', {
-        body: {
-          loanId,
-          amountPaid,
-          scheduleId,
-          paymentDate,
-        },
-        headers: {
-          Authorization: `Bearer ${session.data.session.access_token}`
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/allocate-payment`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            loanId,
+            amountPaid,
+            scheduleId,
+            paymentDate,
+          }),
         }
-      });
+      );
 
-      if (error) {
-        throw new Error(`Allocation failed: ${error.message}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          (errorData as { error?: string }).error || 
+          `HTTP ${response.status}: Allocation failed`
+        );
       }
+
+      const data = await response.json();
 
       if (!data?.success) {
         throw new Error(data?.error || 'Payment allocation failed');

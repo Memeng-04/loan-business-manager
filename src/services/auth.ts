@@ -55,3 +55,28 @@ export async function getCurrentSession(): Promise<{
     error,
   };
 }
+
+/**
+ * Get a fresh access token for edge function calls.
+ * Always reads from the Supabase client's internal storage
+ * which handles token refresh automatically.
+ */
+export async function getAccessToken(): Promise<string> {
+  const { data, error } = await supabase.auth.getSession();
+  if (error || !data.session?.access_token) {
+    throw new Error('Not authenticated — please log in first');
+  }
+  return data.session.access_token;
+}
+
+/**
+ * Get the current authenticated user's ID.
+ * Uses getUser() which validates the token server-side.
+ */
+export async function getCurrentUserId(): Promise<string> {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user?.id) {
+    throw new Error('Not authenticated');
+  }
+  return user.id;
+}

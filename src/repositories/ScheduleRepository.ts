@@ -1,12 +1,16 @@
 import { supabase } from '../services/supabase'
+import { getCurrentUserId } from '../services/auth'
 import type { ScheduleEntry } from '../strategies/ScheduleStrategy'
 
 export class ScheduleRepository {
   static async getByLoanId(loanId: string): Promise<ScheduleEntry[]> {
+    const userId = await getCurrentUserId()
+
     const { data, error } = await supabase
       .from('payment_schedules')
       .select('*')
       .eq('loan_id', loanId)
+      .eq('user_id', userId)
       .order('due_date', { ascending: true })
 
     if (error) throw error
@@ -14,20 +18,14 @@ export class ScheduleRepository {
   }
 
   static async saveSchedule(schedules: ScheduleEntry[]): Promise<ScheduleEntry[]> {
-    // 1. Fetch the current authenticated user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
-    if (!user || userError) {
-      throw new Error('User must be authenticated to save payment schedules')
-    }
+    const userId = await getCurrentUserId()
 
-    // 2. Map schedules to include user_id for RLS compliance
+    // Map schedules to include user_id for RLS compliance
     const schedulesWithUserId = schedules.map(schedule => ({
       ...schedule,
-      user_id: user.id
+      user_id: userId
     }))
 
-    // 3. Insert schedules with user_id
     const { data, error } = await supabase
       .from('payment_schedules')
       .insert(schedulesWithUserId)
@@ -35,5 +33,17 @@ export class ScheduleRepository {
 
     if (error) throw error
     return data as ScheduleEntry[]
+  }
+
+  static async deleteByLoanId(loanId: string): Promise<void> {
+    const userId = await getCurrentUserId()
+
+    const { error } = await supabase
+      .from('payment_schedules')
+      .delete()
+      .eq('loan_id', loanId)
+      .eq('user_id', userId)
+
+    if (error) throw error
   }
 }

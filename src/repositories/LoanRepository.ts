@@ -1,4 +1,5 @@
 import { supabase } from "../services/supabase";
+import { getCurrentUserId } from "../services/auth";
 import type { Loan } from "../types/loans";
 
 export class LoanRepository {
@@ -6,9 +7,11 @@ export class LoanRepository {
    * Create a new loan for the current authenticated user
    */
   static async create(loan: Loan) {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from("loans")
-      .insert(loan)
+      .insert({ ...loan, user_id: userId })
       .select()
       .single();
 
@@ -20,10 +23,13 @@ export class LoanRepository {
    * Get all loans for a specific borrower (only if user owns borrower)
    */
   static async getByBorrowerId(borrowerId: string): Promise<Loan[]> {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from("loans")
       .select("*")
       .eq("borrower_id", borrowerId)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -34,6 +40,8 @@ export class LoanRepository {
    * Get all loans for the current authenticated user
    */
   static async getAll() {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from("loans")
       .select(
@@ -46,6 +54,7 @@ export class LoanRepository {
         )
       `,
       )
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -56,6 +65,8 @@ export class LoanRepository {
    * Get a specific loan by ID (only if owned by current user)
    */
   static async getById(id: string) {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from("loans")
       .select(
@@ -69,6 +80,7 @@ export class LoanRepository {
       `,
       )
       .eq("id", id)
+      .eq("user_id", userId)
       .single();
 
     if (error) throw error;
@@ -79,10 +91,13 @@ export class LoanRepository {
    * Update loan status (only if owned by current user)
    */
   static async updateStatus(id: string, status: string) {
+    const userId = await getCurrentUserId();
+
     const { data, error } = await supabase
       .from("loans")
       .update({ status })
       .eq("id", id)
+      .eq("user_id", userId)
       .select()
       .single();
 

@@ -92,9 +92,10 @@ serve(async (req) => {
 
     if (deleteError) throw deleteError
 
-    // Save new schedule
+    // Save new schedule with user_id for RLS compliance
     const rows = schedule.map(entry => ({
       loan_id:    loanId,
+      user_id:    user.id,
       due_date:   entry.due_date,
       amount_due: entry.amount_due,
       status:     'unpaid'
@@ -105,7 +106,9 @@ serve(async (req) => {
       .insert(rows)
       .select()
 
-    if (error) throw error
+    if (error || !data) {
+      throw new Error(error?.message || 'Failed to insert payment schedules')
+    }
 
     return new Response(
       JSON.stringify({ success: true, schedule: data }),

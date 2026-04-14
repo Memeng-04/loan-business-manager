@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react'
-import { supabase } from '../services/supabase'
 import { generateSchedule } from '../strategies/ScheduleStrategy'
 import type { ScheduleEntry } from '../strategies/ScheduleStrategy'
 import type { PaymentFrequency } from '../types/loans'
+import { LoanRepository } from '../repositories/LoanRepository'
+import { ScheduleRepository } from '../repositories/ScheduleRepository'
 
 export const useRepaymentSchedule = () => {
   const [schedule, setSchedule] = useState<ScheduleEntry[]>([])
@@ -17,23 +18,18 @@ export const useRepaymentSchedule = () => {
     setSaved(false)
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('loans')
-        .select('total_payable, frequency, start_date, end_date')
-        .eq('id', loanId)
-        .single()
+      const loan = await LoanRepository.getById(loanId)
 
-      if (fetchError) throw new Error(`Failed to fetch loan details: ${fetchError.message}`)
-      if (!data)      throw new Error(`No loan found for ID ${loanId}`)
+      if (!loan) throw new Error(`No loan found for ID ${loanId}`)
 
-      const start    = new Date(data.start_date)
-      const end      = new Date(data.end_date)
+      const start    = new Date(loan.start_date)
+      const end      = new Date(loan.end_date)
       const termDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
 
       const generated = generateSchedule(
-        data.start_date,
-        data.total_payable,
-        data.frequency as PaymentFrequency,
+        loan.start_date,
+        loan.total_payable,
+        loan.frequency as PaymentFrequency,
         termDays
       )
 
@@ -45,34 +41,46 @@ export const useRepaymentSchedule = () => {
     }
   }, [])
 
+  /**
+   * Save the repayment schedule directly via ScheduleRepository.
+   * No edge function needed — generates client-side and saves via Supabase client.
+   */
   const saveSchedule = async (loanId: string) => {
     setLoading(true)
     setError(null)
 
     try {
-      // Get JWT token from current session
-      const { data: { session } } = await supabase.auth.getSession()
+      // 1. Fetch the loan details
+      const loan = await LoanRepository.getById(loanId)
+      if (!loan) throw new Error(`No loan found for ID ${loanId}`)
 
-      if (!session) throw new Error('Not authenticated — please log in first')
+      // 2. Calculate term days
+      const start    = new Date(loan.start_date)
+      const end      = new Date(loan.end_date)
+      const termDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
 
-      const { data, error: invokeError } = await supabase.functions.invoke(
-        'generate-repayment-schedule',
-        {
-          body: { loanId },
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
-        }
+      // 3. Generate the schedule client-side
+      const generated = generateSchedule(
+        loan.start_date,
+        loan.total_payable,
+        loan.frequency as PaymentFrequency,
+        termDays
       )
 
-      if (invokeError) throw new Error(invokeError.message || 'Failed to save schedule')
+      // 4. Map schedule entries to include loan_id for DB insert
+      const schedulesForDb = generated.map(entry => ({
+        ...entry,
+        loan_id: loanId,
+      }))
 
-      if (data && typeof data === 'object' && 'error' in data) {
-        throw new Error((data as { error: string }).error)
-      }
+      // 5. Delete existing schedules for this loan first
+      await ScheduleRepository.deleteByLoanId(loanId)
+
+      // 6. Save via Repository (handles user_id automatically)
+      const savedData = await ScheduleRepository.saveSchedule(schedulesForDb)
 
       setSaved(true)
-      return data
+      return savedData
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to save schedule'
       setError(errorMessage)

@@ -96,9 +96,10 @@ Deno.serve(async (req: Request) => {
       .single();
 
     if (loanError || !loanData) {
+      const statusCode = loanError?.code === 'PGRST116' ? 404 : 400;
       return new Response(
-        JSON.stringify({ success: false, error: `Failed to fetch loan: ${loanError?.message}` }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: `Failed to fetch loan: ${loanError?.message || 'Loan not found'}` }),
+        { status: statusCode, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -110,9 +111,10 @@ Deno.serve(async (req: Request) => {
       .single();
 
     if (scheduleError || !scheduleData) {
+      const statusCode = scheduleError?.code === 'PGRST116' ? 404 : 400;
       return new Response(
-        JSON.stringify({ success: false, error: `Failed to fetch schedule: ${scheduleError?.message}` }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: `Failed to fetch schedule: ${scheduleError?.message || 'Schedule not found'}` }),
+        { status: statusCode, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -150,14 +152,16 @@ Deno.serve(async (req: Request) => {
           principal_portion: principalPortion,
           remaining_balance: remainingBalance,
           status: paymentStatus,
+          user_id: user.id,
         },
       ])
       .select()
       .single();
 
     if (paymentError || !paymentData) {
+      console.error('Error creating payment:', paymentError);
       return new Response(
-        JSON.stringify({ success: false, error: `Failed to create payment: ${paymentError?.message}` }),
+        JSON.stringify({ success: false, error: `Failed to create payment: ${paymentError?.message || 'Unknown error'}` }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
