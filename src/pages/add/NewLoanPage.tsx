@@ -1,54 +1,75 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
-import LoadingState from "../../components/LoadingState";
-import { LoanForm } from "../../components/loans/fixedLoanForm";
-import { PercentageLoanForm } from "../../components/loans/PercentageLoanForm";
+import { CreateLoanWizard } from "../../components/loans/CreateLoanWizard";
 import { RepaymentSchedule } from "../../components/loans/RepaymentSchedule";
-import { useBorrowers } from "../../hooks/useBorrowers";
 import styles from "./NewLoanPage.module.css";
+import LoadingState from "../../components/LoadingState";
 
 export default function NewLoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const { borrowers, loading, error } = useBorrowers();
-  const selectedBorrowerId =
-    borrowers.find((borrower) => borrower.id)?.id ?? "";
-  const selectedLoanId = "";
+  const [createdLoanData, setCreatedLoanData] = useState<{ loanId: string; borrowerId: string } | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Load loan data from sessionStorage on mount
+  useEffect(() => {
+    const savedLoanData = sessionStorage.getItem('createdLoanData');
+    if (savedLoanData) {
+      try {
+        const parsedData = JSON.parse(savedLoanData);
+        setCreatedLoanData(parsedData);
+      } catch (error) {
+        console.error('Failed to restore loan data from sessionStorage:', error);
+        sessionStorage.removeItem('createdLoanData');
+      }
+    }
+  }, []);
+
+  const handleWizardSuccess = (loanData: { loanId: string; borrowerId: string }) => {
+    setCreatedLoanData(loanData);
+    // Save to sessionStorage so it persists across page refreshes
+    sessionStorage.setItem('createdLoanData', JSON.stringify(loanData));
+    setIsTransitioning(true);
+    // Simulate loading time for the schedule generation
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 1500); 
+  };
+
+  const handleReturnToWizard = () => {
+    setCreatedLoanData(null);
+    sessionStorage.removeItem('createdLoanData');
+  };
 
   return (
     <main className={styles.page}>
-      <Header
-        title="Add Loan"
-        onMenuClick={() => setIsNavOpen((prev) => !prev)}
-      />
+      <Header title="Add Loan" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
-      <section className={styles.content}>
-        {loading ? (
-          <LoadingState message="Loading..." fullScreen={false} />
-        ) : null}
-        {error ? (
-          <LoadingState variant="error" message={error} fullScreen={false} />
-        ) : null}
-        {!loading && !error && !selectedBorrowerId ? (
-          <p className={styles.stateText}>Error</p>
-        ) : null}
-
-        {!loading && !error && selectedBorrowerId ? (
-          <LoanForm borrowerId={selectedBorrowerId} />
-        ) : null}
-
-        {!loading && !error && selectedBorrowerId ? (
-          <PercentageLoanForm borrowerId={selectedBorrowerId} />
-        ) : null}
-
-        {!loading && !error && selectedBorrowerId ? (
-          <RepaymentSchedule
-            borrowerId={selectedBorrowerId}
-            loanId={selectedLoanId}
+      {!createdLoanData && !isTransitioning && (
+        <section className={styles.content}>
+          <CreateLoanWizard
+            onSuccess={handleWizardSuccess}
           />
-        ) : null}
-      </section>
+        </section>
+      )}
+
+      {isTransitioning && (
+        <section className={styles.content}>
+          <LoadingState message="Generating Repayment Schedule..." fullScreen={false} />
+        </section>
+      )}
+
+      {createdLoanData && !isTransitioning && (
+        <section className={styles.content}>
+          <RepaymentSchedule
+            loanId={createdLoanData.loanId}
+            borrowerId={createdLoanData.borrowerId}
+            onScheduleSaved={handleReturnToWizard}
+            onBack={handleReturnToWizard}
+          />
+        </section>
+      )}
     </main>
   );
 }

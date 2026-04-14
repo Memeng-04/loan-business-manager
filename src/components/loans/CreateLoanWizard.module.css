@@ -1,0 +1,269 @@
+.wizardContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-poppins);
+  background-color: #f5f7fa;
+  min-height: auto;
+}
+
+.header {
+  padding: 2.5rem 3rem;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  background: #fff;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headerTitle {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #012a6a;
+  margin: 0;
+}
+
+.headerSubtitle {
+  font-size: 0.95rem;
+  color: #4a5568;
+  margin-top: 0.75rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.progressSection {
+  padding: 1.75rem 3rem 1.25rem 3rem;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.progressBar {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.progressStep {
+  flex: 1;
+  height: 0.5rem;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.progressStepActive {
+  background-color: transparent;
+}
+
+.progressStepFill {
+  height: 100%;
+  background: #93c5fd;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+}
+
+.stepLabel {
+  font-size: 0.8rem;
+  color: #4a5568;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 1.5rem;
+  padding: 0 3rem;
+}
+
+/* Content area with generous padding for spacious feel */
+.contentArea {
+  padding: 2rem 3rem;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.contentArea::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.contentArea::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.contentArea::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 0.25rem;
+}
+
+.contentArea::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.successEmoji {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.successTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #22863a;
+  margin-bottom: 0.75rem;
+}
+
+.successText {
+  color: #4a5568;
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.successCountdown {
+  font-size: 0.9rem;
+  color: #718096;
+  font-weight: 600;
+}
+
+.footerNav {
+  padding: 1rem 3rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.navButtonGroup {
+  display: flex;
+  gap: 1.5rem;
+  margin-left: auto;
+}
+
+.navPlaceholder {
+  display: none;
+}
+
+/* Tablet - Moderate padding adjustments */
+@media (max-width: 1024px) {
+  .header {
+    padding: 2rem 2.5rem;
+  }
+
+  .headerTitle {
+    font-size: 2rem;
+  }
+
+  .progressSection {
+    padding: 1.5rem 2.5rem 1rem 2.5rem;
+  }
+
+  .stepLabel {
+    padding: 0 2.5rem;
+  }
+
+  .contentArea {
+    padding: 1.75rem 2.5rem;
+  }
+
+  .footerNav {
+    padding: 1.5rem 2.5rem;
+    gap: 1rem;
+  }
+}
+
+/* Mobile - Stack and reduce padding */
+@media (max-width: 768px) {
+  .wizardContainer {
+    padding-bottom: 6rem;
+  }
+
+  .header {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .headerTitle {
+    font-size: 1.75rem;
+  }
+
+  .headerSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .progressSection {
+    padding: 1.25rem 1.5rem 0.875rem 1.5rem;
+  }
+
+  .stepLabel {
+    padding: 0 1.5rem;
+    font-size: 0.7rem;
+  }
+
+  .contentArea {
+    padding: 1rem 1.5rem;
+  }
+
+  .footerNav {
+    padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+    gap: 0.5rem;
+    justify-content: space-between;
+  }
+
+  .navButtonGroup {
+    flex-direction: row;
+    gap: 0.75rem;
+    margin-left: auto;
+  }
+
+  .navButtonGroup button {
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 1.5rem 1rem;
+  }
+
+  .headerTitle {
+    font-size: 1.5rem;
+  }
+
+  .progressSection {
+    padding: 1rem 1rem 0.75rem 1rem;
+  }
+
+  .stepLabel {
+    padding: 0 1rem;
+    font-size: 0.65rem;
+  }
+
+  .contentArea {
+    padding: 1rem;
+  }
+
+  .footerNav {
+    padding: 0.25rem 1rem 0.25rem 1rem;
+    margin-top: -1rem;
+  }
+}
