@@ -26,6 +26,7 @@ const meta = {
       start_date: "2026-04-01",
       end_date: "2026-06-30",
       status: "active",
+      penalty_rate: 5,
       created_at: "2026-04-08T00:00:00.000Z",
     },
     latestLoanAmount: "₱24,000",
