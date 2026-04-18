@@ -52,6 +52,7 @@ export const CreateLoanWizard = ({
     startDate: '',
     totalPayable: '',
     interestRate: '',
+    penaltyRate: '5',
     calculatedPreview: null
   })
 
@@ -189,7 +190,8 @@ export const CreateLoanWizard = ({
           total_payable: Number(state.totalPayable),
           frequency: state.frequency,
           term_days: Number(state.termDays),
-          start_date: state.startDate
+          start_date: state.startDate,
+          penalty_rate: Number(state.penaltyRate)
         })
       } else if (state.loanType === 'percentage') {
         if (!state.interestRate) {
@@ -202,7 +204,8 @@ export const CreateLoanWizard = ({
           interest_rate: Number(state.interestRate),
           frequency: state.frequency,
           term_days: Number(state.termDays),
-          start_date: state.startDate
+          start_date: state.startDate,
+          penalty_rate: Number(state.penaltyRate)
         })
       }
 
@@ -245,6 +248,7 @@ export const CreateLoanWizard = ({
           startDate: '',
           totalPayable: '',
           interestRate: '',
+          penaltyRate: '5',
           calculatedPreview: null
         })
       }, 2000)

@@ -1,9 +1,12 @@
 import type { PaymentFrequency } from '../types/loans'
 
 export interface ScheduleEntry {
+  id?:        string
+  loan_id?:   string
   due_date:   string
   amount_due: number
-  status:     'unpaid'
+  status:     'unpaid' | 'paid' | 'partial' | 'missed'
+  is_penalty?: boolean
 }
 
 export const generateSchedule = (
@@ -40,7 +43,7 @@ export const generateSchedule = (
       intervalDays     = 1
   }
 
-  const amountPerPayment = totalPayable / numberOfPayments
+  const amountPerPayment = Math.round((totalPayable / numberOfPayments) * 100) / 100
 
   for (let i = 0; i < numberOfPayments; i++) {
     const dueDate = new Date(start)

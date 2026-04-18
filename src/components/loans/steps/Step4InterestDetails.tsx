@@ -37,6 +37,12 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
     }
   }
 
+  const handlePenaltyRateChange = (value: string) => {
+    if (isValidCurrency(value)) {
+      updateState('penaltyRate', value)
+    }
+  }
+
   // Calculate preview based on loan type
   const preview = useMemo(() => {
     if (!state.principal || !state.termDays) return null
@@ -144,7 +150,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 value={state.interestRate}
                 onChange={e => handleInterestRateChange(e.target.value)}
                 disabled={isLoading}
-                maxLength={3}
+                maxLength={5}
                 className={styles.input}
               />
               <p className={styles.inputHelper}>
@@ -158,6 +164,25 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
               )}
             </div>
           )}
+
+          {/* Common Penalty Rate Input */}
+          <div className={styles.formGroup} style={{ marginTop: '2rem' }}>
+            <label className={styles.label}>
+              Default Penalty Rate (%)
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. 5"
+              value={state.penaltyRate}
+              onChange={e => handlePenaltyRateChange(e.target.value)}
+              disabled={isLoading}
+              maxLength={4}
+              className={styles.input}
+            />
+            <p className={styles.inputHelper}>
+              Applied to missed payments (every 3 consecutive misses)
+            </p>
+          </div>
         </div>
 
         {/* Right Column: Preview */}

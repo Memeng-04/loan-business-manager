@@ -22,6 +22,7 @@ export interface CreateLoanWizardState {
   // Step 3: Interest Details (branch by loanType)
   totalPayable: string // for fixed loans
   interestRate: string // for percentage loans
+  penaltyRate: string // default penalty rate (%)
 
   // Step 4: Review & Confirm (metadata)
   calculatedPreview: LoanPreview | null

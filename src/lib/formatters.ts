@@ -45,9 +45,9 @@ export const formatDate = (dateString: string): string => {
  * @returns true if valid, false otherwise
  */
 export const isValidCurrency = (value: string): boolean => {
-  if (value === '') return true
+  if (value === '' || value === '0') return true
   if (!/^\d+(\.\d{0,2})?$/.test(value)) return false
-  return parseFloat(value) > 0
+  return parseFloat(value) >= 0
 }
 
 /**
@@ -56,7 +56,7 @@ export const isValidCurrency = (value: string): boolean => {
  * @returns true if valid, false otherwise
  */
 export const isValidPositiveInteger = (value: string): boolean => {
-  if (value === '') return true
+  if (value === '' || value === '0') return true
   if (!/^\d+$/.test(value)) return false
-  return parseInt(value, 10) > 0
+  return parseInt(value, 10) >= 0
 }

@@ -22,6 +22,16 @@ export const useRepaymentSchedule = () => {
 
       if (!loan) throw new Error(`No loan found for ID ${loanId}`)
 
+      // Try to fetch existing schedule from DB
+      const existing = await ScheduleRepository.getByLoanId(loanId)
+      
+      if (existing && existing.length > 0) {
+        setSchedule(existing)
+        setSaved(true) // Consider it "saved" since it's from DB
+        return
+      }
+
+      // Fallback: Generate preview if no existing schedule
       const start    = new Date(loan.start_date)
       const end      = new Date(loan.end_date)
       const termDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))

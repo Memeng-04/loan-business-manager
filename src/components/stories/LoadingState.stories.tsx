@@ -42,11 +42,25 @@ export const WhiteBackground: Story = {
   },
 };
 
+export const Compact: Story = {
+  args: {
+    variant: "compact",
+    message: "Fetching records...",
+  },
+};
+
+export const Inline: Story = {
+  args: {
+    variant: "inline",
+    message: "Updating status...",
+  },
+};
+
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    message: "Failed to load session  .",
+    message: "Failed to load session.",
     fullScreen: false,
-    actionLabel: "Retry",
+    actionLabel: "Try Again",
   },
 };
