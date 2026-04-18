@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { LoanFactory } from '../factories/LoanFactory'
 import { LoanRepository } from '../repositories/LoanRepository'
-import type { CreatePercentageLoanInput } from '../types/loans'
+import { ScheduleRepository } from '../repositories/ScheduleRepository'
+import { generateSchedule } from '../strategies/ScheduleStrategy'
+import type { CreatePercentageLoanInput, PaymentFrequency } from '../types/loans'
 
 export const useCreatePercentageLoan = () => {
   const [loading, setLoading] = useState(false)
@@ -14,10 +16,29 @@ export const useCreatePercentageLoan = () => {
     setSuccess(false)
 
     try {
+      // 1. Create the loan
       const loan  = LoanFactory.createFromPercentage(input)
-      const saved = await LoanRepository.create(loan)
+      const savedLoan = await LoanRepository.create(loan)
+      
+      if (!savedLoan) throw new Error('Failed to save loan record')
+
+      // 2. Generate and Save the schedule automatically
+      const generated = generateSchedule(
+        savedLoan.start_date,
+        savedLoan.total_payable,
+        savedLoan.frequency as PaymentFrequency,
+        input.term_days // Original term days from input
+      )
+
+      const schedulesForDb = generated.map(entry => ({
+        ...entry,
+        loan_id: savedLoan.id,
+      }))
+
+      await ScheduleRepository.saveSchedule(schedulesForDb)
+
       setSuccess(true)
-      return saved
+      return savedLoan
     } catch (err: any) {
       setError(err.message)
       return null

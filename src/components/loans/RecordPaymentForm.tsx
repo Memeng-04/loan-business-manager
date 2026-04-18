@@ -51,7 +51,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({ loanId, on
                         onChange={(e) => setAmount(Number(e.target.value))}
                         step="0.01"
                         min="0.01"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
                         required
                         disabled={loading}
                     />
@@ -65,7 +65,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({ loanId, on
                         id="paymentDate"
                         value={paymentDate}
                         onChange={(e) => setPaymentDate(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
                         required
                         disabled={loading}
                     />
@@ -73,7 +73,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({ loanId, on
                 <Button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-offset-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     {loading ? 'Recording...' : 'Record Payment'}
                 </Button>

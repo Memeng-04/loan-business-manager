@@ -56,7 +56,9 @@ export const RepaymentSchedule = ({
         <div className={styles.header}>
           <h2 className={styles.headerTitle}>Repayment Schedule</h2>
           <p className={styles.headerSubtitle}>
-            Review the generated payment schedule below before confirming.
+            {saved 
+              ? "This schedule has been automatically generated and saved." 
+              : "Review the generated payment schedule below before confirming."}
           </p>
         </div>
 
@@ -129,9 +131,16 @@ export const RepaymentSchedule = ({
                         })}
                       </td>
                       <td className={`${styles.tableCell} ${styles.tableCellCenter}`}>
-                        <span className={`${styles.statusBadge} ${styles[entry.status.toLowerCase()]}`}>
-                          {entry.status}
-                        </span>
+                        <div className="flex flex-col items-center gap-1">
+                          <span className={`${styles.statusBadge} ${styles[entry.status.toLowerCase()]}`}>
+                            {entry.status}
+                          </span>
+                          {entry.is_penalty && (
+                            <span className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded-full font-black uppercase tracking-tighter animate-pulse">
+                              Penalty Fee
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -149,13 +158,21 @@ export const RepaymentSchedule = ({
 
         {/* Footer with actions */}
         <div className={styles.footerContainer}>
-          {saved && (
-            <div className={styles.successMessage}>
-              ✅ Schedule saved successfully!
-            </div>
-          )}
-
-          {!saved && schedule.length > 0 && (
+          {saved ? (
+             <div className="flex flex-col gap-4 w-full">
+                <div className={styles.successMessage}>
+                  ✅ Schedule is active and saved!
+                </div>
+                <Button
+                  onClick={onScheduleSaved}
+                  variant="blue"
+                  size="lg"
+                  className="w-full"
+                >
+                  Done & Go back
+                </Button>
+             </div>
+          ) : (
             <div className={styles.buttonGroup}>
               {onBack && (
                 <Button
@@ -174,7 +191,7 @@ export const RepaymentSchedule = ({
                 size="lg"
                 className="flex-1"
               >
-                {loading ? 'Confirming...' : 'Confirm'}
+                {loading ? 'Confirming...' : 'Confirm & Save'}
               </Button>
             </div>
           )}

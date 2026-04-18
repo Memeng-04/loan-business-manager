@@ -14,6 +14,7 @@ export interface Loan {
   start_date: string
   end_date: string
   status: LoanStatus
+  penalty_rate: number
   created_at?: string
   user_id?: string
 }
@@ -25,6 +26,7 @@ export interface CreateLoanInput {
   frequency: PaymentFrequency
   term_days: number
   start_date: string
+  penalty_rate: number
   user_id?: string
 }
 
@@ -35,5 +37,6 @@ export interface CreatePercentageLoanInput {
   frequency: PaymentFrequency
   term_days: number
   start_date: string
+  penalty_rate: number
   user_id?: string
 }

@@ -35,6 +35,20 @@ export const Default: Story = {};
 
 export const WithValue: Story = {
   args: {
-    value: "Maria",
+    value: "Maria Clara",
   },
+};
+
+export const CustomPlaceholder: Story = {
+  args: {
+    placeholder: "Search by phone or reference ID...",
+  },
+};
+
+export const Wide: Story = {
+  render: (args) => (
+    <div style={{ width: "800px", maxWidth: "100%" }}>
+      <SearchBarStoryRender {...args} />
+    </div>
+  ),
 };

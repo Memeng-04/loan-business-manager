@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 type ButtonVariant = "white" | "blue" | "outline" | "outlineWhiteText";
-type ButtonSize = "md" | "lg";
+type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps {
   children: ReactNode;
@@ -27,6 +27,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
+  sm: "px-4 py-1.5 text-xs",
   md: "px-6 py-2.5 text-base",
   lg: "px-8 py-3 text-lg sm:px-10 sm:py-3.5 sm:text-xl",
 };

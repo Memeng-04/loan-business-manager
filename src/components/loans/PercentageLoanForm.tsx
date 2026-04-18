@@ -19,7 +19,8 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
     interestRate: '',
     frequency:    'daily' as PaymentFrequency,
     termDays:     '30',
-    startDate:    ''
+    startDate:    '',
+    penaltyRate:  '5'
   })
 
   const preview = form.principal && form.interestRate
@@ -48,7 +49,8 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
       interest_rate: Number(form.interestRate),
       frequency:     form.frequency,
       term_days:     Number(form.termDays),
-      start_date:    form.startDate
+      start_date:    form.startDate,
+      penalty_rate:  Number(form.penaltyRate)
     })
 
     if (saved && onSuccess) onSuccess()
@@ -74,7 +76,7 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
             <input
               type="number"
               placeholder="e.g. 10,000"
-              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition"
+              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.principal}
               onChange={e => setForm({ ...form, principal: e.target.value })}
             />
@@ -88,7 +90,7 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
             <input
               type="number"
               placeholder="e.g. 15"
-              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition"
+              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.interestRate}
               onChange={e => setForm({ ...form, interestRate: e.target.value })}
             />
@@ -127,7 +129,7 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
               Payment Frequency
             </label>
             <select
-              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition bg-white"
+              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition bg-white"
               value={form.frequency}
               onChange={e => setForm({ ...form, frequency: e.target.value as PaymentFrequency })}
             >
@@ -146,7 +148,7 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
             <input
               type="number"
               placeholder="e.g. 30"
-              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition"
+              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.termDays}
               onChange={e => setForm({ ...form, termDays: e.target.value })}
             />
@@ -159,9 +161,23 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
             </label>
             <input
               type="date"
-              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#112bd6] transition"
+              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.startDate}
               onChange={e => setForm({ ...form, startDate: e.target.value })}
+            />
+          </div>
+
+          {/* Penalty Rate */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-[#012a6a]">
+              Penalty Rate (%)
+            </label>
+            <input
+              type="number"
+              placeholder="e.g. 5"
+              className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
+              value={form.penaltyRate}
+              onChange={e => setForm({ ...form, penaltyRate: e.target.value })}
             />
           </div>
 

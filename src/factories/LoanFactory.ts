@@ -34,7 +34,8 @@ export class LoanFactory {
       payment_amount: paymentAmount,
       start_date:     input.start_date,
       end_date:       endDate,
-      status:         'active'
+      status:         'active',
+      penalty_rate:   input.penalty_rate
     }
   }
 
@@ -65,7 +66,8 @@ export class LoanFactory {
       payment_amount: paymentAmount,
       start_date:     input.start_date,
       end_date:       endDate,
-      status:         'active'
+      status:         'active',
+      penalty_rate:   input.penalty_rate
     }
   }
 }

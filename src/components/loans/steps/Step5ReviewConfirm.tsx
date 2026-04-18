@@ -261,7 +261,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
 
       {/* Info Box */}
       <InfoBox icon={<Info size={16} />}>
-        After submission, a repayment schedule will be generated for you to confirm.
+        Upon clicking submit, the loan will be recorded and a repayment schedule will be generated and saved automatically.
       </InfoBox>
 
       {/* Error State */}

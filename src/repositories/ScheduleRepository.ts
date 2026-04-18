@@ -46,4 +46,49 @@ export class ScheduleRepository {
 
     if (error) throw error
   }
+
+  static async deleteById(scheduleId: string): Promise<void> {
+    const userId = await getCurrentUserId()
+
+    const { error } = await supabase
+      .from('payment_schedules')
+      .delete()
+      .eq('id', scheduleId)
+      .eq('user_id', userId)
+
+    if (error) throw error
+  }
+
+  static async updateSchedule(scheduleId: string, updates: Partial<ScheduleEntry>): Promise<void> {
+    const userId = await getCurrentUserId()
+
+    const { error } = await supabase
+      .from('payment_schedules')
+      .update(updates)
+      .eq('id', scheduleId)
+      .eq('user_id', userId)
+
+    if (error) throw error
+  }
+
+  static async getDashboardSchedules(startDate: string, endDate: string): Promise<any[]> {
+    const userId = await getCurrentUserId()
+
+    const { data, error } = await supabase
+      .from('payment_schedules')
+      .select(`
+        *,
+        loan:loans (
+          id, principal, status, interest_rate, payment_amount,
+          borrower:borrowers ( id, full_name, phone )
+        )
+      `)
+      .gte('due_date', startDate)
+      .lte('due_date', endDate)
+      .eq('user_id', userId)
+      .order('due_date', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
 }

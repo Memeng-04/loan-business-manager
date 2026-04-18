@@ -49,6 +49,10 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
     updateState('startDate', value)
   }
 
+  // Calculate today's date for 'min' attribute
+  const today = new Date()
+  const minDate = today.toISOString().split('T')[0]
+
   const handleFrequencyChange = (frequency: PaymentFrequency) => {
     updateState('frequency', frequency)
   }
@@ -98,11 +102,12 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
             <input
               type="date"
               value={state.startDate}
+              min={minDate}
               onChange={e => handleStartDateChange(e.target.value)}
               disabled={isLoading}
               className={styles.input}
             />
-            <p className={styles.inputHelper}>When the loan begins</p>
+            <p className={styles.inputHelper}>First payment date (tomorrow or later)</p>
           </div>
 
           {/* Payment Frequency - Dropdown Select */}
