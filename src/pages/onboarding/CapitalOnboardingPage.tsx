@@ -138,7 +138,7 @@ export default function CapitalOnboardingPage() {
               className={styles.input}
               type="number"
               min="0"
-              step="0.01"
+              step="any"
               value={capital}
               onChange={(event) => setCapital(event.target.value)}
               placeholder="0.00"
@@ -152,7 +152,7 @@ export default function CapitalOnboardingPage() {
               className={styles.input}
               type="number"
               min="0"
-              step="0.01"
+              step="any"
               value={profit}
               onChange={(event) => setProfit(event.target.value)}
               placeholder="0.00"

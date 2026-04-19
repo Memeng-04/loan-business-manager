@@ -183,6 +183,7 @@ export default function BorrowerInformationCard({
                   <span className={styles.dataLabel}>Phone</span>
                   <input
                     required
+                    type="tel"
                     inputMode="numeric"
                     className={styles.formInput}
                     value={phone}
@@ -208,6 +209,7 @@ export default function BorrowerInformationCard({
                 <label className={styles.formField}>
                   <span className={styles.dataLabel}>Monthly Income</span>
                   <input
+                    type="number"
                     inputMode="decimal"
                     className={styles.formInput}
                     value={monthlyIncome}
@@ -243,6 +245,7 @@ export default function BorrowerInformationCard({
                 <label className={styles.formField}>
                   <span className={styles.dataLabel}>Secondary Contact</span>
                   <input
+                    type="tel"
                     inputMode="numeric"
                     className={styles.formInput}
                     value={secondaryContactNumber}

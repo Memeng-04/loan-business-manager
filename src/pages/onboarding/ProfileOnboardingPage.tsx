@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import styles from "./OnboardingPage.module.css";
+import LoadingState from "../../components/LoadingState";
 
 const STORAGE_KEY = "onboarding_profile_step";
 
@@ -15,7 +16,7 @@ export default function ProfileOnboardingPage() {
   const [displayName, setDisplayName] = useState("");
 
   if (isLoading) {
-    return null;
+    return <LoadingState fullScreen message="Loading..." />;
   }
 
   if (profile) {
