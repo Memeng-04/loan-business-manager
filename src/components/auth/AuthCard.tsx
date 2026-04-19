@@ -93,7 +93,7 @@ export default function AuthCard({
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className={styles.toggleButton} 
+              className={styles.toggleButton}
               aria-label="Toggle password visibility"
               tabIndex={0}
               style={{ color: showPassword ? "#aaa" : "#fff" }}

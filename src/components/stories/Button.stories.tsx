@@ -84,7 +84,7 @@ export const Interactive: Story = {
 };
 
 export const OutlineWhiteText: Story = {
-    parameters: {
+  parameters: {
     layout: "fullscreen",
     backgrounds: {
       default: "main-blue",
@@ -102,9 +102,17 @@ export const OutlineWhiteText: Story = {
     size: "lg",
   },
   render: (args) => (
-    <div style={{ justifyContent: "center", display: "flex", alignItems: "center", width: "100%", height: "100vh", padding: "2rem" }}>
+    <div
+      style={{
+        justifyContent: "center",
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        height: "100vh",
+        padding: "2rem",
+      }}
+    >
       <Button {...args} />
     </div>
   ),
-
 };

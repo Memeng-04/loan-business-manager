@@ -2,19 +2,22 @@
 // Payment recording form component (US-09, US-10, US-11)
 // Allows users to record payments for loans with partial payment support
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { AlertCircle, CheckCircle, Loader } from 'lucide-react';
-import { formatCurrency } from '../../lib/formatters';
-import { validatePayment, calculateRemainingBalance } from '../../strategies/PaymentStrategy';
-import { useRecordPayment } from '../../hooks/useRecordPayment';
-import { useBorrowers } from '../../hooks/useBorrowers';
-import Button from '../Button';
-import Card from '../card/Card';
-import FeedbackMessage from '../feedback/FeedbackMessage';
-import { LoanRepository } from '../../repositories/LoanRepository';
-import type { Loan } from '../../types/loans';
-import type { PaymentValidation } from '../../types/payment';
-import styles from './RecordPaymentForm.module.css';
+import React, { useState, useEffect, useMemo } from "react";
+import { AlertCircle, CheckCircle, Loader } from "lucide-react";
+import { formatCurrency } from "../../lib/formatters";
+import {
+  validatePayment,
+  calculateRemainingBalance,
+} from "../../strategies/PaymentStrategy";
+import { useRecordPayment } from "../../hooks/useRecordPayment";
+import { useBorrowers } from "../../hooks/useBorrowers";
+import Button from "../Button";
+import Card from "../card/Card";
+import FeedbackMessage from "../feedback/FeedbackMessage";
+import { LoanRepository } from "../../repositories/LoanRepository";
+import type { Loan } from "../../types/loans";
+import type { PaymentValidation } from "../../types/payment";
+import styles from "./RecordPaymentForm.module.css";
 
 interface RecordPaymentFormProps {
   onPaymentRecorded?: (paymentId: string) => void;
@@ -26,10 +29,14 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
   initialLoanId,
 }) => {
   // State
-  const [selectedLoanId, setSelectedLoanId] = useState<string>(initialLoanId || '');
-  const [amountPaid, setAmountPaid] = useState<string>('');
-  const [paymentDate, setPaymentDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [selectedBorrowerId, setSelectedBorrowerId] = useState<string>('');
+  const [selectedLoanId, setSelectedLoanId] = useState<string>(
+    initialLoanId || "",
+  );
+  const [amountPaid, setAmountPaid] = useState<string>("");
+  const [paymentDate, setPaymentDate] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
+  const [selectedBorrowerId, setSelectedBorrowerId] = useState<string>("");
 
   // Data fetching
   const { borrowers, loading: borrowersLoading } = useBorrowers();
@@ -39,14 +46,16 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
 
   // Payment handling
   const { recordPayment, loading: recordLoading, error } = useRecordPayment();
-  const [feedbackMessage, setFeedbackMessage] = useState<string>('');
-  const [feedbackVariant, setFeedbackVariant] = useState<'success' | 'error' | null>(null);
+  const [feedbackMessage, setFeedbackMessage] = useState<string>("");
+  const [feedbackVariant, setFeedbackVariant] = useState<
+    "success" | "error" | null
+  >(null);
 
   // Fetch loans for selected borrower
   useEffect(() => {
     if (!selectedBorrowerId) {
       setLoans([]);
-      setSelectedLoanId('');
+      setSelectedLoanId("");
       setSelectedLoan(null);
       return;
     }
@@ -54,12 +63,15 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
     const fetchLoans = async () => {
       try {
         setLoansLoading(true);
-        const borrowerLoans = await LoanRepository.getByBorrowerId(selectedBorrowerId);
+        const borrowerLoans =
+          await LoanRepository.getByBorrowerId(selectedBorrowerId);
         // Filter to only active loans
-        const activeLoans = borrowerLoans.filter((loan) => loan.status === 'active');
+        const activeLoans = borrowerLoans.filter(
+          (loan) => loan.status === "active",
+        );
         setLoans(activeLoans);
       } catch (err) {
-        console.error('Failed to fetch loans:', err);
+        console.error("Failed to fetch loans:", err);
         setLoans([]);
       } finally {
         setLoansLoading(false);
@@ -73,18 +85,18 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
   useEffect(() => {
     const loan = loans.find((l) => l.id === selectedLoanId) || null;
     setSelectedLoan(loan);
-    setAmountPaid('');
+    setAmountPaid("");
   }, [selectedLoanId, loans]);
 
   // Validate payment amount
   const validation: PaymentValidation = useMemo(() => {
     if (!amountPaid || !selectedLoan) {
-      return { valid: false, message: '' };
+      return { valid: false, message: "" };
     }
 
     const parsed = parseFloat(amountPaid);
     if (isNaN(parsed)) {
-      return { valid: false, message: 'Invalid amount' };
+      return { valid: false, message: "Invalid amount" };
     }
 
     // For now, use payment_amount as the due amount (can be enhanced with schedule data)
@@ -104,8 +116,8 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
     e.preventDefault();
 
     if (!validation.valid || !selectedLoan || !selectedBorrowerId) {
-      setFeedbackVariant('error');
-      setFeedbackMessage('Please correct the errors above');
+      setFeedbackVariant("error");
+      setFeedbackMessage("Please correct the errors above");
       return;
     }
 
@@ -117,16 +129,16 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
       });
 
       if (payment) {
-        setFeedbackVariant('success');
+        setFeedbackVariant("success");
         setFeedbackMessage(
           validation.isPartial
             ? `Partial payment of ₱${formatCurrency(parseFloat(amountPaid))} recorded. Remaining: ₱${formatCurrency(remainingBalance)}`
-            : `Payment of ₱${formatCurrency(parseFloat(amountPaid))} recorded successfully!`
+            : `Payment of ₱${formatCurrency(parseFloat(amountPaid))} recorded successfully!`,
         );
 
         // Reset form
-        setAmountPaid('');
-        setSelectedLoanId('');
+        setAmountPaid("");
+        setSelectedLoanId("");
         setSelectedLoan(null);
 
         // Callback
@@ -138,12 +150,13 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
         setTimeout(() => setFeedbackVariant(null), 3000);
       }
     } catch (err) {
-      setFeedbackVariant('error');
-      setFeedbackMessage(error || 'Failed to record payment');
+      setFeedbackVariant("error");
+      setFeedbackMessage(error || "Failed to record payment");
     }
   };
 
-  const isFormValid = validation.valid && selectedLoan && amountPaid && selectedBorrowerId;
+  const isFormValid =
+    validation.valid && selectedLoan && amountPaid && selectedBorrowerId;
   const isLoading = borrowersLoading || loansLoading || recordLoading;
 
   return (
@@ -152,7 +165,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
       {feedbackVariant && (
         <div className={styles.feedbackContainer}>
           <FeedbackMessage
-            variant={feedbackVariant as 'success' | 'error'}
+            variant={feedbackVariant as "success" | "error"}
             message={feedbackMessage}
           />
         </div>
@@ -199,12 +212,13 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
               <option value="">Select a loan...</option>
               {loans.map((loan) => (
                 <option key={loan.id} value={loan.id}>
-                  Principal: ₱{formatCurrency(loan.principal)} | Status: {loan.status}
+                  Principal: ₱{formatCurrency(loan.principal)} | Status:{" "}
+                  {loan.status}
                 </option>
               ))}
             </select>
             {loans.length === 0 && selectedBorrowerId && !loansLoading && (
-              <p className={styles.inputHelper} style={{ color: '#dc2626' }}>
+              <p className={styles.inputHelper} style={{ color: "#dc2626" }}>
                 No active loans found for this borrower
               </p>
             )}
@@ -213,26 +227,60 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
 
         {/* Loan Details Card */}
         {selectedLoan && (
-          <Card padding="lg" style={{ backgroundColor: '#eff6ff', borderColor: '#93c5fd' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <h3 style={{ margin: 0, color: '#012a6a', fontSize: '1rem', fontWeight: 700 }}>
+          <Card
+            padding="lg"
+            style={{ backgroundColor: "#eff6ff", borderColor: "#93c5fd" }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  color: "#012a6a",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                }}
+              >
                 Loan Details
               </h3>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                <span style={{ color: '#4a5568' }}>Principal:</span>
-                <span style={{ fontWeight: 600, color: '#012a6a' }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <span style={{ color: "#4a5568" }}>Principal:</span>
+                <span style={{ fontWeight: 600, color: "#012a6a" }}>
                   ₱{formatCurrency(selectedLoan.principal)}
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                <span style={{ color: '#4a5568' }}>Payment Amount:</span>
-                <span style={{ fontWeight: 600, color: '#012a6a' }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <span style={{ color: "#4a5568" }}>Payment Amount:</span>
+                <span style={{ fontWeight: 600, color: "#012a6a" }}>
                   ₱{formatCurrency(selectedLoan.payment_amount)}
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                <span style={{ color: '#4a5568' }}>Interest Rate:</span>
-                <span style={{ fontWeight: 600, color: '#012a6a' }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <span style={{ color: "#4a5568" }}>Interest Rate:</span>
+                <span style={{ fontWeight: 600, color: "#012a6a" }}>
                   {selectedLoan.interest_rate.toFixed(2)}%
                 </span>
               </div>
@@ -259,10 +307,21 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
                 className={styles.input}
                 required
               />
-              <p className={styles.inputHelper}>Enter the amount being paid today</p>
+              <p className={styles.inputHelper}>
+                Enter the amount being paid today
+              </p>
               {amountPaid && !validation.valid && (
-                <p style={{ color: '#dc2626', fontSize: '0.75rem', marginTop: '-0.5rem' }}>
-                  <AlertCircle size={12} style={{ display: 'inline', marginRight: '0.25rem' }} />
+                <p
+                  style={{
+                    color: "#dc2626",
+                    fontSize: "0.75rem",
+                    marginTop: "-0.5rem",
+                  }}
+                >
+                  <AlertCircle
+                    size={12}
+                    style={{ display: "inline", marginRight: "0.25rem" }}
+                  />
                   {validation.message}
                 </p>
               )}
@@ -290,7 +349,9 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
           <div className={styles.previewCard}>
             <div className={styles.previewItem}>
               <span className={styles.previewLabel}>Amount to Pay:</span>
-              <span className={styles.previewValue}>₱{parseFloat(amountPaid).toFixed(2)}</span>
+              <span className={styles.previewValue}>
+                ₱{parseFloat(amountPaid).toFixed(2)}
+              </span>
             </div>
             <div className={styles.previewItem}>
               <span className={styles.previewLabel}>Due Amount:</span>
@@ -301,18 +362,27 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
 
             {validation.isPartial && (
               <div className={styles.partialPaymentInfo}>
-                <div className={styles.partialPaymentLabel}>⚠ Partial Payment</div>
+                <div className={styles.partialPaymentLabel}>
+                  ⚠ Partial Payment
+                </div>
                 <div className={styles.partialPaymentText}>
                   Remaining to pay: ₱{remainingBalance.toFixed(2)}
                 </div>
               </div>
             )}
 
-            {!validation.isPartial && parseFloat(amountPaid) >= selectedLoan.payment_amount && (
-              <div style={{ color: '#16a34a', fontSize: '0.875rem', fontWeight: 600 }}>
-                ✓ Full payment
-              </div>
-            )}
+            {!validation.isPartial &&
+              parseFloat(amountPaid) >= selectedLoan.payment_amount && (
+                <div
+                  style={{
+                    color: "#16a34a",
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                  }}
+                >
+                  ✓ Full payment
+                </div>
+              )}
           </div>
         )}
 
@@ -321,9 +391,9 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
           <Button
             type="button"
             onClick={() => {
-              setAmountPaid('');
-              setSelectedLoanId('');
-              setSelectedBorrowerId('');
+              setAmountPaid("");
+              setSelectedLoanId("");
+              setSelectedBorrowerId("");
               setFeedbackVariant(null);
             }}
             variant="outline"
@@ -340,7 +410,10 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
           >
             {isLoading ? (
               <>
-                <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                <Loader
+                  size={16}
+                  style={{ animation: "spin 1s linear infinite" }}
+                />
                 Recording...
               </>
             ) : (

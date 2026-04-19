@@ -35,12 +35,6 @@ export const Saving: Story = {
   },
 };
 
-export const WhiteBackground: Story = {
-  args: {
-    message: "Loading with white background...",
-    fullScreen: false,
-  },
-};
 
 export const Compact: Story = {
   args: {
