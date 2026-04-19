@@ -35,6 +35,12 @@ export const Saving: Story = {
   },
 };
 
+export const blueBackground: Story = {
+  args: {
+    variant: "blueBackground",
+    message: "Loading data in blue background...",
+  },
+};
 
 export const Compact: Story = {
   args: {

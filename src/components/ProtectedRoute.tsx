@@ -13,7 +13,7 @@ export default function ProtectedRoute() {
   } = useCurrentUserProfile();
 
   if (isLoading || isProfileLoading) {
-    return <LoadingState />;
+    return <LoadingState variant="blueBackground" />;
   }
 
   if (!user) {

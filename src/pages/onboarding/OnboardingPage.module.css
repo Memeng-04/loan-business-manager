@@ -2,19 +2,8 @@
   min-height: 100svh;
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(109, 182, 254, 0.24),
-      transparent 58%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(1, 42, 106, 0.2),
-      transparent 50%
-    ),
-    #f6f9ff;
   padding: 1rem;
+  background: var(--color-main-blue);
 }
 
 .panel {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import LoadingState from "../../components/LoadingState";
 import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import styles from "./OnboardingPage.module.css";
@@ -15,7 +16,13 @@ export default function ProfileOnboardingPage() {
   const [displayName, setDisplayName] = useState("");
 
   if (isLoading) {
-    return null;
+    return (
+      <LoadingState
+        fullScreen
+        variant="blueBackground"
+        message="PLEASE WAIT..."
+      />
+    );
   }
 
   if (profile) {
