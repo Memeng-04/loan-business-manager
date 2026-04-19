@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import LoadingState from "../../components/LoadingState";
 import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
@@ -61,7 +62,23 @@ export default function CapitalOnboardingPage() {
   }, []);
 
   if (isLoading) {
-    return null;
+    return (
+      <LoadingState
+        fullScreen
+        variant="blueBackground"
+        message="PLEASE WAIT..."
+      />
+    );
+  }
+
+  if (isSubmitting) {
+    return (
+      <LoadingState
+        fullScreen
+        variant="blueBackground"
+        message="Finishing setup..."
+      />
+    );
   }
 
   if (!user) {

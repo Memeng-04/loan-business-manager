@@ -4,7 +4,7 @@ import Button from "./Button";
 type LoadingStateProps = {
   message?: string;
   fullScreen?: boolean;
-  variant?: "loading" | "error" | "compact" | "inline" ;
+  variant?: "loading" | "error" | "compact" | "inline" | "blueBackground";
   actionLabel?: string;
   onAction?: () => void;
   className?: string;
@@ -21,27 +21,41 @@ export default function LoadingState({
   const isError = variant === "error";
   const isCompact = variant === "compact";
   const isInline = variant === "inline";
+  const isBlue = variant === "blueBackground";
 
   if (fullScreen) {
     return (
       <div
-        className={`fixed inset-0 z-100 flex flex-col items-center justify-center bg-white/80 backdrop-blur-md transition-all ${className}`}
+        className={`fixed inset-0 z-100 flex flex-col items-center justify-center backdrop-blur-md transition-all ${
+          isBlue ? "bg-main-blue" : "bg-white/80"
+        } ${className}`}
       >
-        <div className="flex flex-col items-center gap-4 text-center p-8 rounded-3xl border border-gray-100">
+        <div
+          className={`flex flex-col items-center gap-4 text-center p-8 rounded-3xl border ${
+            isBlue
+              ? "border-main-blue text-white/80"
+              : "border-gray-100 text-gray-900"
+          }`}
+        >
           {isError ? (
             <AlertCircle size={48} className="text-red-500 animate-bounce" />
           ) : (
             <div className="relative">
-              <Loader2 size={48} className="text-main-blue animate-spin" />
+              <Loader2
+                size={48}
+                className={`animate-spin ${isBlue ? "text-white" : "text-main-blue"}`}
+              />
             </div>
           )}
-          <div className="space-y-2">
-            <h3
-              className={`text-lg font-bold tracking-tight ${isError ? "text-red-600" : "text-gray-900"}`}
-            >
-              {isError ? "Something went wrong" : "Just a moment"}
+          <div className="space-y-4">
+            <h3 className={`text-lg font-bold tracking-tight`}>
+              {isError ? "Something went wrong" : ""}
             </h3>
-            <p className="text-sm font-medium text-gray-500 max-w-60">
+            <p
+              className={`text-sm font-bold tracking-[0.2em] uppercase ${
+                isBlue ? "text-white/80" : "text-gray-700/80"
+              }"}`}
+            >
               {message}
             </p>
           </div>
@@ -79,10 +93,11 @@ export default function LoadingState({
     );
   }
 
-
   return (
     <div
-      className={`flex flex-col items-center justify-center py-16 text-center gap-6 ${className}`}
+      className={`flex flex-col items-center min-h-screen justify-center py-16 text-center gap-6 ${
+        isBlue ? "bg-main-blue min-h-screen w-full" : ""
+      } ${className}`}
     >
       {isError ? (
         <div className="p-4 rounded-3xl bg-red-50/50 border border-red-100/50">
@@ -92,20 +107,29 @@ export default function LoadingState({
         <div className="relative p-4">
           <Loader2
             size={48}
-            className="text-main-blue animate-[spin_1.5s_linear_infinite]"
+            className={`animate-[spin_1.5s_linear_infinite] ${
+              isBlue ? "text-white" : "text-main-blue"
+            }`}
           />
         </div>
       )}
-      <div className="space-y-1">
-        <p className="text-sm font-bold tracking-[0.2em] uppercase text-gray-400/80">
+      <div className="space-y-4">
+        <p
+          className={`text-sm font-bold tracking-[0.2em] uppercase ${
+            isBlue ? "text-white/80 " : "text-gray-700/80"
+          }`}
+        >
           {message}
         </p>
-        {!isError && (
-          <div className="w-12 h-1 bg-gray-200 mx-auto rounded-full mt-4"></div>
-        )}
+       
       </div>
       {isError && actionLabel && onAction && (
-        <Button variant="outline" size="md" onClick={onAction} className="mt-2">
+        <Button
+          variant={isBlue ? "white" : "outline"}
+          size="md"
+          onClick={onAction}
+          className="mt-2"
+        >
           {actionLabel}
         </Button>
       )}
