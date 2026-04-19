@@ -103,7 +103,7 @@ export default function AuthCard({
           </div>
         </label>
 
-        {errorMessage ? <p className={styles.message}>{errorMessage}</p> : null}
+        {errorMessage ? <p className={styles.errorMessage}>{errorMessage}</p> : null}
 
         {successMessage ? (
           <p className={styles.message}>{successMessage}</p>
