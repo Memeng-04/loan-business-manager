@@ -15,16 +15,6 @@ export default function ProfileOnboardingPage() {
   const [legalFullName, setLegalFullName] = useState("");
   const [displayName, setDisplayName] = useState("");
 
-  if (isLoading) {
-    return (
-      <LoadingState
-        fullScreen
-        variant="blueBackground"
-        message="PLEASE WAIT..."
-      />
-    );
-  }
-
   if (profile) {
     return <Navigate to="/dashboard" replace />;
   }

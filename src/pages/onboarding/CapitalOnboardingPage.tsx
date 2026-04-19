@@ -61,16 +61,6 @@ export default function CapitalOnboardingPage() {
     }
   }, []);
 
-  if (isLoading) {
-    return (
-      <LoadingState
-        fullScreen
-        variant="blueBackground"
-        message="PLEASE WAIT..."
-      />
-    );
-  }
-
   if (isSubmitting) {
     return (
       <LoadingState

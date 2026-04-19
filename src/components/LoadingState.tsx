@@ -54,7 +54,7 @@ export default function LoadingState({
             <p
               className={`text-sm font-bold tracking-[0.2em] uppercase ${
                 isBlue ? "text-white/80" : "text-gray-700/80"
-              }"}`}
+              }`}
             >
               {message}
             </p>
