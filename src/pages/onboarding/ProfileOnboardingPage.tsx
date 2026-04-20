@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
-import LoadingState from "../../components/LoadingState";
 import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import styles from "./OnboardingPage.module.css";
@@ -11,7 +10,7 @@ const STORAGE_KEY = "onboarding_profile_step";
 
 export default function ProfileOnboardingPage() {
   const navigate = useNavigate();
-  const { profile, isLoading, error } = useCurrentUserProfile();
+  const { profile, error } = useCurrentUserProfile();
   const [legalFullName, setLegalFullName] = useState("");
   const [displayName, setDisplayName] = useState("");
 

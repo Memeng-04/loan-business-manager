@@ -37,7 +37,7 @@ function formatCurrency(value: number): string {
 export default function CapitalOnboardingPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { profile, setProfile, isLoading } = useCurrentUserProfile();
+  const { profile, setProfile } = useCurrentUserProfile();
   const [capital, setCapital] = useState("");
   const [profit, setProfit] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

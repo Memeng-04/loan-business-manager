@@ -5,6 +5,8 @@ import ProfileOnboardingPage from "../../pages/onboarding/ProfileOnboardingPage"
 import CapitalOnboardingPage from "../../pages/onboarding/CapitalOnboardingPage";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";
 
+import { ProfileProvider } from "../../contexts/ProfileContext";
+
 UserProfileRepository.getByUserId = async () => null;
 
 const mockAuthValue = {
@@ -21,11 +23,13 @@ const meta: Meta = {
   decorators: [
     (Story) => (
       <AuthContext.Provider value={mockAuthValue}>
-        <MemoryRouter>
-          <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh" }}>
-             <Story />
-          </div>
-        </MemoryRouter>
+        <ProfileProvider>
+          <MemoryRouter>
+            <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh" }}>
+               <Story />
+            </div>
+          </MemoryRouter>
+        </ProfileProvider>
       </AuthContext.Provider>
     ),
   ],
