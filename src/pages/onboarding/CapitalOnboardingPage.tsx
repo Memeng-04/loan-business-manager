@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import LoadingState from "../../components/LoadingState";
 import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
@@ -36,7 +37,7 @@ function formatCurrency(value: number): string {
 export default function CapitalOnboardingPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { profile, setProfile, isLoading } = useCurrentUserProfile();
+  const { profile, setProfile } = useCurrentUserProfile();
   const [capital, setCapital] = useState("");
   const [profit, setProfit] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,8 +61,14 @@ export default function CapitalOnboardingPage() {
     }
   }, []);
 
-  if (isLoading) {
-    return null;
+  if (isSubmitting) {
+    return (
+      <LoadingState
+        fullScreen
+        variant="blueBackground"
+        message="Finishing setup..."
+      />
+    );
   }
 
   if (!user) {
@@ -138,7 +145,7 @@ export default function CapitalOnboardingPage() {
               className={styles.input}
               type="number"
               min="0"
-              step="0.01"
+              step="any"
               value={capital}
               onChange={(event) => setCapital(event.target.value)}
               placeholder="0.00"
@@ -152,7 +159,7 @@ export default function CapitalOnboardingPage() {
               className={styles.input}
               type="number"
               min="0"
-              step="0.01"
+              step="any"
               value={profit}
               onChange={(event) => setProfit(event.target.value)}
               placeholder="0.00"

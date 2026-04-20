@@ -6,7 +6,7 @@ export default function PublicOnlyRoute() {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <LoadingState />;
+    return <LoadingState variant="blueBackground" />;
   }
 
   if (user) {

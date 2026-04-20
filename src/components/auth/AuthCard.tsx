@@ -93,7 +93,7 @@ export default function AuthCard({
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className={styles.toggleButton} 
+              className={styles.toggleButton}
               aria-label="Toggle password visibility"
               tabIndex={0}
               style={{ color: showPassword ? "#aaa" : "#fff" }}
@@ -103,7 +103,7 @@ export default function AuthCard({
           </div>
         </label>
 
-        {errorMessage ? <p className={styles.message}>{errorMessage}</p> : null}
+        {errorMessage ? <p className={styles.errorMessage}>{errorMessage}</p> : null}
 
         {successMessage ? (
           <p className={styles.message}>{successMessage}</p>

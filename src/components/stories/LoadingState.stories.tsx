@@ -35,10 +35,10 @@ export const Saving: Story = {
   },
 };
 
-export const WhiteBackground: Story = {
+export const blueBackground: Story = {
   args: {
-    message: "Loading with white background...",
-    fullScreen: false,
+    variant: "blueBackground",
+    message: "Loading data in blue background...",
   },
 };
 

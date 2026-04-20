@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import BalanceCard from "./BalanceCard";
+import BalanceCard from "../../home/BalanceCard";
 
 const meta = {
   title: "Components/Home/BalanceCard",
   component: BalanceCard,
   parameters: {
     layout: "padded",
+  },
+  args: {
+    onManageFunds: () => alert("Manage Funds clicked"),
   },
 } satisfies Meta<typeof BalanceCard>;
 
@@ -33,5 +36,14 @@ export const HighBalance: Story = {
     outstandingBalance: 60000,
     initialCapital: 50000,
     initialProfit: 15000,
+  },
+};
+
+export const ReadOnly: Story = {
+  args: {
+    outstandingBalance: 5000,
+    initialCapital: 50000,
+    initialProfit: 15000,
+    onManageFunds: undefined,
   },
 };

@@ -10,6 +10,7 @@ import EditFundsModal, {
   type EditFundsFormData,
 } from "../../components/funds/EditFundsModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
+import { UserProfileRepository } from "../../repositories/UserProfileRepository";
 import styles from "./FundManagementPage.module.css";
 
 type Transaction = {
@@ -23,9 +24,10 @@ type Transaction = {
 export default function FundManagementPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
-  const { profile } = useCurrentUserProfile();
+  const { profile, setProfile } = useCurrentUserProfile();
   const [transactions] = useState<Transaction[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -35,21 +37,47 @@ export default function FundManagementPage() {
   const outstandingBalance =
     initialCapital + initialProfit - totalActivePrincipal;
 
-  const handleEditFunds = (formData: EditFundsFormData) => {
+  const handleEditFunds = async (formData: EditFundsFormData) => {
+    if (!profile) return;
+
     setError(null);
     setSuccess(null);
 
-    const hasAnyInput = Object.values(formData).some(
-      (val) => val.trim() !== "",
-    );
-    if (!hasAnyInput) {
+    const withdrawCap = parseFloat(formData.withdrawCapital || "0");
+    const addCap = parseFloat(formData.addCapital || "0");
+    const withdrawProf = parseFloat(formData.withdrawProfit || "0");
+    const addProf = parseFloat(formData.addProfit || "0");
+
+    if (withdrawCap === 0 && addCap === 0 && withdrawProf === 0 && addProf === 0) {
       setError("Please enter a transaction amount.");
       return;
     }
 
-    // TODO: Implement transaction logic
-    setSuccess("Transaction recorded successfully.");
-    setIsEditModalOpen(false);
+    setIsSubmitting(true);
+
+    try {
+      const nextCapital = initialCapital + addCap - withdrawCap;
+      const nextProfit = initialProfit + addProf - withdrawProf;
+
+      if (nextCapital < 0 || nextProfit < 0) {
+        throw new Error("Insufficient funds for this transaction.");
+      }
+
+      const updated = await UserProfileRepository.upsertByUserId(profile.user_id, {
+        legal_full_name: profile.legal_full_name,
+        display_name: profile.display_name,
+        initial_capital: nextCapital,
+        initial_profit: nextProfit,
+      });
+
+      setProfile(updated);
+      setSuccess("Funds updated successfully.");
+      setIsEditModalOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update funds.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,7 +100,7 @@ export default function FundManagementPage() {
         </div>
 
         {error ? <FeedbackMessage message={error} /> : null}
-        {success ? <FeedbackMessage message={success} /> : null}
+        {success ? <FeedbackMessage variant="success" message={success} /> : null}
 
         <div className={styles.section}>
           <div className={styles.balanceCardWrapper}>
@@ -91,7 +119,7 @@ export default function FundManagementPage() {
             <Button
               variant="blue"
               size="md"
-              onClick={() => navigate("/funds/add")}
+              onClick={() => navigate("/add")}
             >
               Add Transaction
             </Button>
@@ -135,6 +163,7 @@ export default function FundManagementPage() {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSubmit={handleEditFunds}
+        isSubmitting={isSubmitting}
       />
     </main>
   );

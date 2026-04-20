@@ -1,14 +1,14 @@
-import React, { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import type { WizardStepProps } from '../../../types/wizardTypes'
-import { useBorrowers } from '../../../hooks/useBorrowers'
-import { AlertCircle, User, Plus } from 'lucide-react'
-import { SummaryCard } from '../SummaryCard'
-import { InfoBox } from '../InfoBox'
-import Button from '../../Button'
-import SearchBar from '../../search/SearchBar'
-import LoadingState from '../../LoadingState'
-import styles from './Step2Borrower.module.css'
+import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import type { WizardStepProps } from "../../../types/wizardTypes";
+import { useBorrowers } from "../../../hooks/useBorrowers";
+import { AlertCircle, User, Plus } from "lucide-react";
+import { SummaryCard } from "../SummaryCard";
+import { InfoBox } from "../InfoBox";
+import Button from "../../Button";
+import SearchBar from "../../search/SearchBar";
+import LoadingState from "../../LoadingState";
+import styles from "./Step2Borrower.module.css";
 
 /**
  * Step 2: Borrower Selection with Search
@@ -18,35 +18,39 @@ import styles from './Step2Borrower.module.css'
 export const Step2Borrower: React.FC<WizardStepProps> = ({
   state,
   updateState,
-  isLoading
+  isLoading,
 }) => {
-  const navigate = useNavigate()
-  const { borrowers, loading: borrowersLoading, error: borrowersError } =
-    useBorrowers()
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const navigate = useNavigate();
+  const {
+    borrowers,
+    loading: borrowersLoading,
+    error: borrowersError,
+  } = useBorrowers();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const selectedBorrower = borrowers.find(b => b.id === state.borrowerId)
+  const selectedBorrower = borrowers.find((b) => b.id === state.borrowerId);
 
   // Filter borrowers based on search query
   const filteredBorrowers = useMemo(() => {
-    if (!searchQuery.trim()) return borrowers
-    
-    const query = searchQuery.toLowerCase()
-    return borrowers.filter(borrower => 
-      borrower.full_name.toLowerCase().includes(query) ||
-      borrower.phone?.toLowerCase().includes(query) ||
-      borrower.address?.toLowerCase().includes(query)
-    )
-  }, [borrowers, searchQuery])
+    if (!searchQuery.trim()) return borrowers;
+
+    const query = searchQuery.toLowerCase();
+    return borrowers.filter(
+      (borrower) =>
+        borrower.full_name.toLowerCase().includes(query) ||
+        borrower.phone?.toLowerCase().includes(query) ||
+        borrower.address?.toLowerCase().includes(query),
+    );
+  }, [borrowers, searchQuery]);
 
   const handleSelectBorrower = (borrowerId: string) => {
-    updateState('borrowerId', borrowerId)
-    setIsDropdownOpen(false)
-    setSearchQuery('')
-  }
+    updateState("borrowerId", borrowerId);
+    setIsDropdownOpen(false);
+    setSearchQuery("");
+  };
 
-  const isLoading_ = isLoading || borrowersLoading
+  const isLoading_ = isLoading || borrowersLoading;
 
   return (
     <div className={styles.stepContainer}>
@@ -60,13 +64,17 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
 
       {/* Loading State */}
       {isLoading_ && !selectedBorrower && (
-        <LoadingState message="Fetching records..." variant="compact" className="mb-4" />
+        <LoadingState
+          message="Fetching records..."
+          variant="compact"
+          className="mb-4"
+        />
       )}
 
       {/* Borrower Section Header with Create Button */}
       <div className="mb-4 mt-[-0.5rem]">
         <Button
-          onClick={() => navigate('/borrowers/new')}
+          onClick={() => navigate("/borrowers/new")}
           variant="outline"
           size="md"
           className="gap-2 w-full sm:w-auto"
@@ -91,14 +99,12 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
                   {selectedBorrower.full_name}
                 </span>
               ) : (
-                <span className="text-gray-400">
-                  Select a borrower...
-                </span>
+                <span className="text-gray-400">Select a borrower...</span>
               )}
             </span>
             <span
               className={`${styles.borrowerDropdownArrow} ${
-                isDropdownOpen ? styles.open : ''
+                isDropdownOpen ? styles.open : ""
               } text-gray-400`}
             >
               ▼
@@ -107,7 +113,9 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
 
           {/* Dropdown Menu with Search */}
           {isDropdownOpen && (
-            <div className={`${styles.borrowerDropdownMenu} shadow-2xl border-gray-100 z-50`}>
+            <div
+              className={`${styles.borrowerDropdownMenu} shadow-2xl border-gray-100 z-50`}
+            >
               {/* Search Interface using shared SearchBar */}
               <div className="p-2 border-b border-gray-50">
                 <SearchBar
@@ -122,20 +130,26 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
               <div className={styles.borrowersList}>
                 {filteredBorrowers.length === 0 ? (
                   <div className="p-8 text-center text-gray-400 text-sm font-medium">
-                    {searchQuery ? 'No accounts match your search' : 'No accounts found'}
+                    {searchQuery
+                      ? "No accounts match your search"
+                      : "No accounts found"}
                   </div>
                 ) : (
-                  filteredBorrowers.map(borrower => (
+                  filteredBorrowers.map((borrower) => (
                     <button
                       key={borrower.id}
                       onClick={() => handleSelectBorrower(borrower.id!)}
                       className={`${styles.borrowerDropdownOption} ${
-                        selectedBorrower?.id === borrower.id ? styles.active : ''
+                        selectedBorrower?.id === borrower.id
+                          ? styles.active
+                          : ""
                       } hover:bg-blue-50/50 transition-colors group`}
                     >
                       <div className="flex items-center justify-between w-full">
                         <div className="flex flex-col items-start">
-                          <span className={`font-bold ${selectedBorrower?.id === borrower.id ? 'text-main-blue' : 'text-gray-900'}`}>
+                          <span
+                            className={`font-bold ${selectedBorrower?.id === borrower.id ? "text-main-blue" : "text-gray-900"}`}
+                          >
                             {borrower.full_name}
                           </span>
                           {borrower.phone && (
@@ -163,17 +177,22 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
           title="Profile Snapshot"
           icon={<User size={18} />}
           items={[
-            { label: 'Name', value: selectedBorrower.full_name },
-            ...(selectedBorrower.phone ? [{ label: 'Phone', value: selectedBorrower.phone }] : []),
-            ...(selectedBorrower.address ? [{ label: 'Address', value: selectedBorrower.address }] : [])
+            { label: "Name", value: selectedBorrower.full_name },
+            ...(selectedBorrower.phone
+              ? [{ label: "Phone", value: selectedBorrower.phone }]
+              : []),
+            ...(selectedBorrower.address
+              ? [{ label: "Address", value: selectedBorrower.address }]
+              : []),
           ]}
         />
       )}
 
       {/* Info Box */}
       <InfoBox icon={<AlertCircle size={16} className="text-main-blue" />}>
-        Search by name or contact number. If the borrower is new, use the button above to add them to the collections database first.
+        Search by name or contact number. If the borrower is new, use the button
+        above to add them to the collections database first.
       </InfoBox>
     </div>
-  )
-}
+  );
+};

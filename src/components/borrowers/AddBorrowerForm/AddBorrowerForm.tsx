@@ -198,6 +198,16 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
+          <span className={styles.label}>Secondary Contact Name</span>
+          <input
+            className={styles.input}
+            value={secondaryContactName}
+            onChange={(event) => setSecondaryContactName(event.target.value)}
+            placeholder="Enter secondary contact name"
+          />
+        </label>
+
+        <label className={styles.field}>
           <span className={styles.label}>Secondary Contact Number</span>
           <input
             inputMode="numeric"
@@ -208,15 +218,7 @@ export default function AddBorrowerForm({
           />
         </label>
 
-        <label className={styles.field}>
-          <span className={styles.label}>Secondary Contact Name</span>
-          <input
-            className={styles.input}
-            value={secondaryContactName}
-            onChange={(event) => setSecondaryContactName(event.target.value)}
-            placeholder="Enter secondary contact name"
-          />
-        </label>
+  
 
         {formError ? <FeedbackMessage message={formError} /> : null}
         {!formError && error ? <FeedbackMessage message={error} /> : null}

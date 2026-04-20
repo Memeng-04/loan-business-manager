@@ -10,13 +10,9 @@ const STORAGE_KEY = "onboarding_profile_step";
 
 export default function ProfileOnboardingPage() {
   const navigate = useNavigate();
-  const { profile, isLoading, error } = useCurrentUserProfile();
+  const { profile, error } = useCurrentUserProfile();
   const [legalFullName, setLegalFullName] = useState("");
   const [displayName, setDisplayName] = useState("");
-
-  if (isLoading) {
-    return null;
-  }
 
   if (profile) {
     return <Navigate to="/dashboard" replace />;

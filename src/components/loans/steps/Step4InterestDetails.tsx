@@ -117,12 +117,11 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 Total Payable Amount (₱)
               </label>
               <input
-                type="text"
-                placeholder="e.g. 60,000"
+                type="number"
+                placeholder="e.g. 60000"
                 value={state.totalPayable}
                 onChange={e => handleTotalPayableChange(e.target.value)}
                 disabled={isLoading}
-                maxLength={15}
                 className={styles.input}
               />
               <p className={styles.inputHelper}>
@@ -145,12 +144,11 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 Annual Interest Rate (%)
               </label>
               <input
-                type="text"
-                placeholder="e.g. 15.5"
+                type="number"
+                placeholder="e.g. 5"
                 value={state.interestRate}
                 onChange={e => handleInterestRateChange(e.target.value)}
                 disabled={isLoading}
-                maxLength={5}
                 className={styles.input}
               />
               <p className={styles.inputHelper}>
@@ -171,12 +169,11 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
               Default Penalty Rate (%)
             </label>
             <input
-              type="text"
+              type="number"
               placeholder="e.g. 5"
               value={state.penaltyRate}
               onChange={e => handlePenaltyRateChange(e.target.value)}
               disabled={isLoading}
-              maxLength={4}
               className={styles.input}
             />
             <p className={styles.inputHelper}>

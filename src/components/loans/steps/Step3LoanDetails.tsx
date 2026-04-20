@@ -66,11 +66,10 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
           <div className={styles.formGroup}>
             <label className={styles.label}>Principal Amount (₱)</label>
             <input
-              type="text"
-              placeholder="e.g. 50,000"
+              type="number"
+              placeholder="e.g. 50000"
               value={state.principal}
               onChange={e => handlePrincipalChange(e.target.value)}
-              maxLength={15}
               disabled={isLoading}
               className={styles.input}
             />
@@ -83,11 +82,10 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
           <div className={styles.formGroup}>
             <label className={styles.label}>Loan Term (Days)</label>
             <input
-              type="text"
-              placeholder="e.g. 365"
+              type="number"
+              placeholder="e.g. 30"
               value={state.termDays}
               onChange={e => handleTermDaysChange(e.target.value)}
-              maxLength={5}
               disabled={isLoading}
               className={styles.input}
             />

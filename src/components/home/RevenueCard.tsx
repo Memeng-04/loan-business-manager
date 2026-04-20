@@ -1,5 +1,7 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { useNavigate } from "react-router-dom";
 import Card from "../card/Card";
+import Button from "../Button";
 import styles from "./RevenueCard.module.css";
 
 type RevenueChartDatum = {
@@ -23,6 +25,8 @@ function formatCurrency(value: number) {
 }
 
 export default function RevenueCard({ data, totalRevenue }: RevenueCardProps) {
+  const navigate = useNavigate();
+
   return (
     <Card className={styles.card} variant="subtle" padding="lg">
       <div className={styles.headerRow}>
@@ -33,7 +37,9 @@ export default function RevenueCard({ data, totalRevenue }: RevenueCardProps) {
       </div>
 
       {totalRevenue <= 0 ? (
-        <p className={styles.emptyText}>No loan revenue yet.</p>
+        <div className={styles.emptyContainer}>
+          <p className={styles.emptyText}>No loan revenue yet.</p>
+        </div>
       ) : (
         <div className={styles.chartLegendRow}>
           <div className={styles.chartWrap}>
@@ -80,6 +86,12 @@ export default function RevenueCard({ data, totalRevenue }: RevenueCardProps) {
           </ul>
         </div>
       )}
+
+      <div className={styles.buttonWrapper}>
+        <Button variant="blue" size="md" onClick={() => navigate("/add")}>
+          Add Loan
+        </Button>
+      </div>
     </Card>
   );
 }

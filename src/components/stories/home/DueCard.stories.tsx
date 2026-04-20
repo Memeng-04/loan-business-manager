@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import DueCard from "./DueCard";
+import { MemoryRouter } from "react-router-dom";
+import DueCard from "../../home/DueCard";
 
 const meta = {
   title: "Components/Home/DueCard",
@@ -7,6 +8,13 @@ const meta = {
   parameters: {
     layout: "padded",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 } satisfies Meta<typeof DueCard>;
 
 export default meta;

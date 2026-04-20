@@ -12,19 +12,19 @@ import styles from "./MorePage.module.css";
 
 const TERMS_TEXT = `1. NO LEGAL OR FINANCIAL ADVICE
 ────────────────────────────────
-LEND is a record-keeping tool only. It does not provide legal, tax, or financial advice. Mr. U is solely responsible for complying with Philippine lending laws (e.g., SEC regulations, usury laws, data privacy).
+LEND is a record-keeping tool only. It does not provide legal, tax, or financial advice. The user is solely responsible for complying with Philippine lending laws (e.g., SEC regulations, usury laws, data privacy).
 
 2. DATA ACCURACY
 ────────────────────────────────
-Mr. U is responsible for entering accurate borrower information, loan amounts, interest rates, and payment records. LEND is a tool to assist, not a guarantee of collection.
+The user is responsible for entering accurate borrower information, loan amounts, interest rates, and payment records. LEND is a tool to assist, not a guarantee of collection.
 
 3. DATA OWNERSHIP & PRIVACY
 ────────────────────────────────
-All borrower data belongs to Mr. U. The developer (Bidaure, Umadhay, Mendoza) does not collect, store, or sell any data. Data is stored locally on Mr. U's device and/or his chosen cloud sync service.
+All borrower data belongs to the user. The developer (Bidaure, Umadhay, Mendoza) does not collect, store, or sell any data. Data is stored locally on the user's device and/or his chosen cloud sync service.
 
 4. OFFLINE & SYNC DISCLAIMER
 ────────────────────────────────
-While LEND works offline, Mr. U should regularly connect to the internet to back up data. The developer is not liable for data loss due to device damage, loss, or failed sync.
+While LEND works offline, the user should regularly connect to the internet to back up data. The developer is not liable for data loss due to device damage, loss, or failed sync.
 
 5. NO WARRANTY
 ────────────────────────────────
@@ -40,7 +40,7 @@ These terms shall be governed by the laws of the Republic of the Philippines.
 
 8. ACKNOWLEDGMENT
 ────────────────────────────────
-By using LEND, you confirm you have read, understood, and agreed to these terms.`;
+By using LEND, the user confirms they have read, understood, and agreed to these terms.`;
 
 export default function MorePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
