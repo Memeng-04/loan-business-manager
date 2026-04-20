@@ -19,14 +19,16 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadProfile = async () => {
+  const loadProfile = async (forceLoading = false) => {
     if (!user) {
       setProfile(null);
       setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
+    if (forceLoading || !profile) {
+      setIsLoading(true);
+    }
     setError(null);
 
     try {
@@ -50,7 +52,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     setProfile,
     isLoading: isAuthLoading || isLoading,
     error,
-    refreshProfile: loadProfile
+    refreshProfile: () => loadProfile(true)
   }), [profile, isAuthLoading, isLoading, error, user?.id]);
 
   return (

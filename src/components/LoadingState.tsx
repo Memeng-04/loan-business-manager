@@ -95,8 +95,8 @@ export default function LoadingState({
 
   return (
     <div
-      className={`flex flex-col items-center min-h-screen justify-center py-16 text-center gap-6 ${
-        isBlue ? "bg-main-blue min-h-screen w-full" : ""
+      className={`flex flex-col items-center justify-center py-12 text-center gap-6 ${
+        isBlue ? "bg-main-blue min-h-screen w-full" : "w-full"
       } ${className}`}
     >
       {isError ? (
