@@ -216,7 +216,6 @@ export default function MorePage() {
         </div>
 
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Account</h2>
           {logoutError ? <FeedbackMessage message={logoutError} /> : null}
 
           <Button
