@@ -31,9 +31,11 @@
 }
 
 .metricWrapper {
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
   background-color: #f8f9fb;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
@@ -57,7 +59,7 @@
 
 .buttonWrapper {
   display: grid;
-  margin-top: 1rem;
+  margin-top: 0rem;
   padding-top: 1rem;
   border-top: 1px solid #e2e8f0;
 }

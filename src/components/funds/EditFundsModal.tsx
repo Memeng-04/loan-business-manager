@@ -13,12 +13,14 @@ interface EditFundsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (formData: EditFundsFormData) => void;
+  isSubmitting?: boolean;
 }
 
 export default function EditFundsModal({
   isOpen,
   onClose,
   onSubmit,
+  isSubmitting = false,
 }: EditFundsModalProps) {
   const [formData, setFormData] = useState<EditFundsFormData>({
     withdrawCapital: "",
@@ -29,9 +31,16 @@ export default function EditFundsModal({
 
   const handleInputChange = (field: keyof EditFundsFormData) => {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      // Prevent negative numbers and ensure only numeric/decimal input
+      if (value !== "" && parseFloat(value) < 0) {
+        return;
+      }
+
       setFormData((prev) => ({
         ...prev,
-        [field]: e.target.value,
+        [field]: value,
       }));
     };
   };
@@ -73,7 +82,8 @@ export default function EditFundsModal({
               <input
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
+                inputMode="decimal"
                 placeholder="0.00"
                 value={formData.withdrawCapital}
                 onChange={handleInputChange("withdrawCapital")}
@@ -86,7 +96,8 @@ export default function EditFundsModal({
               <input
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
+                inputMode="decimal"
                 placeholder="0.00"
                 value={formData.addCapital}
                 onChange={handleInputChange("addCapital")}
@@ -99,7 +110,8 @@ export default function EditFundsModal({
               <input
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
+                inputMode="decimal"
                 placeholder="0.00"
                 value={formData.withdrawProfit}
                 onChange={handleInputChange("withdrawProfit")}
@@ -112,7 +124,8 @@ export default function EditFundsModal({
               <input
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
+                inputMode="decimal"
                 placeholder="0.00"
                 value={formData.addProfit}
                 onChange={handleInputChange("addProfit")}
@@ -126,8 +139,13 @@ export default function EditFundsModal({
           <Button variant="outline" size="md" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="blue" size="md" onClick={handleSubmit}>
-            Save Changes
+          <Button
+            variant="blue"
+            size="md"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>
