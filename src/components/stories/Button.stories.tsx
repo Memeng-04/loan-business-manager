@@ -61,6 +61,14 @@ export const OutlineVariant: Story = {
   },
 };
 
+export const BackButton: Story = {
+  args: {
+    children: "Back",
+    variant: "back",
+    size: "lg",
+  },
+};
+
 export const MediumSize: Story = {
   args: {
     children: "Medium Button",

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { ChevronLeft } from "lucide-react"; 
 
-type ButtonVariant = "white" | "blue" | "outline" | "outlineWhiteText";
+type ButtonVariant = "white" | "blue" | "outline" | "outlineWhiteText" | "back";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps {
@@ -23,8 +24,11 @@ const variantClasses: Record<ButtonVariant, string> = {
     "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
 
   outlineWhiteText:
-    "border border-white border-2 bg-transparent text-white hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue"
-};
+    "border border-white border-2 bg-transparent text-white hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
+    
+  back: "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
+
+  };
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: "px-4 py-1.5 text-xs",
@@ -48,6 +52,7 @@ export default function Button({
       disabled={disabled}
       className={`inline-flex items-center justify-center rounded-full font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
     >
+      {variant === "back" && <ChevronLeft className="mr-2" size={24} />}
       {children}
     </button>
   );

@@ -91,11 +91,11 @@ export default function FundManagementPage() {
       <section className={styles.content}>
         <div className={styles.backButtonWrapper}>
           <Button
-            variant="outline"
+            variant="back"
             size="md"
             onClick={() => navigate("/dashboard")}
           >
-            ← Back
+            Back
           </Button>
         </div>
 

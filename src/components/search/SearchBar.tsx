@@ -26,7 +26,7 @@ export default function SearchBar({
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full bg-gray-50/50 hover:bg-white focus:bg-white p-4 pl-12 pr-12 border-2 border-transparent hover:border-gray-200 focus:border-main-blue rounded-2xl shadow-sm focus:outline-none transition-all font-medium placeholder:text-gray-300 text-gray-900"
+        className="w-full bg-gray-50/50 hover:bg-white focus:bg-white p-4 pl-12 pr-12 border-2 border-transparent hover:border-gray-200 focus:border-main-blue rounded-4xl shadow-sm focus:outline-none transition-all font-medium placeholder:text-gray-300 text-gray-900"
         placeholder={placeholder}
         aria-label={ariaLabel ?? placeholder}
       />
