@@ -89,7 +89,7 @@ export default function RevenueCard({ data, totalRevenue }: RevenueCardProps) {
 
       <div className={styles.buttonWrapper}>
         <Button variant="blue" size="md" onClick={() => navigate("/add")}>
-          Add Loan
+          + Add Loan
         </Button>
       </div>
     </Card>

@@ -121,7 +121,7 @@ export default function FundManagementPage() {
               size="md"
               onClick={() => navigate("/add")}
             >
-              Add Transaction
+              + Add
             </Button>
           </div>
           <Card>

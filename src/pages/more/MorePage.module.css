@@ -9,7 +9,7 @@
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 1rem calc(var(--mobile-footer-height) + 1rem);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
