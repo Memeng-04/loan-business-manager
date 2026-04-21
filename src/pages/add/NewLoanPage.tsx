@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
-import { CreateLoanWizard } from "../../components/loans/CreateLoanWizard";
+import { CreateLoanWizard } from "../../components/loans/add/CreateLoanWizard";
 import { RepaymentSchedule } from "../../components/loans/RepaymentSchedule";
 import styles from "./NewLoanPage.module.css";
 import LoadingState from "../../components/LoadingState";

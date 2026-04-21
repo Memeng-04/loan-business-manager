@@ -2,16 +2,16 @@ import { useState, useCallback, useEffect } from "react";
 import type {
   CreateLoanWizardState,
   WizardStep,
-} from "../../types/wizardTypes";
+} from "../../../types/wizardTypes";
 import { CheckCircle } from "lucide-react";
-import { useCreateLoan } from "../../hooks/useCreateFixedLoan";
-import { useCreatePercentageLoan } from "../../hooks/useCreatePercentageLoan";
+import { useCreateLoan } from "../../../hooks/useCreateFixedLoan";
+import { useCreatePercentageLoan } from "../../../hooks/useCreatePercentageLoan";
 import { Step1LoanCategory } from "./steps/Step1LoanCategory";
 import { Step2Borrower } from "./steps/Step2Borrower";
 import { Step3LoanDetails } from "./steps/Step3LoanDetails";
 import { Step4InterestDetails } from "./steps/Step4InterestDetails";
 import { Step5ReviewConfirm } from "./steps/Step5ReviewConfirm";
-import Button from "../Button";
+import Button from "../../Button";
 import styles from "./CreateLoanWizard.module.css";
 
 interface CreateLoanWizardProps {
@@ -61,13 +61,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     const savedState = sessionStorage.getItem("wizardState");
     const savedStep = sessionStorage.getItem("wizardStep");
 
-    console.log("🔍 Wizard Mount - Checking sessionStorage...");
-    console.log(
-      "savedState:",
-      savedState ? JSON.parse(savedState) : "NOT FOUND",
-    );
-    console.log("savedStep:", savedStep ? parseInt(savedStep) : "NOT FOUND");
-
     if (savedState) {
       try {
         const parsedState = JSON.parse(savedState);
@@ -79,7 +72,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
           parsedState.termDays = parsedState.termDays.slice(0, 5);
         }
         setState(parsedState);
-        console.log("✅ Restored wizard state from sessionStorage");
       } catch (error) {
         console.error("Failed to restore wizard state:", error);
       }
@@ -90,7 +82,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
         const step = parseInt(savedStep) as WizardStep;
         if (step >= 1 && step <= 5) {
           setCurrentStep(step);
-          console.log("✅ Restored step:", step);
         }
       } catch (error) {
         console.error("Failed to restore wizard step:", error);
@@ -108,7 +99,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
   useEffect(() => {
     if (!isLoadingFromSession) {
       sessionStorage.setItem("wizardState", JSON.stringify(state));
-      console.log("💾 Saved wizard state to sessionStorage:", state);
     }
   }, [state, isLoadingFromSession]);
 
@@ -119,7 +109,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
   useEffect(() => {
     if (!isLoadingFromSession) {
       sessionStorage.setItem("wizardStep", currentStep.toString());
-      console.log("💾 Saved wizard step to sessionStorage:", currentStep);
     }
   }, [currentStep, isLoadingFromSession]);
 
@@ -367,7 +356,7 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
               <Button
                 onClick={prevStep}
                 disabled={isLoading}
-                variant="outline"
+                variant="back"
                 size="lg"
               >
                 Back

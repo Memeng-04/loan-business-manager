@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import type { WizardStepProps } from "../../../types/wizardTypes";
-import { useBorrowers } from "../../../hooks/useBorrowers";
+import type { WizardStepProps } from "../../../../types/wizardTypes";
+import { useBorrowers } from "../../../../hooks/useBorrowers";
 import { AlertCircle, User, Plus } from "lucide-react";
-import { SummaryCard } from "../SummaryCard";
-import { InfoBox } from "../InfoBox";
-import Button from "../../Button";
-import SearchBar from "../../search/SearchBar";
-import LoadingState from "../../LoadingState";
+import { SummaryCard } from "../../SummaryCard";
+import { InfoBox } from "../../InfoBox";
+import Button from "../../../Button";
+import SearchBar from "../../../search/SearchBar";
+import LoadingState from "../../../LoadingState";
 import styles from "./Step2Borrower.module.css";
 
 /**

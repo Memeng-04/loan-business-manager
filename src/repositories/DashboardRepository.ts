@@ -63,4 +63,16 @@ export class DashboardRepository {
 
     return (data ?? []) as DashboardSchedule[];
   }
+
+  static async getAllPayments(): Promise<any[]> {
+    const { data, error } = await supabase
+      .from("payments")
+      .select("amount_paid, interest_portion, principal_portion");
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []) as any[];
+  }
 }
