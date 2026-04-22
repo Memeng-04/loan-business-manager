@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import Header from "../../components/header/Header";
 import Navbar from "../../components/navigation/Navbar";
 import styles from "./LoanPage.module.css";
-import Card from "../../components/card/Card";
 import ScheduleList from "../../components/loans/ScheduleList";
 import BorrowerList from "../../components/loans/BorrowerList";
 import PaymentActionModal from "../../components/loans/PaymentActionModal";

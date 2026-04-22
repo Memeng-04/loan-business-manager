@@ -1,8 +1,10 @@
-import { generateSchedule } from "../ScheduleStrategy";
+import { StandardScheduleStrategy } from "../ScheduleStrategy";
 
 describe("ScheduleStrategy", () => {
+  const strategy = new StandardScheduleStrategy();
+
   it("generates daily schedule entries for each day in term", () => {
-    const schedule = generateSchedule("2026-04-01", 100, "daily", 4);
+    const schedule = strategy.generate("2026-04-01", 100, "daily", 4);
 
     expect(schedule).toHaveLength(4);
     expect(schedule).toEqual([
@@ -14,7 +16,7 @@ describe("ScheduleStrategy", () => {
   });
 
   it("uses ceiling division for weekly schedules", () => {
-    const schedule = generateSchedule("2026-04-01", 1000, "weekly", 10);
+    const schedule = strategy.generate("2026-04-01", 1000, "weekly", 10);
 
     expect(schedule).toHaveLength(2);
     expect(schedule[0]).toEqual({
@@ -30,7 +32,7 @@ describe("ScheduleStrategy", () => {
   });
 
   it("uses 15-day intervals for bi-monthly schedules", () => {
-    const schedule = generateSchedule("2026-04-01", 900, "bi-monthly", 31);
+    const schedule = strategy.generate("2026-04-01", 900, "bi-monthly", 31);
 
     expect(schedule).toHaveLength(3);
     expect(schedule[0].due_date).toBe("2026-04-16");

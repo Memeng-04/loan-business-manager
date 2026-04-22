@@ -13,6 +13,7 @@ describe("LoanFactory", () => {
       frequency: "weekly",
       term_days: 14,
       start_date: "2026-04-01",
+      penalty_rate: 5,
     };
 
     const loan = LoanFactory.create(input);
@@ -28,6 +29,7 @@ describe("LoanFactory", () => {
       start_date: "2026-04-01",
       end_date: "2026-04-15",
       status: "active",
+      penalty_rate: 5,
     });
   });
 
@@ -39,6 +41,7 @@ describe("LoanFactory", () => {
       frequency: "bi-monthly",
       term_days: 30,
       start_date: "2026-04-01",
+      penalty_rate: 5,
     };
 
     const loan = LoanFactory.createFromPercentage(input);
@@ -54,6 +57,7 @@ describe("LoanFactory", () => {
       start_date: "2026-04-01",
       end_date: "2026-05-01",
       status: "active",
+      penalty_rate: 5,
     });
   });
 });

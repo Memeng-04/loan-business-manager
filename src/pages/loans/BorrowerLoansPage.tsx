@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, CreditCard, Trash2, Plus, Info } from 'lucide-react';
+import { ArrowLeft, Calendar, CreditCard, Trash2, Plus } from 'lucide-react';
 import Header from '../../components/header/Header';
 import Navbar from '../../components/navigation/Navbar';
 import Card from '../../components/card/Card';
@@ -56,7 +56,7 @@ export default function BorrowerLoansPage() {
     if (!borrower) return;
     setLoading(true);
     try {
-      const data = await LoanRepository.getByBorrowerId(borrower.id);
+      const data = await LoanRepository.getByBorrowerId(borrower.id!);
       setLoans(data);
       if (data.length > 0) setSelectedLoan(data[0]);
     } catch (e) {

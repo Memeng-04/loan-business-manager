@@ -41,16 +41,21 @@ export default function AddBorrowerForm({
   );
   const [formError, setFormError] = useState<string | null>(null);
 
-  function isDigits(value: string) {
-    return /^\d+$/.test(value);
-  }
-
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedAddress = address.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedMonthlyIncome = monthlyIncome.trim();
+    const trimmedSourceOfIncome = sourceOfIncome.trim();
+    const trimmedSecondaryName = secondaryContactName.trim();
+    const trimmedSecondaryNumber = secondaryContactNumber.trim();
 
     // Sanitize inputs (strip formatting characters)
     const sanitizedPhone = trimmedPhone.replace(/\D/g, '');
