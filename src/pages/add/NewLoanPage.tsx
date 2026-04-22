@@ -39,6 +39,8 @@ export default function NewLoanPage() {
   const handleReturnToWizard = () => {
     setCreatedLoanData(null);
     sessionStorage.removeItem('createdLoanData');
+    sessionStorage.removeItem('wizardState');
+    sessionStorage.removeItem('wizardStep');
   };
 
   return (

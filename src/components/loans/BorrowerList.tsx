@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../card/Card';
 import { User, ChevronRight, Phone } from 'lucide-react';
-import BorrowerDetailDrawer from './BorrowerDetailDrawer';
 import SearchBar from '../search/SearchBar';
 import LoadingState from '../LoadingState';
 
@@ -11,8 +11,8 @@ interface BorrowerListProps {
 }
 
 export default function BorrowerList({ borrowers, loading }: BorrowerListProps) {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBorrower, setSelectedBorrower] = useState<any | null>(null);
 
   // Filter borrowers based on search query
   const filteredBorrowers = useMemo(() => {
@@ -57,7 +57,7 @@ export default function BorrowerList({ borrowers, loading }: BorrowerListProps) 
               key={borrower.id}
               interactive
               padding="none"
-              onClick={() => setSelectedBorrower(borrower)}
+              onClick={() => navigate(`/loans/borrowers/${borrower.id}`)}
               className="group overflow-hidden border border-gray-100/60 hover:border-main-blue/30 active:scale-[0.99] transition-all bg-white"
             >
               <div className="flex items-center p-4 sm:p-5">
@@ -85,12 +85,6 @@ export default function BorrowerList({ borrowers, loading }: BorrowerListProps) 
           ))}
         </div>
       )}
-
-      {/* Admin Management Drawer */}
-      <BorrowerDetailDrawer 
-        borrower={selectedBorrower} 
-        onClose={() => setSelectedBorrower(null)} 
-      />
     </div>
   );
 }

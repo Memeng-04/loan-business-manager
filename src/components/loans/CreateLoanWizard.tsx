@@ -233,6 +233,10 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     if (isSuccess) {
       // Automatically redirect after 2 seconds
       const timer = setTimeout(() => {
+        // Clear all session storage before redirection
+        sessionStorage.removeItem('wizardState')
+        sessionStorage.removeItem('wizardStep')
+
         // Call onSuccess callback to transition to the next screen
         if (onSuccess && successLoanId) {
           onSuccess({ loanId: successLoanId, borrowerId: state.borrowerId });

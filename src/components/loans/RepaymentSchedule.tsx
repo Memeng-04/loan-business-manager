@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
-import { useRepaymentSchedule } from "../../hooks/useRepaymentSchedule";
-import type { ScheduleEntry } from "../../strategies/ScheduleStrategy";
-import { useBorrowers } from "../../hooks/useBorrowers";
-import Button from "../Button";
-import styles from "./RepaymentSchedule.module.css";
+import { useEffect, useMemo } from 'react'
+import { useRepaymentSchedule } from '../../hooks/useRepaymentSchedule'
+import type { ScheduleEntry } from '../../types/strategies'
+import { useBorrowers } from '../../hooks/useBorrowers'
+import Button from '../Button'
+import styles from './RepaymentSchedule.module.css'
 
 interface RepaymentScheduleProps {
   loanId: string;

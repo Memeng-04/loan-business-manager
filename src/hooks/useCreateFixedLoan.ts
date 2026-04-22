@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { LoanFactory } from '../factories/LoanFactory'
 import { LoanRepository } from '../repositories/LoanRepository'
 import { ScheduleRepository } from '../repositories/ScheduleRepository'
-import { generateSchedule } from '../strategies/ScheduleStrategy'
+import { StandardScheduleStrategy } from '../strategies/ScheduleStrategy'
 import type { CreateLoanInput, PaymentFrequency } from '../types/loans'
 
 export const useCreateLoan = () => {
@@ -23,7 +23,8 @@ export const useCreateLoan = () => {
       if (!savedLoan) throw new Error('Failed to save loan record')
 
       // 2. Generate and Save the schedule automatically
-      const generated = generateSchedule(
+      const strategy  = new StandardScheduleStrategy();
+      const generated = strategy.generate(
         savedLoan.start_date,
         savedLoan.total_payable,
         savedLoan.frequency as PaymentFrequency,

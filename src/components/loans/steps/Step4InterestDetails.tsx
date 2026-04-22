@@ -2,9 +2,8 @@ import React, { useMemo } from 'react'
 import type { WizardStepProps } from '../../../types/wizardTypes'
 import { Lightbulb, BarChart3, Check } from 'lucide-react'
 import {
-  calculateInterest,
-  calculateFromPercentage,
-  calculatePaymentAmount
+  FixedInterestStrategy,
+  PercentageInterestStrategy
 } from '../../../strategies/InterestStrategy'
 import { formatCurrency, isValidCurrency } from '../../../lib/formatters'
 import { SummaryCard } from '../SummaryCard'
@@ -54,22 +53,21 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
       const totalPayable = Number(state.totalPayable)
       if (totalPayable <= principal) return null
 
-      const { interest, interestRate } = calculateInterest(
+      const strategy = new FixedInterestStrategy();
+      const result = strategy.calculate(
         principal,
+        termDays,
+        state.frequency || 'monthly',
+        new Date().toISOString(),
         totalPayable
-      )
-      const paymentAmount = calculatePaymentAmount(
-        totalPayable,
-        state.frequency,
-        termDays
-      )
+      );
 
       return {
         principal,
-        totalPayable,
-        interest,
-        interestRate,
-        paymentAmount,
+        totalPayable: result.totalPayable,
+        interest: result.interest,
+        interestRate: result.interestRate,
+        paymentAmount: result.paymentAmount,
         frequency: state.frequency,
         termDays
       }
@@ -77,22 +75,21 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
       const interestRate = Number(state.interestRate)
       if (interestRate < 0) return null
 
-      const { interest, totalPayable } = calculateFromPercentage(
+      const strategy = new PercentageInterestStrategy();
+      const result = strategy.calculate(
         principal,
+        termDays,
+        state.frequency || 'monthly',
+        new Date().toISOString(),
         interestRate
-      )
-      const paymentAmount = calculatePaymentAmount(
-        totalPayable,
-        state.frequency,
-        termDays
-      )
+      );
 
       return {
         principal,
-        totalPayable,
-        interest,
-        interestRate,
-        paymentAmount,
+        totalPayable: result.totalPayable,
+        interest: result.interest,
+        interestRate: result.interestRate,
+        paymentAmount: result.paymentAmount,
         frequency: state.frequency,
         termDays
       }

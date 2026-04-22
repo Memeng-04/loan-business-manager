@@ -1,71 +1,55 @@
 import {
-  calculateInterest,
-  calculateFromPercentage,
-  calculatePaymentAmount,
-  calculateEndDate
+  FixedInterestStrategy,
+  PercentageInterestStrategy
 } from '../strategies/InterestStrategy'
 import type { Loan, CreateLoanInput, CreatePercentageLoanInput } from '../types/loans'
 
 export class LoanFactory {
   static create(input: CreateLoanInput): Loan {
-    const { interest, interestRate } = calculateInterest(
+    const strategy = new FixedInterestStrategy();
+    const result = strategy.calculate(
       input.principal,
-      input.total_payable
-    )
-
-    const paymentAmount = calculatePaymentAmount(
-      input.total_payable,
+      input.term_days,
       input.frequency,
-      input.term_days
-    )
-
-    const endDate = calculateEndDate(
       input.start_date,
-      input.term_days
-    )
+      input.total_payable
+    );
 
     return {
       borrower_id:    input.borrower_id,
       principal:      input.principal,
-      total_payable:  input.total_payable,
-      interest,
-      interest_rate:  interestRate,
+      total_payable:  result.totalPayable,
+      interest:       result.interest,
+      interest_rate:  result.interestRate,
       frequency:      input.frequency,
-      payment_amount: paymentAmount,
+      payment_amount: result.paymentAmount,
       start_date:     input.start_date,
-      end_date:       endDate,
+      end_date:       result.endDate,
       status:         'active',
       penalty_rate:   input.penalty_rate
     }
   }
 
   static createFromPercentage(input: CreatePercentageLoanInput): Loan {
-    const { interest, totalPayable } = calculateFromPercentage(
+    const strategy = new PercentageInterestStrategy();
+    const result = strategy.calculate(
       input.principal,
-      input.interest_rate
-    )
-
-    const paymentAmount = calculatePaymentAmount(
-      totalPayable,
+      input.term_days,
       input.frequency,
-      input.term_days
-    )
-
-    const endDate = calculateEndDate(
       input.start_date,
-      input.term_days
-    )
+      input.interest_rate
+    );
 
     return {
       borrower_id:    input.borrower_id,
       principal:      input.principal,
-      total_payable:  totalPayable,
-      interest,
-      interest_rate:  input.interest_rate,
+      total_payable:  result.totalPayable,
+      interest:       result.interest,
+      interest_rate:  result.interestRate,
       frequency:      input.frequency,
-      payment_amount: paymentAmount,
+      payment_amount: result.paymentAmount,
       start_date:     input.start_date,
-      end_date:       endDate,
+      end_date:       result.endDate,
       status:         'active',
       penalty_rate:   input.penalty_rate
     }

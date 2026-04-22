@@ -5,7 +5,6 @@ import styles from "./LoanPage.module.css";
 import Card from "../../components/card/Card";
 import ScheduleList from "../../components/loans/ScheduleList";
 import BorrowerList from "../../components/loans/BorrowerList";
-import PaymentActionModal from "../../components/loans/PaymentActionModal";
 import { ScheduleRepository } from "../../repositories/ScheduleRepository";
 import { useBorrowers } from "../../hooks/useBorrowers";
 import { formatCurrency } from "../../lib/formatters";
@@ -19,8 +18,6 @@ export default function LoanPage() {
   const { borrowers, loading: borrowersLoading } = useBorrowers();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
-
-  const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
 
   // Calculate Date Ranges based on filter
   const dateRange = useMemo(() => {
@@ -115,8 +112,8 @@ export default function LoanPage() {
 
             <ScheduleList 
               schedules={schedules} 
-              loading={schedulesLoading} 
-              onScheduleClick={(s) => setSelectedSchedule(s)} 
+              loading={schedulesLoading}
+              onScheduleClick={() => {}}
             />
 
             {/* Total collections overview logic could be injected here */}
@@ -131,20 +128,6 @@ export default function LoanPage() {
         {/* Borrowers View */}
         {activeTab === 'borrowers' && (
           <BorrowerList borrowers={borrowers} loading={borrowersLoading} />
-        )}
-
-        {/* Payment Modal */}
-        {selectedSchedule && (
-          <PaymentActionModal
-            loanId={selectedSchedule.loan_id}
-            scheduleId={selectedSchedule.id}
-            defaultAmountDue={selectedSchedule.amount_due}
-            onClose={() => setSelectedSchedule(null)}
-            onSuccess={() => {
-              setSelectedSchedule(null);
-              loadSchedules(); // Refresh the list
-            }}
-          />
         )}
       </section>
     </main>

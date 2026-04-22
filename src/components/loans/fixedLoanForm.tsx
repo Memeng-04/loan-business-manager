@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useCreateLoan } from '../../hooks/useCreateFixedLoan'
-import {
-  calculateInterest,
-  calculatePaymentAmount
-} from '../../strategies/InterestStrategy'
+import { FixedInterestStrategy } from '../../strategies/InterestStrategy'
 import type { PaymentFrequency } from '../../types/loans'
 
 interface LoanFormProps {
@@ -23,19 +20,17 @@ export const LoanForm = ({ borrowerId, onSuccess }: LoanFormProps) => {
     penaltyRate:  '5'
   })
 
-  const preview = form.principal && form.totalPayable
-    ? {
-        ...calculateInterest(
-          Number(form.principal),
-          Number(form.totalPayable)
-        ),
-        paymentAmount: calculatePaymentAmount(
-          Number(form.totalPayable),
-          form.frequency,
-          Number(form.termDays)
-        )
-      }
-    : null
+  let preview = null;
+  if (form.principal && form.totalPayable) {
+    const strategy = new FixedInterestStrategy();
+    preview = strategy.calculate(
+      Number(form.principal),
+      Number(form.termDays),
+      form.frequency,
+      form.startDate || new Date().toISOString(),
+      Number(form.totalPayable)
+    );
+  }
 
   const handleSubmit = async () => {
     if (!form.principal || !form.totalPayable || !form.startDate) return
