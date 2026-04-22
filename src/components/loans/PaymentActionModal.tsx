@@ -131,22 +131,18 @@ export default function PaymentActionModal({
 
   // Dynamic helper text
   const getHelperText = () => {
-    if (actionType === "paid")
-      return `Marks exactly ₱${formatCurrency(defaultAmountDue)} as paid today.`;
-    if (actionType === "partial") {
+    if (actionType === 'paid') return `Marks exactly ${formatCurrency(defaultAmountDue)} as paid today.`;
+    if (actionType === 'partial') {
       const remaining = defaultAmountDue - (parseFloat(amountPaid) || 0);
-      if (remaining <= 0)
-        return `Consider using Full or Advance payment instead.`;
-      return `₱${formatCurrency(remaining)} will be rolled into the next schedule.`;
+      if (remaining <= 0) return `Consider using Full or Advance payment instead.`;
+      return `${formatCurrency(remaining)} will be rolled into the next schedule.`;
     }
     if (actionType === "advance") {
       const overpayment = (parseFloat(amountPaid) || 0) - defaultAmountDue;
-      if (overpayment <= 0)
-        return `Consider using Full or Partial payment instead.`;
-      return `₱${formatCurrency(overpayment)} extra will reduce the end of the loan term.`;
+      if (overpayment <= 0) return `Consider using Full or Partial payment instead.`;
+      return `${formatCurrency(overpayment)} extra will reduce the end of the loan term.`;
     }
-    if (actionType === "absent")
-      return `Entire ₱${formatCurrency(defaultAmountDue)} rolls over. Automatic penalty applies every 3 misses.`;
+    if (actionType === 'absent') return `Entire ${formatCurrency(defaultAmountDue)} rolls over. Automatic penalty applies every 3 misses.`;
   };
 
   return (
@@ -166,15 +162,8 @@ export default function PaymentActionModal({
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-              Record Action
-            </h2>
-            <p className="text-gray-500 font-medium text-sm mt-1">
-              Expected:{" "}
-              <span className="font-bold text-main-blue">
-                ₱{formatCurrency(defaultAmountDue)}
-              </span>
-            </p>
+            <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">Record Action</h2>
+            <p className="text-gray-500 font-medium text-sm mt-1">Expected: <span className="font-bold text-main-blue">{formatCurrency(defaultAmountDue)}</span></p>
           </div>
           <button
             onClick={onClose}

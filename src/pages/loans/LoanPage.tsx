@@ -5,19 +5,25 @@ import styles from "./LoanPage.module.css";
 import Card from "../../components/card/Card";
 import ScheduleList from "../../components/loans/ScheduleList";
 import BorrowerList from "../../components/loans/BorrowerList";
+import PaymentActionModal from "../../components/loans/PaymentActionModal";
 import { ScheduleRepository } from "../../repositories/ScheduleRepository";
 import { useBorrowers } from "../../hooks/useBorrowers";
 import { formatCurrency } from "../../lib/formatters";
+import SearchBar from "../../components/search/SearchBar";
 
 export default function LoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'schedules' | 'borrowers'>('schedules');
   const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'custom'>('today');
   const [customDate, setCustomDate] = useState(new Date().toISOString().split('T')[0]);
+  const [frequencyFilter, setFrequencyFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   const { borrowers, loading: borrowersLoading } = useBorrowers();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
+  const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
 
   // Calculate Date Ranges based on filter
   const dateRange = useMemo(() => {
@@ -36,10 +42,15 @@ export default function LoanPage() {
       end.setMonth(end.getMonth() + 1);
     }
 
-    return {
-      startDate: start.toISOString().split('T')[0],
-      endDate: end.toISOString().split('T')[0]
-    };
+    try {
+      const startISO = start.toISOString().split('T')[0];
+      const endISO = end.toISOString().split('T')[0];
+      return { startDate: startISO, endDate: endISO };
+    } catch (e) {
+      console.error('Invalid date generated:', e);
+      const now = new Date().toISOString().split('T')[0];
+      return { startDate: now, endDate: now };
+    }
   }, [dateFilter, customDate]);
 
   const loadSchedules = async () => {
@@ -59,6 +70,28 @@ export default function LoanPage() {
       loadSchedules();
     }
   }, [dateRange, activeTab]);
+
+  const filteredSchedules = useMemo(() => {
+    return schedules.filter(s => {
+      // 1. Frequency Filter
+      const matchesFreq = frequencyFilter === 'all' || 
+        s.loan?.frequency?.toLowerCase() === frequencyFilter.toLowerCase();
+      
+      if (!matchesFreq) return false;
+
+      // 2. Search Filter
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      const borrower = s.loan?.borrower;
+      
+      return (
+        borrower?.full_name?.toLowerCase().includes(query) ||
+        borrower?.phone?.toLowerCase().includes(query) ||
+        s.loan_id?.toLowerCase().includes(query)
+      );
+    });
+  }, [schedules, frequencyFilter, searchQuery]);
+
 
   return (
     <main className={styles.page}>
@@ -86,40 +119,76 @@ export default function LoanPage() {
         {/* Schedules View */}
         {activeTab === 'schedules' && (
           <div className="flex flex-col gap-6">
-            <Card padding="sm" className="flex flex-wrap items-center justify-between gap-4 sticky top-0 z-10 shadow-md border-b">
-              <div className="flex gap-2 overflow-x-auto w-full sm:w-auto">
-                {['today', 'week', 'month'].map((filter) => (
-                  <button
-                    key={filter}
-                    onClick={() => setDateFilter(filter as any)}
-                    className={`px-4 py-2 rounded-full text-xs font-bold uppercase transition-all whitespace-nowrap ${dateFilter === filter ? 'bg-blue-100 text-main-blue border-blue-200 border' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
+            {/* Unified Filter Bar */}
+            <div className={styles.filterCard}>
+              <div className="p-4 flex flex-col lg:flex-row items-center gap-4">
+                {/* Search - Growing to fill space */}
+                <div className="w-full lg:flex-1">
+                  <SearchBar 
+                    value={searchQuery} 
+                    onChange={setSearchQuery} 
+                    placeholder="Search borrower or loan ID..."
+                    className="!shadow-none"
+                  />
+                </div>
 
-                <input 
-                  type="date"
-                  value={customDate}
-                  onChange={(e) => {
-                    setCustomDate(e.target.value);
-                    setDateFilter('custom');
-                  }}
-                  className="px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white shadow-sm focus:outline-none focus:border-main-blue focus:ring-4 focus:ring-main-blue/5 transition-all font-bold text-main-blue"
-                />
-            </Card>
+                {/* Filters - Right aligned on desktop */}
+                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                  <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
+                    {['today', 'week', 'month'].map((filter) => (
+                      <button
+                        key={filter}
+                        onClick={() => setDateFilter(filter as any)}
+                        className={`px-4 py-2 rounded-full text-xs font-bold uppercase transition-all whitespace-nowrap ${dateFilter === filter ? 'bg-blue-100 text-main-blue border-blue-200 border' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                      >
+                        {filter}
+                      </button>
+                    ))}
+                  </div>
+
+                  <select 
+                    className={`px-4 py-2 rounded-full text-xs font-bold uppercase transition-all cursor-pointer focus:outline-none ${
+                      frequencyFilter !== 'all' 
+                        ? 'bg-blue-100 text-main-blue border-blue-200 border' 
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200 border-transparent border'
+                    }`}
+                    value={frequencyFilter}
+                    onChange={(e) => setFrequencyFilter(e.target.value)}
+                  >
+                    <option value="all">All Freq</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="bi-monthly">Bi-Monthly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+
+                  <input 
+                    type="date"
+                    value={customDate}
+                    onChange={(e) => {
+                      setCustomDate(e.target.value);
+                      setDateFilter('custom');
+                    }}
+                    className="px-4 py-2 border border-gray-200 rounded-xl text-xs bg-white shadow-sm focus:outline-none focus:border-main-blue focus:ring-4 focus:ring-main-blue/5 transition-all font-bold text-main-blue grow sm:grow-0"
+                  />
+                </div>
+              </div>
+            </div>
 
             <ScheduleList 
-              schedules={schedules} 
+              schedules={filteredSchedules} 
               loading={schedulesLoading}
-              onScheduleClick={() => {}}
+              onScheduleClick={(schedule) => setSelectedSchedule(schedule)}
             />
 
             {/* Total collections overview logic could be injected here */}
-            {schedules.length > 0 && !schedulesLoading && (
+            {filteredSchedules.length > 0 && !schedulesLoading && (
               <div className="text-right text-gray-600 font-medium text-sm mt-4">
-                Total Due for selection: {formatCurrency(schedules.filter(s => s.status !== 'paid').reduce((a, b) => a + Number(b.amount_due), 0))}
+                Total Due for selection: {formatCurrency(
+                  filteredSchedules
+                    .filter(s => s.status !== 'paid')
+                    .reduce((acc, curr) => acc + (Number(curr.amount_due) || 0), 0)
+                )}
               </div>
             )}
           </div>
@@ -130,6 +199,20 @@ export default function LoanPage() {
           <BorrowerList borrowers={borrowers} loading={borrowersLoading} />
         )}
       </section>
+
+      {/* Payment Action Modal */}
+      {selectedSchedule && (
+        <PaymentActionModal
+          loanId={selectedSchedule.loan_id}
+          scheduleId={selectedSchedule.id}
+          defaultAmountDue={selectedSchedule.amount_due}
+          onClose={() => setSelectedSchedule(null)}
+          onSuccess={() => {
+            setSelectedSchedule(null);
+            loadSchedules(); // Force refresh dashboard data to reflect payment status
+          }}
+        />
+      )}
     </main>
   );
 }

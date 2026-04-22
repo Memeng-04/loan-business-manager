@@ -51,7 +51,14 @@ export const ConfirmLoanModal = ({
         {/* Key terms recap */}
         {paymentAmount && frequency && (
           <div className={styles.termsPill}>
-            <span className={styles.termsLabel}>Payment per {frequency === 'bi-monthly' ? 'payout' : frequency}</span>
+            <span className={styles.termsLabel}>
+              Payment per {
+                frequency === 'daily' ? 'day' :
+                frequency === 'weekly' ? 'week' :
+                frequency === 'bi-monthly' ? 'payout' :
+                frequency === 'monthly' ? 'month' : 'installment'
+              }
+            </span>
             <span className={styles.termsValue}>₱{paymentAmount}</span>
           </div>
         )}

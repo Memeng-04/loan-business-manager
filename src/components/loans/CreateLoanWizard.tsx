@@ -256,8 +256,8 @@ export const CreateLoanWizard = ({
         }
 
         return (
-          !!state.principal &&
-          !!state.termDays &&
+          Number(state.principal) > 0 &&
+          Number(state.termDays) > 0 &&
           !!state.startDate &&
           !!state.frequency &&
           !!selectedDate && 

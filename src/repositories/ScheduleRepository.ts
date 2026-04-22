@@ -79,7 +79,7 @@ export class ScheduleRepository {
       .select(`
         *,
         loan:loans (
-          id, principal, status, interest_rate, payment_amount,
+          id, principal, status, interest_rate, payment_amount, frequency,
           borrower:borrowers ( id, full_name, phone )
         )
       `)

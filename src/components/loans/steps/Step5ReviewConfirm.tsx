@@ -243,7 +243,14 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
         {/* Payment per Due Date - Highlight Card */}
         {preview && (
           <div className={styles.paymentHighlightCard}>
-            <div className={styles.paymentHighlightLabel}>Payment per {state.frequency === 'bi-monthly' ? 'payout' : state.frequency?.replace('ly','') || 'payment'}</div>
+            <div className={styles.paymentHighlightLabel}>
+              Payment per {
+                state.frequency === 'daily' ? 'day' :
+                state.frequency === 'weekly' ? 'week' :
+                state.frequency === 'bi-monthly' ? 'payout' :
+                state.frequency === 'monthly' ? 'month' : 'installment'
+              }
+            </div>
             <div className={styles.paymentHighlightAmount}>₱{formatCurrency(preview.paymentAmount)}</div>
             <div className={styles.paymentHighlightSub}>due every {state.frequency} · {state.termDays} {state.frequency === 'daily' ? 'days' : state.frequency === 'weekly' ? 'weeks' : state.frequency === 'bi-monthly' ? 'payouts' : 'months'} total</div>
           </div>

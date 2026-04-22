@@ -231,13 +231,11 @@ export default function BorrowerDetailDrawer({
                               Principal Amount
                             </span>
                           </div>
-                          <span
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${
-                              loan.status === "active"
-                                ? "bg-green-100 text-green-700 border border-green-200"
-                                : "bg-gray-100 text-gray-700 border border-gray-200"
-                            }`}
-                          >
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${
+                            loan.status === 'active' ? 'bg-red-100 text-red-700 border border-red-200' : 
+                            loan.status === 'paid' ? 'bg-green-100 text-green-700 border border-green-200' :
+                            'bg-gray-100 text-gray-700 border border-gray-200'
+                          }`}>
                             {loan.status}
                           </span>
                         </div>
