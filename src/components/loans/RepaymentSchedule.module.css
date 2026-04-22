@@ -278,6 +278,49 @@
   color: #718096;
 }
 
+/* ── Pagination ─────────────────────────────────── */
+.paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1rem 0 0.5rem;
+}
+
+.pageButton {
+  padding: 0.4rem 1rem;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #2d3748;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+  background: #ebf4ff;
+  border-color: #3182ce;
+  color: #2b6cb0;
+}
+
+.pageButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 0.875rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.pageTotal {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
 @media (max-width: 640px) {
   .scheduleWrapper {
     padding-bottom: 6rem;

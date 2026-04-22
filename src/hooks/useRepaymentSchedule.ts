@@ -27,7 +27,7 @@ export const useRepaymentSchedule = () => {
       
       if (existing && existing.length > 0) {
         setSchedule(existing)
-        setSaved(true) // Consider it "saved" since it's from DB
+        setSaved(true)
         return
       }
 

@@ -29,7 +29,16 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
     if (!state.principal || !state.termDays) return null
 
     const principal = Number(state.principal)
-    const termDays = Number(state.termDays)
+    const termUnitValue = Number(state.termDays)
+    let totalDays = termUnitValue
+
+    // Convert units to days based on frequency for strategy calculation
+    switch (state.frequency) {
+      case 'weekly':     totalDays = termUnitValue * 7; break;
+      case 'bi-monthly': totalDays = termUnitValue * 15; break;
+      case 'monthly':    totalDays = termUnitValue * 30; break;
+      default:           totalDays = termUnitValue; // daily
+    }
 
     if (state.loanType === 'fixed' && state.totalPayable) {
       const totalPayable = Number(state.totalPayable)
@@ -37,7 +46,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
       const strategy = new FixedInterestStrategy();
       const result = strategy.calculate(
         principal,
-        termDays,
+        totalDays,
         state.frequency || 'monthly',
         new Date().toISOString(),
         totalPayable
@@ -50,7 +59,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
         interestRate: result.interestRate,
         paymentAmount: result.paymentAmount,
         frequency: state.frequency,
-        termDays
+        termDays: totalDays
       }
     } else if (state.loanType === 'percentage' && state.interestRate) {
       const interestRate = Number(state.interestRate)
@@ -58,7 +67,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
       const strategy = new PercentageInterestStrategy();
       const result = strategy.calculate(
         principal,
-        termDays,
+        totalDays,
         state.frequency || 'monthly',
         new Date().toISOString(),
         interestRate
@@ -71,7 +80,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
         interestRate: result.interestRate,
         paymentAmount: result.paymentAmount,
         frequency: state.frequency,
-        termDays
+        termDays: totalDays
       }
     }
 
@@ -162,7 +171,12 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
             <div className={styles.summaryItem}>
               <span className={styles.summaryItemLabel}>Term:</span>
               <span className={styles.summaryItemValue}>
-                {state.termDays} days
+                {state.termDays} {
+                  state.frequency === 'daily' ? 'days' : 
+                  state.frequency === 'weekly' ? 'weeks' : 
+                  state.frequency === 'bi-monthly' ? 'payouts' : 
+                  state.frequency === 'monthly' ? 'months' : 'units'
+                }
               </span>
             </div>
           </div>
@@ -226,15 +240,24 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
           </div>
         </div>
 
+        {/* Payment per Due Date - Highlight Card */}
+        {preview && (
+          <div className={styles.paymentHighlightCard}>
+            <div className={styles.paymentHighlightLabel}>Payment per {state.frequency === 'bi-monthly' ? 'payout' : state.frequency?.replace('ly','') || 'payment'}</div>
+            <div className={styles.paymentHighlightAmount}>₱{formatCurrency(preview.paymentAmount)}</div>
+            <div className={styles.paymentHighlightSub}>due every {state.frequency} · {state.termDays} {state.frequency === 'daily' ? 'days' : state.frequency === 'weekly' ? 'weeks' : state.frequency === 'bi-monthly' ? 'payouts' : 'months'} total</div>
+          </div>
+        )}
+
         {/* Payment Summary - Full Width */}
         {preview && (
           <div className={styles.fullWidthCard}>
             <SummaryCard
-              title="Payment Summary"
+              title="Loan Totals"
               icon={<Check size={16} />}
               items={[
                 {
-                  label: 'Principal:',
+                  label: 'Principal Borrowed:',
                   value: `₱${formatCurrency(preview.principal)}`
                 },
                 {
@@ -245,16 +268,13 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
                   label: 'Total to Repay:',
                   value: `₱${formatCurrency(preview.totalPayable)}`,
                   isTotal: true
-                },
-                {
-                  label: `Payment per ${state.frequency}:`,
-                  value: `₱${formatCurrency(preview.paymentAmount)}`
                 }
               ]}
             />
           </div>
         )}
-      </div>
+
+      </div>{/* end summaryGrid */}
 
       {/* Info Box */}
       <InfoBox icon={<Info size={16} />}>

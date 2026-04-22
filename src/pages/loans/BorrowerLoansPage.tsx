@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, CreditCard, Trash2, Plus, Info } from 'lucide-react';
 import Header from '../../components/header/Header';
@@ -33,6 +33,9 @@ export default function BorrowerLoansPage() {
   const [newDate, setNewDate] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [addLoading, setAddLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ROWS_PER_PAGE = 10;
 
   useEffect(() => {
     if (borrower) {
@@ -44,6 +47,7 @@ export default function BorrowerLoansPage() {
 
   useEffect(() => {
     if (selectedLoan && activeTab === 'schedules') {
+      setCurrentPage(1);
       fetchSchedules();
     }
   }, [selectedLoan, activeTab]);
@@ -75,6 +79,11 @@ export default function BorrowerLoansPage() {
       setSchedulesLoading(false);
     }
   };
+
+  // Reset to page 1 when schedules change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [schedules]);
 
   const handleDeleteSchedule = async (id: string) => {
     if (!confirm('Delete this schedule entry?')) return;
@@ -140,6 +149,13 @@ export default function BorrowerLoansPage() {
       setAddLoading(false);
     }
   };
+
+  // Pagination calculation
+  const totalPages = Math.ceil(schedules.length / ROWS_PER_PAGE);
+  const paginatedSchedules = useMemo(() => {
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    return schedules.slice(start, start + ROWS_PER_PAGE);
+  }, [schedules, currentPage]);
 
   if (borrowersLoading || !borrower) {
     return (
@@ -294,11 +310,11 @@ export default function BorrowerLoansPage() {
                       </div>
 
                       <div className="space-y-4">
-                        <div className="flex justify-between items-end">
+                          <div className="flex justify-between items-end">
                           <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest">
                             Schedule timeline
                           </h4>
-                          <span className="text-[10px] text-gray-400 italic">Scroll for more entries</span>
+                          <span className="text-[10px] text-gray-400 italic">{schedules.length > ROWS_PER_PAGE ? `${ROWS_PER_PAGE} rows per page` : `${schedules.length} entries`}</span>
                         </div>
 
                         {schedulesLoading ? (
@@ -315,7 +331,7 @@ export default function BorrowerLoansPage() {
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-gray-50">
-                                {schedules.map(sch => (
+                                {paginatedSchedules.map(sch => (
                                   <tr key={sch.id} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="px-4 py-3 font-medium text-gray-600">
                                       {formatDate(sch.due_date)}
@@ -376,6 +392,32 @@ export default function BorrowerLoansPage() {
                             </table>
                           </div>
                         )}
+
+                        {/* Pagination Controls */}
+                        <div className="flex items-center justify-center gap-4 py-4 border-t border-gray-100 mt-4">
+                          <Button
+                            variant="outline"
+                            size="md"
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="text-xs"
+                          >
+                            ← Prev
+                          </Button>
+                          <span className="text-xs font-medium text-gray-600">
+                            Page {currentPage} of {totalPages}
+                            <span className="text-gray-400">&nbsp;({schedules.length} total)</span>
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="md"
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="text-xs"
+                          >
+                            Next →
+                          </Button>
+                        </div>
 
                         {/* Add Tool */}
                         <form

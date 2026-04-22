@@ -1,18 +1,21 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import type {
   CreateLoanWizardState,
-  WizardStep,
-} from "../../types/wizardTypes";
-import { CheckCircle } from "lucide-react";
-import { useCreateLoan } from "../../hooks/useCreateFixedLoan";
-import { useCreatePercentageLoan } from "../../hooks/useCreatePercentageLoan";
-import { Step1LoanCategory } from "./steps/Step1LoanCategory";
-import { Step2Borrower } from "./steps/Step2Borrower";
-import { Step3LoanDetails } from "./steps/Step3LoanDetails";
-import { Step4InterestDetails } from "./steps/Step4InterestDetails";
-import { Step5ReviewConfirm } from "./steps/Step5ReviewConfirm";
-import Button from "../Button";
-import styles from "./CreateLoanWizard.module.css";
+  WizardStep
+} from '../../types/wizardTypes'
+import { CheckCircle } from 'lucide-react'
+import { useCreateLoan } from '../../hooks/useCreateFixedLoan'
+import { useCreatePercentageLoan } from '../../hooks/useCreatePercentageLoan'
+import { useBorrowers } from '../../hooks/useBorrowers'
+import { Step1LoanCategory } from './steps/Step1LoanCategory'
+import { Step2Borrower } from './steps/Step2Borrower'
+import { Step3LoanDetails } from './steps/Step3LoanDetails'
+import { Step4InterestDetails } from './steps/Step4InterestDetails'
+import { Step5ReviewConfirm } from './steps/Step5ReviewConfirm'
+import { ConfirmLoanModal } from './ConfirmLoanModal'
+import { FixedInterestStrategy, PercentageInterestStrategy } from '../../strategies/InterestStrategy'
+import Button from '../Button'
+import styles from './CreateLoanWizard.module.css'
 
 interface CreateLoanWizardProps {
   onSuccess?: (loanData: { loanId: string; borrowerId: string }) => void;
@@ -27,13 +30,18 @@ interface CreateLoanWizardProps {
  * 4. Interest Details
  * 5. Review & Submit
  */
-export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
-  const [currentStep, setCurrentStep] = useState<WizardStep>(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [successLoanId, setSuccessLoanId] = useState<string | null>(null);
-  const [isLoadingFromSession, setIsLoadingFromSession] = useState(true);
+export const CreateLoanWizard = ({
+  onSuccess
+}: CreateLoanWizardProps) => {
+  const [currentStep, setCurrentStep] = useState<WizardStep>(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [successLoanId, setSuccessLoanId] = useState<string | null>(null)
+  const [isLoadingFromSession, setIsLoadingFromSession] = useState(true)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+
+  const { borrowers } = useBorrowers()
 
   const { createLoan: createFixedLoan, loading: fixedLoading } =
     useCreateLoan();
@@ -61,17 +69,9 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     const savedState = sessionStorage.getItem("wizardState");
     const savedStep = sessionStorage.getItem("wizardStep");
 
-    console.log("🔍 Wizard Mount - Checking sessionStorage...");
-    console.log(
-      "savedState:",
-      savedState ? JSON.parse(savedState) : "NOT FOUND",
-    );
-    console.log("savedStep:", savedStep ? parseInt(savedStep) : "NOT FOUND");
-
     if (savedState) {
       try {
         const parsedState = JSON.parse(savedState);
-        // Sanitize principal and termDays to enforce length limits
         if (parsedState.principal && parsedState.principal.length > 15) {
           parsedState.principal = parsedState.principal.slice(0, 15);
         }
@@ -79,7 +79,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
           parsedState.termDays = parsedState.termDays.slice(0, 5);
         }
         setState(parsedState);
-        console.log("✅ Restored wizard state from sessionStorage");
       } catch (error) {
         console.error("Failed to restore wizard state:", error);
       }
@@ -90,43 +89,27 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
         const step = parseInt(savedStep) as WizardStep;
         if (step >= 1 && step <= 5) {
           setCurrentStep(step);
-          console.log("✅ Restored step:", step);
         }
       } catch (error) {
         console.error("Failed to restore wizard step:", error);
       }
     }
 
-    // Mark that we're done loading from session - now safe to save
     setIsLoadingFromSession(false);
   }, []);
 
-  /**
-   * Save wizard state to sessionStorage whenever it changes
-   * Skip saving during initial load to avoid overwriting restored state
-   */
   useEffect(() => {
     if (!isLoadingFromSession) {
       sessionStorage.setItem("wizardState", JSON.stringify(state));
-      console.log("💾 Saved wizard state to sessionStorage:", state);
     }
   }, [state, isLoadingFromSession]);
 
-  /**
-   * Save current step to sessionStorage whenever it changes
-   * Skip saving during initial load to avoid overwriting restored step
-   */
   useEffect(() => {
     if (!isLoadingFromSession) {
       sessionStorage.setItem("wizardStep", currentStep.toString());
-      console.log("💾 Saved wizard step to sessionStorage:", currentStep);
     }
   }, [currentStep, isLoadingFromSession]);
 
-  /**
-   * Update a single key in the wizard state.
-   * Follows controlled component pattern with parent holding all state.
-   */
   const updateState = useCallback(
     <K extends keyof CreateLoanWizardState>(
       key: K,
@@ -140,10 +123,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     [],
   );
 
-  /**
-   * Advance to the next step.
-   * Step validation should be handled by child components before calling this.
-   */
   const nextStep = useCallback(() => {
     if (currentStep < 5) {
       setCurrentStep((prev: WizardStep) => (prev + 1) as WizardStep);
@@ -151,9 +130,6 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     }
   }, [currentStep]);
 
-  /**
-   * Return to the previous step.
-   */
   const prevStep = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep((prev: WizardStep) => (prev - 1) as WizardStep);
@@ -161,16 +137,11 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     }
   }, [currentStep]);
 
-  /**
-   * Handle final wizard submission.
-   * Routes to the appropriate Supabase hook based on loanType.
-   */
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
       setSubmitError(null);
 
-      // Validation
       if (!state.loanType) {
         throw new Error("Loan type not selected");
       }
@@ -178,7 +149,17 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
         throw new Error("Missing required fields");
       }
 
-      let loanId: string | undefined;
+      const termUnitValue = Number(state.termDays)
+      let totalDays = termUnitValue
+      
+      switch (state.frequency) {
+        case 'weekly':     totalDays = termUnitValue * 7; break;
+        case 'bi-monthly': totalDays = termUnitValue * 15; break;
+        case 'monthly':    totalDays = termUnitValue * 30; break;
+        default:           totalDays = termUnitValue;
+      }
+
+      let loanId: string | undefined
 
       if (state.loanType === "fixed") {
         if (!state.totalPayable) {
@@ -190,7 +171,7 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
           principal: Number(state.principal),
           total_payable: Number(state.totalPayable),
           frequency: state.frequency,
-          term_days: Number(state.termDays),
+          term_days: totalDays,
           start_date: state.startDate,
           penalty_rate: Number(state.penaltyRate),
         });
@@ -204,44 +185,37 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
           principal: Number(state.principal),
           interest_rate: Number(state.interestRate),
           frequency: state.frequency,
-          term_days: Number(state.termDays),
+          term_days: totalDays,
           start_date: state.startDate,
           penalty_rate: Number(state.penaltyRate),
         });
       }
 
       if (loanId) {
-        // Extract ID if loanId is an object (full loan data) or already a string
-        const idString =
-          typeof loanId === "string" ? loanId : (loanId as any).id;
+        const idString = typeof loanId === "string" ? loanId : (loanId as any).id;
         setSuccessLoanId(idString);
         setIsSuccess(true);
 
-        // Clear saved wizard state after successful submission
         sessionStorage.removeItem("wizardState");
         sessionStorage.removeItem("wizardStep");
       }
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Submission failed";
+      const message = error instanceof Error ? error.message : "Submission failed";
       setSubmitError(message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
   useEffect(() => {
     if (isSuccess) {
-      // Automatically redirect after 2 seconds
       const timer = setTimeout(() => {
-        // Clear all session storage before redirection
         sessionStorage.removeItem('wizardState')
         sessionStorage.removeItem('wizardStep')
 
-        // Call onSuccess callback to transition to the next screen
         if (onSuccess && successLoanId) {
           onSuccess({ loanId: successLoanId, borrowerId: state.borrowerId });
         }
-        // Reset state after transition
         setIsSuccess(false);
         setSuccessLoanId(null);
         setCurrentStep(1);
@@ -265,16 +239,73 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
 
   const isLoading = fixedLoading || percentageLoading || isSubmitting;
 
-  // Step titles for each step
-  const stepTitles: Record<WizardStep, string> = {
-    1: "Select Your Loan Type",
-    2: "Select Borrower",
-    3: "Loan Details",
-    4: "Interest Details",
-    5: "Review & Confirm",
-  };
+  const isStepValid = useMemo(() => {
+    switch (currentStep) {
+      case 1:
+        return !!state.loanType
+      case 2:
+        return !!state.borrowerId
+      case 3: {
+        const tomorrow = new Date()
+        tomorrow.setHours(0, 0, 0, 0)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        
+        const selectedDate = state.startDate ? new Date(state.startDate) : null
+        if (selectedDate) {
+          selectedDate.setHours(0, 0, 0, 0)
+        }
 
-  // Step rendering logic
+        return (
+          !!state.principal &&
+          !!state.termDays &&
+          !!state.startDate &&
+          !!state.frequency &&
+          !!selectedDate && 
+          selectedDate.getTime() >= tomorrow.getTime()
+        )
+      }
+      case 4:
+        if (state.loanType === 'fixed') {
+          return !!state.totalPayable && !!state.penaltyRate
+        } else {
+          return !!state.interestRate && !!state.penaltyRate
+        }
+      case 5:
+        return true
+      default:
+        return false
+    }
+  }, [currentStep, state])
+
+  const paymentAmountPreview = useMemo(() => {
+    if (!state.principal || !state.termDays) return undefined
+    const principal = Number(state.principal)
+    const termUnitValue = Number(state.termDays)
+    let totalDays = termUnitValue
+    switch (state.frequency) {
+      case 'weekly':     totalDays = termUnitValue * 7; break
+      case 'bi-monthly': totalDays = termUnitValue * 15; break
+      case 'monthly':    totalDays = termUnitValue * 30; break
+    }
+    try {
+      let result
+      if (state.loanType === 'fixed' && state.totalPayable) {
+        result = new FixedInterestStrategy().calculate(principal, totalDays, state.frequency, new Date().toISOString(), Number(state.totalPayable))
+      } else if (state.loanType === 'percentage' && state.interestRate) {
+        result = new PercentageInterestStrategy().calculate(principal, totalDays, state.frequency, new Date().toISOString(), Number(state.interestRate))
+      }
+      if (result) return result.paymentAmount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    } catch (_) { return undefined }
+  }, [state])
+
+  const stepTitles: Record<WizardStep, string> = {
+    1: 'Select Your Loan Type',
+    2: 'Select Borrower',
+    3: 'Loan Details',
+    4: 'Interest Details',
+    5: 'Review & Confirm'
+  }
+
   const renderStep = () => {
     const commonProps = {
       currentStep,
@@ -287,123 +318,88 @@ export const CreateLoanWizard = ({ onSuccess }: CreateLoanWizardProps) => {
     };
 
     switch (currentStep) {
-      case 1:
-        return <Step1LoanCategory {...commonProps} />;
-
-      case 2:
-        return <Step2Borrower {...commonProps} />;
-
-      case 3:
-        return <Step3LoanDetails {...commonProps} />;
-
-      case 4:
-        return <Step4InterestDetails {...commonProps} />;
-
-      case 5:
-        return <Step5ReviewConfirm {...commonProps} />;
-
-      default:
-        return null;
+      case 1: return <Step1LoanCategory {...commonProps} />;
+      case 2: return <Step2Borrower {...commonProps} />;
+      case 3: return <Step3LoanDetails {...commonProps} />;
+      case 4: return <Step4InterestDetails {...commonProps} />;
+      case 5: return <Step5ReviewConfirm {...commonProps} />;
+      default: return null;
     }
   };
 
   return (
-    <div className={styles.wizardContainer}>
-      {/* Header */}
-      {!isSuccess && (
-        <div className={styles.header}>
-          <h2 className={styles.headerTitle}>{stepTitles[currentStep]}</h2>
-          <p className={styles.headerSubtitle}>Step {currentStep} of 5</p>
-        </div>
-      )}
-
-      {/* Progress Bar */}
-      {!isSuccess && (
-        <div className={styles.progressSection}>
-          <div className={styles.progressBar}>
-            {[1, 2, 3, 4, 5].map((step) => (
-              <div key={step} className={styles.progressStep}>
-                <div
-                  className={styles.progressStepFill}
-                  style={{
-                    width: currentStep >= step ? "100%" : "0%",
-                  }}
-                />
-              </div>
-            ))}
+    <>
+      <div className={styles.wizardContainer}>
+        {!isSuccess && (
+          <div className={styles.header}>
+            <h2 className={styles.headerTitle}>{stepTitles[currentStep]}</h2>
+            <p className={styles.headerSubtitle}>Step {currentStep} of 5</p>
           </div>
-          <div className={styles.stepLabel}>
-            {
-              [
-                "Choose the loan structure that best fits your needs.",
-                "Choose the borrower for this loan.",
-                "Enter the principal amount, frequency, term, and start date.",
-                "Enter the annual interest rate as a percentage.",
-                "Please review all details before submitting.",
-              ][currentStep - 1]
-            }
-          </div>
-        </div>
-      )}
+        )}
 
-      {/* Success Message */}
-      {isSuccess ? (
-        <div className={styles.contentArea}>
-          <div className={styles.successMessage}>
-            <div className={styles.successEmoji}>
-              <CheckCircle size={64} color="#16a34a" />
+        {!isSuccess && (
+          <div className={styles.progressSection}>
+            <div className={styles.progressBar}>
+              {[1, 2, 3, 4, 5].map(step => (
+                <div key={step} className={styles.progressStep}>
+                  <div
+                    className={styles.progressStepFill}
+                    style={{ width: currentStep >= step ? '100%' : '0%' }}
+                  />
+                </div>
+              ))}
             </div>
-            <h2 className={styles.successTitle}>Loan Created Successfully!</h2>
-            <p className={styles.successText}>Loan ID: {successLoanId}</p>
-            <p className={styles.successCountdown}>
-              Redirecting to repayment schedule...
-            </p>
+            <div className={styles.stepLabel}>
+              {[
+                'Choose the loan structure that best fits your needs.',
+                'Choose the borrower for this loan.',
+                'Enter the principal amount, frequency, term, and start date.',
+                'Enter the annual interest rate as a percentage.',
+                'Please review all details before submitting.'
+              ][currentStep - 1]}
+            </div>
           </div>
-        </div>
-      ) : (
-        <>
-          {/* Step Content */}
-          <div className={styles.contentArea}>{renderStep()}</div>
+        )}
 
-          {/* Footer Navigation */}
-          <div className={styles.footerNav}>
-            {currentStep > 1 ? (
-              <Button
-                onClick={prevStep}
-                disabled={isLoading}
-                variant="outline"
-                size="lg"
-              >
-                Back
-              </Button>
-            ) : (
-              <div className={styles.navPlaceholder} />
-            )}
-
-            <div className={styles.navButtonGroup}>
-              {currentStep < 5 ? (
-                <Button
-                  onClick={nextStep}
-                  disabled={isLoading}
-                  variant="blue"
-                  size="lg"
-                >
-                  Next
-                </Button>
+        {isSuccess ? (
+          <div className={styles.contentArea}>
+            <div className={styles.successMessage}>
+              <div className={styles.successEmoji}><CheckCircle size={64} color="#16a34a" /></div>
+              <h2 className={styles.successTitle}>Loan Created Successfully!</h2>
+              <p className={styles.successText}>Loan ID: {successLoanId}</p>
+              <p className={styles.successCountdown}>Redirecting to repayment schedule...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className={styles.contentArea}>{renderStep()}</div>
+            <div className={styles.footerNav}>
+              {currentStep > 1 ? (
+                <Button onClick={prevStep} disabled={isLoading} variant="outline" size="lg">Back</Button>
               ) : (
-                <Button
-                  onClick={handleSubmit}
-                  disabled={isLoading}
-                  variant="blue"
-                  size="lg"
-                >
-                  {isLoading ? "Submitting..." : "Confirm"}
-                </Button>
+                <div className={styles.navPlaceholder} />
               )}
+              <div className={styles.navButtonGroup}>
+                {currentStep < 5 ? (
+                  <Button onClick={nextStep} disabled={isLoading || !isStepValid} variant="blue" size="lg">Next</Button>
+                ) : (
+                  <Button onClick={() => setShowConfirmModal(true)} disabled={isLoading || !isStepValid} variant="blue" size="lg">Confirm</Button>
+                )}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
+          </>
+        )}
+      </div>
+
+      <ConfirmLoanModal
+        isOpen={showConfirmModal}
+        borrowerName={borrowers.find(b => b.id === state.borrowerId)?.full_name}
+        paymentAmount={paymentAmountPreview}
+        frequency={state.frequency}
+        onConfirm={() => { setShowConfirmModal(false); handleSubmit() }}
+        onCancel={() => setShowConfirmModal(false)}
+        isLoading={isLoading}
+      />
+    </>
+  )
+}
