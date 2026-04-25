@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
-import type { WizardStepProps } from '../../../types/wizardTypes'
+import type { WizardStepProps } from '../../../../types/wizardTypes'
 import {
   FixedInterestStrategy,
   PercentageInterestStrategy
-} from '../../../strategies/InterestStrategy'
-import { useBorrowers } from '../../../hooks/useBorrowers'
+} from '../../../../strategies/InterestStrategy'
+import { useBorrowers } from '../../../../hooks/useBorrowers'
 import { Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar, Info } from 'lucide-react'
-import { SummaryCard } from '../SummaryCard'
-import { InfoBox } from '../InfoBox'
-import FeedbackMessage from '../../feedback/FeedbackMessage'
+import { SummaryCard } from '../../SummaryCard'
+import { InfoBox } from '../../InfoBox'
+import FeedbackMessage from '../../../feedback/FeedbackMessage'
 import styles from './Step5ReviewConfirm.module.css'
 
 /**

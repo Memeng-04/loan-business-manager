@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BalanceCard from "../../components/home/BalanceCard";
 import Card from "../../components/card/Card";
@@ -11,6 +11,7 @@ import EditFundsModal, {
 } from "../../components/funds/EditFundsModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";
+import { DashboardRepository } from "../../repositories/DashboardRepository";
 import styles from "./FundManagementPage.module.css";
 
 type Transaction = {
@@ -30,12 +31,43 @@ export default function FundManagementPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [loans, setLoans] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
+  const [, setIsLoadingData] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [loanRows, paymentRows] = await Promise.all([
+          DashboardRepository.getLoans(),
+          DashboardRepository.getAllPayments(),
+        ]);
+        setLoans(loanRows);
+        setPayments(paymentRows);
+      } catch (err) {
+        console.error("Failed to load funds data:", err);
+      } finally {
+        setIsLoadingData(false);
+      }
+    }
+    loadData();
+  }, []);
 
   const initialCapital = profile?.initial_capital ?? 0;
   const initialProfit = profile?.initial_profit ?? 0;
-  const totalActivePrincipal = 0; // TODO: Calculate from loans
+
+  const totalPrincipalLent = loans.reduce((sum, loan) => sum + loan.principal, 0);
+  const totalPaymentsReceived = payments.reduce(
+    (sum, p) => sum + (p.amount_paid || 0),
+    0,
+  );
+  const totalInterestEarned = payments.reduce(
+    (sum, p) => sum + (p.interest_portion || 0),
+    0,
+  );
+
   const outstandingBalance =
-    initialCapital + initialProfit - totalActivePrincipal;
+    initialCapital + initialProfit - totalPrincipalLent + totalPaymentsReceived;
 
   const handleEditFunds = async (formData: EditFundsFormData) => {
     if (!profile) return;
@@ -107,7 +139,7 @@ export default function FundManagementPage() {
             <BalanceCard
               outstandingBalance={outstandingBalance}
               initialCapital={initialCapital}
-              initialProfit={initialProfit}
+              initialProfit={initialProfit + totalInterestEarned}
               onManageFunds={() => setIsEditModalOpen(true)}
             />
           </div>

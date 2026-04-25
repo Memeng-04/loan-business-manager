@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react'
-import type { WizardStepProps } from '../../../types/wizardTypes'
+import type { WizardStepProps } from '../../../../types/wizardTypes'
 import { Lightbulb, BarChart3, Check } from 'lucide-react'
 import {
   FixedInterestStrategy,
   PercentageInterestStrategy
-} from '../../../strategies/InterestStrategy'
-import { formatCurrency, isValidCurrency } from '../../../lib/formatters'
-import { SummaryCard } from '../SummaryCard'
-import { InfoBox } from '../InfoBox'
+} from '../../../../strategies/InterestStrategy'
+import { formatCurrency, isValidCurrency } from '../../../../lib/formatters'
+import { SummaryCard } from '../../SummaryCard'
+import { InfoBox } from '../../InfoBox'
 import styles from './Step4InterestDetails.module.css'
 
 /**

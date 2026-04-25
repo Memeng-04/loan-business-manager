@@ -1,10 +1,10 @@
 import React from 'react'
-import type { WizardStepProps } from '../../../types/wizardTypes'
-import type { PaymentFrequency } from '../../../types/loans'
+import type { WizardStepProps } from '../../../../types/wizardTypes'
+import type { PaymentFrequency } from '../../../../types/loans'
 import { Lightbulb, Clipboard } from 'lucide-react'
-import { isValidCurrency, isValidPositiveInteger, formatCurrency, formatDate } from '../../../lib/formatters'
-import { SummaryCard } from '../SummaryCard'
-import { InfoBox } from '../InfoBox'
+import { isValidCurrency, isValidPositiveInteger, formatCurrency, formatDate } from '../../../../lib/formatters'
+import { SummaryCard } from '../../SummaryCard'
+import { InfoBox } from '../../InfoBox'
 import styles from './Step3LoanDetails.module.css'
 
 /**

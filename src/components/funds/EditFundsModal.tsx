@@ -38,6 +38,14 @@ export default function EditFundsModal({
         return;
       }
 
+      // Allow only digits and a single decimal point
+      let val = value.replace(/[^\d.]/g, "");
+      // Prevent multiple decimal points
+      const parts = val.split(".");
+      if (parts.length > 2) {
+        val = parts[0] + "." + parts.slice(2).join("");
+      }
+
       setFormData((prev) => ({
         ...prev,
         [field]: value,

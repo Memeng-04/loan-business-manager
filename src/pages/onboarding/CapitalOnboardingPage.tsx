@@ -147,7 +147,14 @@ export default function CapitalOnboardingPage() {
               min="0"
               step="any"
               value={capital}
-              onChange={(event) => setCapital(event.target.value)}
+              onChange={(event) => {
+                const val = event.target.value;
+                // Prevent negative numbers
+                if (val !== "" && parseFloat(val) < 0) {
+                  return;
+                }
+                setCapital(val);
+              }}
               placeholder="0.00"
               required
             />
@@ -161,7 +168,13 @@ export default function CapitalOnboardingPage() {
               min="0"
               step="any"
               value={profit}
-              onChange={(event) => setProfit(event.target.value)}
+              onChange={(event) => {
+                const val = event.target.value;
+                if (val !== "" && parseFloat(val) < 0) {
+                  return;
+                }
+                setProfit(val);
+              }}
               placeholder="0.00"
               required
             />

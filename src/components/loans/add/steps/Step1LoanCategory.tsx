@@ -1,8 +1,8 @@
 import React from 'react'
-import type { WizardStepProps } from '../../../types/wizardTypes'
+import type { WizardStepProps } from '../../../../types/wizardTypes'
 import { PieChart, TrendingUp, Lightbulb } from 'lucide-react'
-import Card from '../../card/Card'
-import { InfoBox } from '../InfoBox'
+import Card from '../../../card/Card'
+import { InfoBox } from '../../InfoBox'
 import styles from './Step1LoanCategory.module.css'
 
 

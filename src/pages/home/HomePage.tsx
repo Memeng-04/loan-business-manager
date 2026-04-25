@@ -35,6 +35,7 @@ export default function HomePage() {
   const [loans, setLoans] = useState<DashboardLoan[]>([]);
   const [borrowers, setBorrowers] = useState<DashboardBorrower[]>([]);
   const [dueSchedules, setDueSchedules] = useState<DashboardSchedule[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,16 +46,18 @@ export default function HomePage() {
 
       try {
         const today = getTodayDateKey();
-        const [loanRows, borrowerRows, scheduleRows] = await Promise.all([
+        const [loanRows, borrowerRows, scheduleRows, paymentRows] = await Promise.all([
           DashboardRepository.getLoans(),
           DashboardRepository.getBorrowers(),
           DashboardRepository.getDueSchedulesForDate(today),
+          DashboardRepository.getAllPayments(),
         ]);
 
         if (isMounted) {
           setLoans(loanRows);
           setBorrowers(borrowerRows);
           setDueSchedules(scheduleRows);
+          setPayments(paymentRows);
         }
       } catch (err) {
         if (isMounted) {
@@ -82,15 +85,23 @@ export default function HomePage() {
     return new Map(loans.map((loan) => [loan.id, loan]));
   }, [loans]);
 
-  const totalActivePrincipal = useMemo(() => {
-    return loans
-      .filter((loan) => loan.status === "active")
-      .reduce((sum, loan) => sum + loan.principal, 0);
+  const totalPrincipalLent = useMemo(() => {
+    return loans.reduce((sum, loan) => sum + loan.principal, 0);
   }, [loans]);
+
+  const totalPaymentsReceived = useMemo(() => {
+    return payments.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
+  }, [payments]);
+
+  const totalInterestEarned = useMemo(() => {
+    return payments.reduce((sum, p) => sum + (p.interest_portion || 0), 0);
+  }, [payments]);
 
   const startingFundBase =
     (profile?.initial_capital ?? 0) + (profile?.initial_profit ?? 0);
-  const outstandingFundBalance = startingFundBase - totalActivePrincipal;
+
+  const outstandingFundBalance =
+    startingFundBase - totalPrincipalLent + totalPaymentsReceived;
 
   const revenueByFrequency = useMemo(() => {
     const groups = {
@@ -156,7 +167,9 @@ export default function HomePage() {
             <BalanceCard
               outstandingBalance={outstandingFundBalance}
               initialCapital={profile?.initial_capital ?? 0}
-              initialProfit={profile?.initial_profit ?? 0}
+              initialProfit={
+                (profile?.initial_profit ?? 0) + totalInterestEarned
+              }
               onManageFunds={() => navigate("/funds")}
             />
           </div>
