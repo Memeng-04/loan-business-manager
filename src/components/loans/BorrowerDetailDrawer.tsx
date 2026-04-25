@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { X, Calendar, CreditCard, ChevronRight, Trash2, Plus, Info } from 'lucide-react';
 import Card from '../card/Card';
 import Button from '../Button';
@@ -7,77 +7,86 @@ import { ScheduleRepository } from '../../repositories/ScheduleRepository';
 import { formatCurrency, formatDate } from '../../lib/formatters';
 import LoadingState from '../LoadingState';
 import { StandardScheduleStrategy } from '../../strategies/ScheduleStrategy';
+import type { Borrower } from '../../types/borrowers';
+import type { Loan } from '../../types/loans';
+import type { ScheduleEntry } from '../../types/strategies';
 import type { PaymentFrequency } from '../../types/loans';
 
 interface BorrowerDetailDrawerProps {
-  borrower: any | null;
+  borrower: Borrower | null;
   onClose: () => void;
 }
+
+type LoanWithRelations = Loan & {
+  borrowers?: Pick<Borrower, 'id' | 'full_name' | 'phone'> | null;
+};
 
 export default function BorrowerDetailDrawer({
   borrower,
   onClose,
 }: BorrowerDetailDrawerProps) {
-  const [loans, setLoans] = useState<any[]>([]);
+  const [loans, setLoans] = useState<LoanWithRelations[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"loans" | "schedules">("loans");
-  const [selectedLoan, setSelectedLoan] = useState<any | null>(null);
+  const [selectedLoan, setSelectedLoan] = useState<LoanWithRelations | null>(null);
 
   // States for Schedule Management
-  const [schedules, setSchedules] = useState<any[]>([]);
+  const [schedules, setSchedules] = useState<ScheduleEntry[]>([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
   const [newDate, setNewDate] = useState("");
   const [newAmount, setNewAmount] = useState("");
   const [addLoading, setAddLoading] = useState(false);
 
-  useEffect(() => {
-    if (borrower) {
-      fetchLoans();
-      setActiveTab("loans");
-      setSelectedLoan(null);
-    }
-  }, [borrower]);
+  const fetchLoans = useCallback(async () => {
+    if (!borrower?.id) return;
 
-  useEffect(() => {
-    if (selectedLoan && activeTab === "schedules") {
-      fetchSchedules();
-    }
-  }, [selectedLoan, activeTab]);
-
-  const fetchLoans = async () => {
-    if (!borrower) return;
     setLoading(true);
     try {
-      const data = await LoanRepository.getByBorrowerId(borrower.id);
+      const data = (await LoanRepository.getByBorrowerId(borrower.id)) as LoanWithRelations[];
       setLoans(data);
       if (data.length > 0) setSelectedLoan(data[0]);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      console.error("Failed to fetch loans");
     } finally {
       setLoading(false);
     }
-  };
+  }, [borrower?.id]);
 
-  const fetchSchedules = async () => {
-    if (!selectedLoan) return;
+  const fetchSchedules = useCallback(async () => {
+    if (!selectedLoan?.id) return;
+
     setSchedulesLoading(true);
     setSchedules([]); // Clear old state immediately
     try {
       const data = await ScheduleRepository.getByLoanId(selectedLoan.id);
       setSchedules(data);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      console.error("Failed to fetch schedules");
     } finally {
       setSchedulesLoading(false);
     }
-  };
+  }, [selectedLoan]);
+
+  useEffect(() => {
+    if (borrower?.id) {
+      fetchLoans();
+      setActiveTab("loans");
+      setSelectedLoan(null);
+    }
+  }, [borrower?.id, fetchLoans]);
+
+  useEffect(() => {
+    if (selectedLoan && activeTab === "schedules") {
+      fetchSchedules();
+    }
+  }, [selectedLoan, activeTab, fetchSchedules]);
 
   const handleDeleteSchedule = async (id: string) => {
     if (!confirm("Delete this schedule entry?")) return;
     try {
       await ScheduleRepository.deleteById(id);
       fetchSchedules();
-    } catch (e) {
+    } catch {
       alert("Failed to delete");
     }
   };
@@ -107,16 +116,16 @@ export default function BorrowerDetailDrawer({
 
       await ScheduleRepository.saveSchedule(schedulesForDb);
       fetchSchedules();
-    } catch (e) {
-      console.error(e);
+    } catch {
+      console.error("Failed to regenerate schedule");
       alert("Failed to regenerate schedule");
     } finally {
       setSchedulesLoading(false);
     }
   };
 
-  const handleAddSchedule = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddSchedule = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!newDate || !newAmount || !selectedLoan) return;
     setAddLoading(true);
     try {
@@ -131,7 +140,7 @@ export default function BorrowerDetailDrawer({
       setNewDate("");
       setNewAmount("");
       fetchSchedules();
-    } catch (e) {
+    } catch {
       alert("Failed to add");
     } finally {
       setAddLoading(false);
@@ -232,8 +241,8 @@ export default function BorrowerDetailDrawer({
                             </span>
                           </div>
                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${
-                            loan.status === 'active' ? 'bg-red-100 text-red-700 border border-red-200' : 
-                            loan.status === 'paid' ? 'bg-green-100 text-green-700 border border-green-200' :
+                            loan.status === 'defaulted' ? 'bg-red-100 text-red-700 border border-red-200' : 
+                            loan.status === 'completed' ? 'bg-green-100 text-green-700 border border-green-200' :
                             'bg-gray-100 text-gray-700 border border-gray-200'
                           }`}>
                             {loan.status}
@@ -341,10 +350,13 @@ export default function BorrowerDetailDrawer({
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                       <button
-                                        onClick={() =>
-                                          handleDeleteSchedule(sch.id)
-                                        }
+                                        onClick={() => {
+                                          if (sch.id) {
+                                            handleDeleteSchedule(sch.id);
+                                          }
+                                        }}
                                         className="p-1.5 text-red-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                        disabled={!sch.id}
                                       >
                                         <Trash2 size={16} />
                                       </button>
@@ -407,7 +419,7 @@ export default function BorrowerDetailDrawer({
                           <Button
                             type="submit"
                             variant="blue"
-                            className="w-full !mt-1 !py-3 !text-xs !font-black uppercase tracking-widest !rounded-xl active:scale-[0.98] transition-all"
+                            className="w-full mt-1! py-3! text-xs! font-black! uppercase tracking-widest rounded-xl! active:scale-[0.98] transition-all"
                             disabled={addLoading}
                           >
                             {addLoading ? "Appending..." : "Add Schedule Row"}
@@ -424,7 +436,7 @@ export default function BorrowerDetailDrawer({
                         <h4 className="font-bold text-gray-800">
                           No Loan Selected
                         </h4>
-                        <p className="text-xs text-gray-500 max-w-[200px] mx-auto mt-1">
+                        <p className="text-xs text-gray-500 max-w-50 mx-auto mt-1">
                           Select a loan from your account portfolio to manage
                           its timeline.
                         </p>
@@ -433,7 +445,7 @@ export default function BorrowerDetailDrawer({
                         variant="outline"
                         size="md"
                         onClick={() => setActiveTab("loans")}
-                        className="!mt-2 !text-xs !bg-white"
+                        className="mt-2! text-xs! bg-white!"
                       >
                         View Portfolio
                       </Button>

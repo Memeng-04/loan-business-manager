@@ -155,12 +155,29 @@ export const CreateLoanWizard = ({
 
       let loanId: string | undefined
 
+      const getLoanId = (result: unknown) => {
+        if (typeof result === 'string') {
+          return result;
+        }
+
+        if (
+          result &&
+          typeof result === 'object' &&
+          'id' in result &&
+          typeof (result as { id: unknown }).id === 'string'
+        ) {
+          return (result as { id: string }).id;
+        }
+
+        return undefined;
+      }
+
       if (state.loanType === "fixed") {
         if (!state.totalPayable) {
           throw new Error("Total payable amount is required for fixed loans");
         }
 
-        loanId = await createFixedLoan({
+        loanId = getLoanId(await createFixedLoan({
           borrower_id: state.borrowerId,
           principal: Number(state.principal),
           total_payable: Number(state.totalPayable),
@@ -168,13 +185,13 @@ export const CreateLoanWizard = ({
           term_days: totalDays,
           start_date: state.startDate,
           penalty_rate: Number(state.penaltyRate),
-        });
+        }));
       } else if (state.loanType === "percentage") {
         if (!state.interestRate) {
           throw new Error("Interest rate is required for percentage loans");
         }
 
-        loanId = await createPercentageLoan({
+        loanId = getLoanId(await createPercentageLoan({
           borrower_id: state.borrowerId,
           principal: Number(state.principal),
           interest_rate: Number(state.interestRate),
@@ -182,7 +199,7 @@ export const CreateLoanWizard = ({
           term_days: totalDays,
           start_date: state.startDate,
           penalty_rate: Number(state.penaltyRate),
-        });
+        }));
       }
 
       if (loanId) {
