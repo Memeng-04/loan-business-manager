@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { generateSchedule } from '../strategies/ScheduleStrategy'
-import type { ScheduleEntry } from '../strategies/ScheduleStrategy'
+import { StandardScheduleStrategy } from '../strategies/ScheduleStrategy'
+import type { ScheduleEntry } from '../types/strategies'
 import type { PaymentFrequency } from '../types/loans'
 import { LoanRepository } from '../repositories/LoanRepository'
 import { ScheduleRepository } from '../repositories/ScheduleRepository'
@@ -27,7 +27,7 @@ export const useRepaymentSchedule = () => {
       
       if (existing && existing.length > 0) {
         setSchedule(existing)
-        setSaved(true) // Consider it "saved" since it's from DB
+        setSaved(true)
         return
       }
 
@@ -36,7 +36,8 @@ export const useRepaymentSchedule = () => {
       const end      = new Date(loan.end_date)
       const termDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
 
-      const generated = generateSchedule(
+      const strategy = new StandardScheduleStrategy();
+      const generated = strategy.generate(
         loan.start_date,
         loan.total_payable,
         loan.frequency as PaymentFrequency,
@@ -70,7 +71,8 @@ export const useRepaymentSchedule = () => {
       const termDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
 
       // 3. Generate the schedule client-side
-      const generated = generateSchedule(
+      const strategy  = new StandardScheduleStrategy();
+      const generated = strategy.generate(
         loan.start_date,
         loan.total_payable,
         loan.frequency as PaymentFrequency,

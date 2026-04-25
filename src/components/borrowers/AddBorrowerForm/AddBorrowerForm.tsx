@@ -41,10 +41,6 @@ export default function AddBorrowerForm({
   );
   const [formError, setFormError] = useState<string | null>(null);
 
-  function isDigits(value: string) {
-    return /^\d+$/.test(value);
-  }
-
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
@@ -53,25 +49,29 @@ export default function AddBorrowerForm({
     event.preventDefault();
 
     const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
     const trimmedAddress = address.trim();
     const trimmedPhone = phone.trim();
-    const trimmedEmail = email.trim();
-    const trimmedSecondaryNumber = secondaryContactNumber.trim();
-    const trimmedSecondaryName = secondaryContactName.trim();
-    const trimmedSourceOfIncome = sourceOfIncome.trim();
     const trimmedMonthlyIncome = monthlyIncome.trim();
+    const trimmedSourceOfIncome = sourceOfIncome.trim();
+    const trimmedSecondaryName = secondaryContactName.trim();
+    const trimmedSecondaryNumber = secondaryContactNumber.trim();
 
-    if (!trimmedName || !trimmedAddress || !trimmedPhone) {
+    // Sanitize inputs (strip formatting characters)
+    const sanitizedPhone = trimmedPhone.replace(/\D/g, '');
+    const sanitizedSecondaryNumber = trimmedSecondaryNumber.replace(/\D/g, '');
+    const sanitizedMonthlyIncome = trimmedMonthlyIncome.replace(/[^0-9.]/g, '');
+
+    if (!trimmedName || !trimmedAddress || !sanitizedPhone) {
       setFormError("Name, address, and phone number are required.");
       return;
     }
 
     if (
-      !isDigits(trimmedPhone) ||
-      trimmedPhone.length < 7 ||
-      trimmedPhone.length > 15
+      sanitizedPhone.length < 7 ||
+      sanitizedPhone.length > 15
     ) {
-      setFormError("Phone number must be numeric and 7 to 15 digits long.");
+      setFormError("Phone number must contain 7 to 15 digits.");
       return;
     }
 
@@ -81,28 +81,27 @@ export default function AddBorrowerForm({
     }
 
     if (
-      trimmedSecondaryNumber &&
-      (!isDigits(trimmedSecondaryNumber) ||
-        trimmedSecondaryNumber.length < 7 ||
-        trimmedSecondaryNumber.length > 15)
+      sanitizedSecondaryNumber &&
+      (sanitizedSecondaryNumber.length < 7 ||
+        sanitizedSecondaryNumber.length > 15)
     ) {
       setFormError(
-        "Secondary contact number must be numeric and 7 to 15 digits long.",
+        "Secondary contact number must contain 7 to 15 digits.",
       );
       return;
     }
 
-    if (trimmedSecondaryNumber && !trimmedSecondaryName) {
+    if (sanitizedSecondaryNumber && !trimmedSecondaryName) {
       setFormError("Please provide the secondary contact name.");
       return;
     }
 
-    if (!trimmedSecondaryNumber && trimmedSecondaryName) {
+    if (!sanitizedSecondaryNumber && trimmedSecondaryName) {
       setFormError("Please provide the secondary contact number.");
       return;
     }
 
-    if (trimmedMonthlyIncome && Number.isNaN(Number(trimmedMonthlyIncome))) {
+    if (sanitizedMonthlyIncome && Number.isNaN(Number(sanitizedMonthlyIncome))) {
       setFormError("Monthly income must be a valid number.");
       return;
     }
@@ -113,12 +112,12 @@ export default function AddBorrowerForm({
       full_name: trimmedName,
       email: trimmedEmail,
       address: trimmedAddress,
-      phone: trimmedPhone,
-      monthly_income: trimmedMonthlyIncome
-        ? Number(trimmedMonthlyIncome)
+      phone: sanitizedPhone,
+      monthly_income: sanitizedMonthlyIncome
+        ? Number(sanitizedMonthlyIncome)
         : undefined,
       source_of_income: trimmedSourceOfIncome,
-      secondary_contact_number: trimmedSecondaryNumber,
+      secondary_contact_number: sanitizedSecondaryNumber,
       secondary_contact_name: trimmedSecondaryName,
     });
   }

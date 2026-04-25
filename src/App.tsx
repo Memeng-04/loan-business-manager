@@ -8,6 +8,7 @@ import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage/AddBorrowerPage";
 import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerDetailsPage";
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
+import BorrowerLoansPage from "./pages/loans/BorrowerLoansPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
 import FundManagementPage from "./pages/funds/FundManagementPage";
 import ProfileOnboardingPage from "./pages/onboarding/ProfileOnboardingPage";
@@ -29,6 +30,7 @@ function App() {
         <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="/loans" element={<LoanPage />} />
+        <Route path="/loans/borrowers/:borrowerId" element={<BorrowerLoansPage />} />
         <Route path="/add" element={<NewLoanPage />} />
         <Route path="/funds" element={<FundManagementPage />} />
       </Route>

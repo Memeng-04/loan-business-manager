@@ -74,7 +74,7 @@ export const Step2Borrower: React.FC<WizardStepProps> = ({
       {/* Borrower Section Header with Create Button */}
       <div className="mb-4 mt-[-0.5rem]">
         <Button
-          onClick={() => navigate("/borrowers/new")}
+          onClick={() => navigate('/borrowers/new?from=wizard')}
           variant="outline"
           size="md"
           className="gap-2 w-full sm:w-auto"

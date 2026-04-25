@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useCreatePercentageLoan } from '../../hooks/useCreatePercentageLoan'
-import {
-  calculateFromPercentage,
-  calculatePaymentAmount
-} from '../../strategies/InterestStrategy'
+import { PercentageInterestStrategy } from '../../strategies/InterestStrategy'
 import type { PaymentFrequency } from '../../types/loans'
 
 interface PercentageLoanFormProps {
@@ -23,22 +20,17 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
     penaltyRate:  '5'
   })
 
-  const preview = form.principal && form.interestRate
-    ? {
-        ...calculateFromPercentage(
-          Number(form.principal),
-          Number(form.interestRate)
-        ),
-        paymentAmount: calculatePaymentAmount(
-          calculateFromPercentage(
-            Number(form.principal),
-            Number(form.interestRate)
-          ).totalPayable,
-          form.frequency,
-          Number(form.termDays)
-        )
-      }
-    : null
+  let preview = null;
+  if (form.principal && form.interestRate) {
+    const strategy = new PercentageInterestStrategy();
+    preview = strategy.calculate(
+      Number(form.principal),
+      Number(form.termDays),
+      form.frequency,
+      form.startDate || new Date().toISOString(),
+      Number(form.interestRate)
+    );
+  }
 
   const handleSubmit = async () => {
     if (!form.principal || !form.interestRate || !form.startDate) return

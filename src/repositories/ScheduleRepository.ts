@@ -1,6 +1,6 @@
 import { supabase } from '../services/supabase'
 import { getCurrentUserId } from '../services/auth'
-import type { ScheduleEntry } from '../strategies/ScheduleStrategy'
+import type { ScheduleEntry } from '../types/strategies';
 
 export class ScheduleRepository {
   static async getByLoanId(loanId: string): Promise<ScheduleEntry[]> {
@@ -79,7 +79,7 @@ export class ScheduleRepository {
       .select(`
         *,
         loan:loans (
-          id, principal, status, interest_rate, payment_amount,
+          id, principal, status, interest_rate, payment_amount, frequency,
           borrower:borrowers ( id, full_name, phone )
         )
       `)

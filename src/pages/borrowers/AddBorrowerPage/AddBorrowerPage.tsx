@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import AddBorrowerForm from "../../../components/borrowers/AddBorrowerForm/AddBorrowerForm";
 import Header from "../../../components/header/Header";
 import Navbar from "../../../components/navigation/Navbar";
@@ -13,11 +13,14 @@ export default function AddBorrowerPage() {
 
   const { createBorrower, loading, error } = useCreateBorrower();
 
+  const [searchParams] = useSearchParams();
+  const isFromWizard = searchParams.get('from') === 'wizard';
+
   async function handleSubmit(input: CreateBorrowerInput) {
     const saved = await createBorrower(input);
 
     if (saved) {
-      navigate("/borrowers");
+      navigate(isFromWizard ? "/add" : "/borrowers");
     }
   }
 
@@ -25,7 +28,7 @@ export default function AddBorrowerPage() {
     <main className={styles.page}>
       <Header
         title="Add Borrower"
-        onMenuClick={() => setIsNavOpen((prev) => !prev)}
+        onMenuClick={() => setIsNavOpen((prev: boolean) => !prev)}
       />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
@@ -34,7 +37,7 @@ export default function AddBorrowerPage() {
           loading={loading}
           error={error}
           onSubmit={handleSubmit}
-          onCancel={() => navigate("/borrowers")}
+          onCancel={() => navigate(isFromWizard ? "/add" : "/borrowers")}
         />
       </section>
     </main>

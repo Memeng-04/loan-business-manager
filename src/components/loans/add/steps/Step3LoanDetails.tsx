@@ -49,20 +49,31 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
     updateState('startDate', value)
   }
 
-  // Calculate today's date for 'min' attribute
-  const today = new Date()
-  const minDate = today.toISOString().split('T')[0]
+  // Calculate TOMORROW's date (as requested: "cant enter current date")
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const minDate = tomorrow.toISOString().split('T')[0]
 
   const handleFrequencyChange = (frequency: PaymentFrequency) => {
     updateState('frequency', frequency)
+    // Clear term whenever frequency changes to prevent accidental errors (e.g. 30 days -> 30 months)
+    updateState('termDays', '')
   }
+
+  // Determine dynamic label and placeholder for term
+  const termConfig = {
+    daily: { label: 'Loan Term (Days)', placeholder: 'e.g. 30' },
+    weekly: { label: 'Loan Term (Weeks)', placeholder: 'e.g. 4' },
+    'bi-monthly': { label: 'Loan Term (Payouts)', placeholder: 'e.g. 2' },
+    monthly: { label: 'Loan Term (Months)', placeholder: 'e.g. 1' }
+  }[state.frequency || 'daily']
 
   return (
     <div className={styles.stepContainer}>
       {/* Left Column: Form Inputs */}
       <div className={styles.inputGridWrapper}>
         <div className={styles.inputGrid}>
-          {/* Principal Amount */}
+          {/* 1. Principal Amount */}
           <div className={styles.formGroup}>
             <label className={styles.label}>Principal Amount (₱)</label>
             <input
@@ -74,41 +85,11 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
               className={styles.input}
             />
             <p className={styles.inputHelper}>
-              Enter the amount you wish to borrow (max 15 digits)
+              Enter the amount to be borrowed
             </p>
           </div>
 
-          {/* Loan Term (Days) */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Loan Term (Days)</label>
-            <input
-              type="number"
-              placeholder="e.g. 30"
-              value={state.termDays}
-              onChange={e => handleTermDaysChange(e.target.value)}
-              disabled={isLoading}
-              className={styles.input}
-            />
-            <p className={styles.inputHelper}>
-              Number of days before the loan is fully paid (max 5 digits)
-            </p>
-          </div>
-
-          {/* Start Date */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Start Date</label>
-            <input
-              type="date"
-              value={state.startDate}
-              min={minDate}
-              onChange={e => handleStartDateChange(e.target.value)}
-              disabled={isLoading}
-              className={styles.input}
-            />
-            <p className={styles.inputHelper}>First payment date (tomorrow or later)</p>
-          </div>
-
-          {/* Payment Frequency - Dropdown Select */}
+          {/* 2. Payment Frequency - NOW HIGHER */}
           <div className={styles.formGroup}>
             <label className={styles.label}>Payment Frequency</label>
             <select
@@ -124,12 +105,44 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
                 </option>
               ))}
             </select>
+            <p className={styles.inputHelper}>Determines the cycle and term units</p>
+          </div>
+
+          {/* 3. Loan Term - NOW DYNAMIC */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>{termConfig.label}</label>
+            <input
+              type="text"
+              placeholder={termConfig.placeholder}
+              value={state.termDays}
+              onChange={e => handleTermDaysChange(e.target.value)}
+              maxLength={5}
+              disabled={isLoading || !state.frequency}
+              className={styles.input}
+            />
+            <p className={styles.inputHelper}>
+              Duration of the loan in {state.frequency === 'bi-monthly' ? 'payouts' : state.frequency || 'units'}
+            </p>
+          </div>
+
+          {/* 4. Start Date - RESTRICTED TO TOMORROW+ */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Start Date</label>
+            <input
+              type="date"
+              value={state.startDate}
+              min={minDate}
+              onChange={e => handleStartDateChange(e.target.value)}
+              disabled={isLoading}
+              className={styles.input}
+            />
+            <p className={styles.inputHelper}>First payment date (tomorrow or later)</p>
           </div>
         </div>
 
-        {/* Info Box - Below form on all sizes */}
+        {/* Info Box */}
         <InfoBox icon={<Lightbulb size={16} />}>
-          Enter the principal amount and how often the borrower will make payments (daily, weekly, bi-monthly, or monthly). The start date is when the loan begins.
+          Choose your frequency first, then specify the term. We'll automatically calculate the schedule based on these units.
         </InfoBox>
       </div>
 
@@ -145,11 +158,18 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
             },
             {
               label: 'Frequency:',
-              value: state.frequency.charAt(0).toUpperCase() + state.frequency.slice(1)
+              value: state.frequency ? state.frequency.charAt(0).toUpperCase() + state.frequency.slice(1) : '—'
             },
             {
               label: 'Term:',
-              value: state.termDays ? `${state.termDays} days` : '—'
+              value: state.termDays 
+                ? `${state.termDays} ${
+                    state.frequency === 'daily' ? 'days' : 
+                    state.frequency === 'weekly' ? 'weeks' : 
+                    state.frequency === 'bi-monthly' ? 'payouts' : 
+                    state.frequency === 'monthly' ? 'months' : 'units'
+                  }`
+                : '—'
             },
             ...(state.startDate ? [{ label: 'Start Date:', value: formatDate(state.startDate) }] : [])
           ]}
@@ -158,4 +178,5 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
     </div>
   )
 }
+
 

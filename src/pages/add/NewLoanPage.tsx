@@ -36,9 +36,13 @@ export default function NewLoanPage() {
     }, 1500); 
   };
 
-  const handleReturnToWizard = () => {
+
+  const handleScheduleSaved = () => {
+    // Full reset — the loan is done, clear everything
     setCreatedLoanData(null);
     sessionStorage.removeItem('createdLoanData');
+    sessionStorage.removeItem('wizardState');
+    sessionStorage.removeItem('wizardStep');
   };
 
   return (
@@ -65,8 +69,7 @@ export default function NewLoanPage() {
           <RepaymentSchedule
             loanId={createdLoanData.loanId}
             borrowerId={createdLoanData.borrowerId}
-            onScheduleSaved={handleReturnToWizard}
-            onBack={handleReturnToWizard}
+            onScheduleSaved={handleScheduleSaved}
           />
         </section>
       )}

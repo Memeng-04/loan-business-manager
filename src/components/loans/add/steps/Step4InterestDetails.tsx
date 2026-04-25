@@ -2,13 +2,12 @@ import React, { useMemo } from 'react'
 import type { WizardStepProps } from '../../../../types/wizardTypes'
 import { Lightbulb, BarChart3, Check } from 'lucide-react'
 import {
-  calculateInterest,
-  calculateFromPercentage,
-  calculatePaymentAmount
-} from '../../../../strategies/InterestStrategy'
-import { formatCurrency, isValidCurrency } from '../../../../lib/formatters'
-import { SummaryCard } from '../../SummaryCard'
-import { InfoBox } from '../../InfoBox'
+  FixedInterestStrategy,
+  PercentageInterestStrategy
+} from '../../../strategies/InterestStrategy'
+import { formatCurrency, isValidCurrency } from '../../../lib/formatters'
+import { SummaryCard } from '../SummaryCard'
+import { InfoBox } from '../InfoBox'
 import styles from './Step4InterestDetails.module.css'
 
 /**
@@ -48,53 +47,61 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
     if (!state.principal || !state.termDays) return null
 
     const principal = Number(state.principal)
-    const termDays = Number(state.termDays)
+    const termUnitValue = Number(state.termDays)
+    let totalDays = termUnitValue
 
-    if (state.loanType === 'fixed' && state.totalPayable) {
-      const totalPayable = Number(state.totalPayable)
-      if (totalPayable <= principal) return null
+    // Convert units to days based on frequency for strategy calculation
+    switch (state.frequency) {
+      case 'weekly':     totalDays = termUnitValue * 7; break;
+      case 'bi-monthly': totalDays = termUnitValue * 15; break;
+      case 'monthly':    totalDays = termUnitValue * 30; break;
+      default:           totalDays = termUnitValue; // daily
+    }
 
-      const { interest, interestRate } = calculateInterest(
+    if (state.loanType === 'fixed') {
+      const totalPayable = state.totalPayable ? Number(state.totalPayable) : 0
+      // Allow 0 for mock data display
+      if (totalPayable < principal && totalPayable !== 0) return null
+
+      const strategy = new FixedInterestStrategy();
+      const result = strategy.calculate(
         principal,
-        totalPayable
-      )
-      const paymentAmount = calculatePaymentAmount(
-        totalPayable,
-        state.frequency,
-        termDays
-      )
+        totalDays,
+        state.frequency || 'monthly',
+        new Date().toISOString(),
+        totalPayable || principal // Use principal if 0
+      );
 
       return {
         principal,
-        totalPayable,
-        interest,
-        interestRate,
-        paymentAmount,
+        totalPayable: result.totalPayable,
+        interest: result.interest,
+        interestRate: result.interestRate,
+        paymentAmount: result.paymentAmount,
         frequency: state.frequency,
-        termDays
+        termDays: totalDays
       }
-    } else if (state.loanType === 'percentage' && state.interestRate) {
-      const interestRate = Number(state.interestRate)
-      if (interestRate < 0) return null
+    } else if (state.loanType === 'percentage') {
+      const interestRate = state.interestRate ? Number(state.interestRate) : 0
+      if (interestRate < 0 && interestRate !== 0) return null
 
-      const { interest, totalPayable } = calculateFromPercentage(
+      const strategy = new PercentageInterestStrategy();
+      const result = strategy.calculate(
         principal,
-        interestRate
-      )
-      const paymentAmount = calculatePaymentAmount(
-        totalPayable,
-        state.frequency,
-        termDays
-      )
+        totalDays,
+        state.frequency || 'monthly',
+        new Date().toISOString(),
+        interestRate // Use 0 for mock data
+      );
 
       return {
         principal,
-        totalPayable,
-        interest,
-        interestRate,
-        paymentAmount,
+        totalPayable: result.totalPayable,
+        interest: result.interest,
+        interestRate: result.interestRate,
+        paymentAmount: result.paymentAmount,
         frequency: state.frequency,
-        termDays
+        termDays: totalDays
       }
     }
 
@@ -214,7 +221,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
 
       {/* Info Box */}
       <InfoBox icon={<Lightbulb size={16} />}>
-        Enter {isFixedLoan ? 'the total amount the borrower will repay (must be more than the principal)' : 'the annual interest rate as a percentage'} to see the payment preview on the right.
+        The preview updates in real-time as you change values. {isFixedLoan ? 'Enter the total amount the borrower will repay.' : 'Adjust the annual interest rate to see how it affects the repayment schedule.'}
       </InfoBox>
     </div>
   )

@@ -93,18 +93,56 @@
   grid-column: 1 / -1;
 }
 
+/* ── Payment Per Due Date Highlight ─────────────────────── */
+.paymentHighlightCard {
+  grid-column: 1 / -1;
+  background: #012a6a;
+  border-radius: 1.25rem;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 8px 32px rgba(1, 42, 106, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.paymentHighlightLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.7);
+}
+
+.paymentHighlightAmount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.paymentHighlightSub {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: 0.125rem;
+  text-transform: capitalize;
+}
+
 /* Payment Summary Preview Card */
 .paymentSummaryCard {
   grid-column: 1 / -1;
   padding: 1.25rem;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border: 2px solid #93c5fd;
+  background: #012a6a;
+  border: 2px solid #012a6a;
   border-radius: 1rem;
 }
 
 .paymentSummaryCardTitle {
   font-weight: 700;
-  color: #012a6a;
+  color: #ffffff;
   margin: 0 0 1rem 0;
   font-size: 0.95rem;
   display: flex;
@@ -123,34 +161,34 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.875rem;
-  color: #012a6a;
+  color: #6db6fe;
 }
 
 .paymentSummaryItemLabel {
   font-weight: 500;
-  color: #2563eb;
+  color: #ffffff;
 }
 
 .paymentSummaryItemValue {
   font-weight: 700;
-  color: #000000;
+  color: #ffffff;
 }
 
 .paymentSummaryDivider {
-  border-top: 2px solid #bfdbfe;
+  border-top: 2px solid #1f3ca8;
   margin: 0.5rem 0;
 }
 
 .paymentSummaryItemTotal {
   font-weight: 700;
   font-size: 0.95rem;
-  color: #012a6a;
+  color: #6db6fe;
 }
 
 .paymentSummaryItemTotalValue {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #000000;
+  color: #ffffff;
 }
 
 /* Info Box */
