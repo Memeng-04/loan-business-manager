@@ -5,7 +5,7 @@ import {
   FixedInterestStrategy,
   PercentageInterestStrategy
 } from '../../../../strategies/InterestStrategy'
-import { formatCurrency, isValidCurrency } from '../../../../lib/formatters'
+import { formatCurrency } from '../../../../lib/formatters'
 import { SummaryCard } from '../../SummaryCard'
 import { InfoBox } from '../../InfoBox'
 import { sanitizeNumber } from '../../../../utils/numberUtils'
