@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useRecordPayment } from "../../hooks/useRecordPayment";
 import Button from "../Button";
+import { sanitizeNumber } from "../../utils/numberUtils";
 
 interface RecordPaymentFormProps {
   loanId: string;
@@ -11,7 +12,7 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
   loanId,
   onPaymentRecorded,
 }) => {
-  const [amount, setAmount] = useState<number | "">("");
+  const [amount, setAmount] = useState<string>("");
   const [paymentDate, setPaymentDate] = useState<string>(
     new Date().toISOString().split("T")[0],
   ); // YYYY-MM-DD
@@ -19,7 +20,8 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount === "" || amount <= 0) {
+    const numAmount = parseFloat(amount);
+    if (amount === "" || isNaN(numAmount) || numAmount <= 0) {
       alert("Please enter a valid amount.");
       return;
     }
@@ -55,13 +57,13 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
             Amount
           </label>
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             id="amount"
             value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            step="0.01"
-            min="0.01"
+            onChange={(e) => setAmount(sanitizeNumber(e.target.value))}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
+            placeholder="0.00"
             required
             disabled={loading}
           />

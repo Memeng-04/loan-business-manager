@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useCreatePercentageLoan } from '../../hooks/useCreatePercentageLoan'
 import { PercentageInterestStrategy } from '../../strategies/InterestStrategy'
 import type { PaymentFrequency } from '../../types/loans'
+import { sanitizeNumber } from '../../utils/numberUtils'
 
 interface PercentageLoanFormProps {
   borrowerId: string
@@ -66,11 +67,12 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
               Principal Amount (₱)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 10,000"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.principal}
-              onChange={e => setForm({ ...form, principal: e.target.value })}
+              onChange={e => setForm({ ...form, principal: sanitizeNumber(e.target.value) })}
             />
           </div>
 
@@ -80,11 +82,12 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
               Interest Rate (%)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 15"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.interestRate}
-              onChange={e => setForm({ ...form, interestRate: e.target.value })}
+              onChange={e => setForm({ ...form, interestRate: sanitizeNumber(e.target.value) })}
             />
           </div>
 
@@ -138,11 +141,12 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
               Duration (days)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 30"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.termDays}
-              onChange={e => setForm({ ...form, termDays: e.target.value })}
+              onChange={e => setForm({ ...form, termDays: sanitizeNumber(e.target.value, 10000) })}
             />
           </div>
 
@@ -165,11 +169,12 @@ export const PercentageLoanForm = ({ borrowerId, onSuccess }: PercentageLoanForm
               Penalty Rate (%)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 5"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.penaltyRate}
-              onChange={e => setForm({ ...form, penaltyRate: e.target.value })}
+              onChange={e => setForm({ ...form, penaltyRate: sanitizeNumber(e.target.value, 100) })}
             />
           </div>
 

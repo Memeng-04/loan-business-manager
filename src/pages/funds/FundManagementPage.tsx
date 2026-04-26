@@ -25,7 +25,7 @@ type Transaction = {
 export default function FundManagementPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
-  const { profile, setProfile } = useCurrentUserProfile();
+  const { profile, setProfile, isLoading: profileIsLoading } = useCurrentUserProfile();
   const [transactions] = useState<Transaction[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +33,7 @@ export default function FundManagementPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [loans, setLoans] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
-  const [, setIsLoadingData] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
   useEffect(() => {
     async function loadData() {
@@ -140,6 +140,7 @@ export default function FundManagementPage() {
               outstandingBalance={outstandingBalance}
               initialCapital={initialCapital}
               initialProfit={initialProfit + totalInterestEarned}
+              isLoading={profileIsLoading || isLoadingData}
               onManageFunds={() => setIsEditModalOpen(true)}
             />
           </div>

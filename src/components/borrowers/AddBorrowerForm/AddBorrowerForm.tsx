@@ -4,6 +4,7 @@ import Button from "../../Button";
 import Card from "../../card/Card";
 import FeedbackMessage from "../../feedback/FeedbackMessage";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
+import { sanitizeNumber } from "../../../utils/numberUtils";
 import styles from "./AddBorrowerForm.module.css";
 
 type AddBorrowerFormProps = {
@@ -181,7 +182,7 @@ export default function AddBorrowerForm({
             inputMode="decimal"
             className={styles.input}
             value={monthlyIncome}
-            onChange={(event) => setMonthlyIncome(event.target.value)}
+            onChange={(event) => setMonthlyIncome(sanitizeNumber(event.target.value))}
             placeholder="Enter monthly income"
           />
         </label>

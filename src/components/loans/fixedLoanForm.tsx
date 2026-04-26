@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useCreateLoan } from '../../hooks/useCreateFixedLoan'
 import { FixedInterestStrategy } from '../../strategies/InterestStrategy'
 import type { PaymentFrequency } from '../../types/loans'
+import { sanitizeNumber } from '../../utils/numberUtils'
 
 interface LoanFormProps {
   borrowerId: string
@@ -67,11 +68,12 @@ export const LoanForm = ({ borrowerId, onSuccess }: LoanFormProps) => {
               Principal Amount (₱)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 10,000"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.principal}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, principal: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, principal: sanitizeNumber(e.target.value) })}
             />
           </div>
 
@@ -81,11 +83,12 @@ export const LoanForm = ({ borrowerId, onSuccess }: LoanFormProps) => {
               Total Payable (₱)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 12,000"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.totalPayable}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, totalPayable: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, totalPayable: sanitizeNumber(e.target.value) })}
             />
           </div>
 
@@ -139,11 +142,12 @@ export const LoanForm = ({ borrowerId, onSuccess }: LoanFormProps) => {
               Term (days)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 30"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.termDays}
-              onChange={e => setForm({ ...form, termDays: e.target.value })}
+              onChange={e => setForm({ ...form, termDays: sanitizeNumber(e.target.value, 10000) })}
             />
           </div>
 
@@ -166,11 +170,12 @@ export const LoanForm = ({ borrowerId, onSuccess }: LoanFormProps) => {
               Penalty Rate (%)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 5"
               className="border border-gray-200 p-3 rounded-lg text-sm focus:outline-none transition"
               value={form.penaltyRate}
-              onChange={e => setForm({ ...form, penaltyRate: e.target.value })}
+              onChange={e => setForm({ ...form, penaltyRate: sanitizeNumber(e.target.value, 100) })}
             />
           </div>
 

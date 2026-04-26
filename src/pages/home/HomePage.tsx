@@ -31,17 +31,19 @@ type RevenueChartDatum = {
 export default function HomePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
-  const { profile } = useCurrentUserProfile();
+  const { profile, isLoading: profileIsLoading } = useCurrentUserProfile();
   const [loans, setLoans] = useState<DashboardLoan[]>([]);
   const [borrowers, setBorrowers] = useState<DashboardBorrower[]>([]);
   const [dueSchedules, setDueSchedules] = useState<DashboardSchedule[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [dashboardIsLoading, setDashboardIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadDashboard() {
+      setDashboardIsLoading(true);
       setError(null);
 
       try {
@@ -66,6 +68,10 @@ export default function HomePage() {
               ? err.message
               : "Failed to load dashboard data.",
           );
+        }
+      } finally {
+        if (isMounted) {
+          setDashboardIsLoading(false);
         }
       }
     }
@@ -170,6 +176,7 @@ export default function HomePage() {
               initialProfit={
                 (profile?.initial_profit ?? 0) + totalInterestEarned
               }
+              isLoading={profileIsLoading || dashboardIsLoading}
               onManageFunds={() => navigate("/funds")}
             />
           </div>

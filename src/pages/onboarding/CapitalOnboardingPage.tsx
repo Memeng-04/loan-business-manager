@@ -7,6 +7,7 @@ import FeedbackMessage from "../../components/feedback/FeedbackMessage";
 import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";
+import { sanitizeNumber } from "../../utils/numberUtils";
 import styles from "./OnboardingPage.module.css";
 
 const STORAGE_KEY = "onboarding_profile_step";
@@ -143,18 +144,10 @@ export default function CapitalOnboardingPage() {
             <span className={styles.label}>Capital Lent Out So Far</span>
             <input
               className={styles.input}
-              type="number"
-              min="0"
-              step="any"
+              type="text"
+              inputMode="decimal"
               value={capital}
-              onChange={(event) => {
-                const val = event.target.value;
-                // Prevent negative numbers
-                if (val !== "" && parseFloat(val) < 0) {
-                  return;
-                }
-                setCapital(val);
-              }}
+              onChange={(event) => setCapital(sanitizeNumber(event.target.value))}
               placeholder="0.00"
               required
             />
@@ -164,17 +157,10 @@ export default function CapitalOnboardingPage() {
             <span className={styles.label}>Total Profit Earned So Far</span>
             <input
               className={styles.input}
-              type="number"
-              min="0"
-              step="any"
+              type="text"
+              inputMode="decimal"
               value={profit}
-              onChange={(event) => {
-                const val = event.target.value;
-                if (val !== "" && parseFloat(val) < 0) {
-                  return;
-                }
-                setProfit(val);
-              }}
+              onChange={(event) => setProfit(sanitizeNumber(event.target.value))}
               placeholder="0.00"
               required
             />

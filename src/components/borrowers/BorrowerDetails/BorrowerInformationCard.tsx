@@ -4,6 +4,7 @@ import Button from "../../Button";
 import Card from "../../card/Card";
 import FeedbackMessage from "../../feedback/FeedbackMessage";
 import type { Borrower, CreateBorrowerInput } from "../../../types/borrowers";
+import { sanitizeNumber } from "../../../utils/numberUtils";
 import styles from "./BorrowerDetailCards.module.css";
 
 type BorrowerInformationCardProps = {
@@ -209,11 +210,11 @@ export default function BorrowerInformationCard({
                 <label className={styles.formField}>
                   <span className={styles.dataLabel}>Monthly Income</span>
                   <input
-                    type="number"
+                    type="text"
                     inputMode="decimal"
                     className={styles.formInput}
                     value={monthlyIncome}
-                    onChange={(event) => setMonthlyIncome(event.target.value)}
+                    onChange={(event) => setMonthlyIncome(sanitizeNumber(event.target.value))}
                   />
                 </label>
 
