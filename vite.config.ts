@@ -29,7 +29,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['*/.{js,css,html,ico,png,svg}'],
       },
     }),
   ],
@@ -37,5 +37,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts', 
+    testTimeout: 30000,
+    hookTimeout: 30000,
+    fileParallelism: false // Sequential is still safer for shared remote DBs
   },
 })
