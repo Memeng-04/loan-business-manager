@@ -15,6 +15,9 @@ type BorrowerInformationCardProps = {
   saveError?: string | null;
 };
 
+// Helper: only digits allowed
+const sanitizeDigits = (value: string): string => value.replace(/\D/g, "");
+
 function DataCell({ label, value }: { label: string; value: string }) {
   return (
     <div className={styles.dataCell}>
@@ -64,9 +67,9 @@ export default function BorrowerInformationCard({
     setFormError(null);
   }
 
-  function isDigits(value: string) {
-    return /^\d+$/.test(value);
-  }
+  // function isDigits(value: string) {
+  //   return /^\d+$/.test(value);
+  // }
 
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -77,6 +80,7 @@ export default function BorrowerInformationCard({
 
     const trimmedName = fullName.trim();
     const trimmedAddress = address.trim();
+    // phone and secondary are already sanitized to digits only
     const trimmedPhone = phone.trim();
     const trimmedEmail = email.trim();
     const trimmedSourceOfIncome = sourceOfIncome.trim();
@@ -89,12 +93,8 @@ export default function BorrowerInformationCard({
       return;
     }
 
-    if (
-      !isDigits(trimmedPhone) ||
-      trimmedPhone.length < 7 ||
-      trimmedPhone.length > 15
-    ) {
-      setFormError("Phone number must be numeric and 7 to 15 digits long.");
+    if (trimmedPhone.length < 7 || trimmedPhone.length > 15) {
+      setFormError("Phone number must be 7 to 15 digits long.");
       return;
     }
 
@@ -105,13 +105,9 @@ export default function BorrowerInformationCard({
 
     if (
       trimmedSecondaryNumber &&
-      (!isDigits(trimmedSecondaryNumber) ||
-        trimmedSecondaryNumber.length < 7 ||
-        trimmedSecondaryNumber.length > 15)
+      (trimmedSecondaryNumber.length < 7 || trimmedSecondaryNumber.length > 15)
     ) {
-      setFormError(
-        "Secondary contact number must be numeric and 7 to 15 digits long.",
-      );
+      setFormError("Secondary contact number must be 7 to 15 digits long.");
       return;
     }
 
@@ -135,7 +131,7 @@ export default function BorrowerInformationCard({
     const didSave = await onSave({
       full_name: trimmedName,
       address: trimmedAddress,
-      phone: trimmedPhone,
+      phone: trimmedPhone, // already digits only
       email: trimmedEmail,
       monthly_income: trimmedMonthlyIncome
         ? Number(trimmedMonthlyIncome)
@@ -158,10 +154,14 @@ export default function BorrowerInformationCard({
         <form className={styles.editForm} onSubmit={handleSubmit}>
           <div className={`${styles.infoSections} ${styles.editSections}`}>
             <section className={styles.sectionBlock}>
+              <p className={styles.sectionDescription}>
+                All fields marked with ✦ are required.
+              </p>
               <h4 className={styles.sectionHeading}>CONTACT INFO</h4>
+
               <div className={styles.sectionGrid}>
                 <label className={styles.formField}>
-                  <span className={styles.dataLabel}>Name</span>
+                  <span className={styles.dataLabel}>✦ Name</span>
                   <input
                     required
                     className={styles.formInput}
@@ -171,7 +171,7 @@ export default function BorrowerInformationCard({
                 </label>
 
                 <label className={styles.formField}>
-                  <span className={styles.dataLabel}>Address</span>
+                  <span className={styles.dataLabel}>✦ Address</span>
                   <input
                     required
                     className={styles.formInput}
@@ -181,14 +181,16 @@ export default function BorrowerInformationCard({
                 </label>
 
                 <label className={styles.formField}>
-                  <span className={styles.dataLabel}>Phone</span>
+                  <span className={styles.dataLabel}>✦ Phone</span>
                   <input
                     required
                     type="tel"
                     inputMode="numeric"
                     className={styles.formInput}
                     value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
+                    onChange={(event) =>
+                      setPhone(sanitizeDigits(event.target.value))
+                    }
                   />
                 </label>
 
@@ -214,7 +216,9 @@ export default function BorrowerInformationCard({
                     inputMode="decimal"
                     className={styles.formInput}
                     value={monthlyIncome}
-                    onChange={(event) => setMonthlyIncome(sanitizeNumber(event.target.value))}
+                    onChange={(event) =>
+                      setMonthlyIncome(sanitizeNumber(event.target.value))
+                    }
                   />
                 </label>
 
@@ -251,7 +255,9 @@ export default function BorrowerInformationCard({
                     className={styles.formInput}
                     value={secondaryContactNumber}
                     onChange={(event) =>
-                      setSecondaryContactNumber(event.target.value)
+                      setSecondaryContactNumber(
+                        sanitizeDigits(event.target.value),
+                      )
                     }
                   />
                 </label>

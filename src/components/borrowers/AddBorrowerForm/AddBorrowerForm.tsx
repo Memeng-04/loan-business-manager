@@ -15,6 +15,9 @@ type AddBorrowerFormProps = {
   initialValues?: Partial<CreateBorrowerInput>;
 };
 
+// Helper: only digits allowed
+const sanitizeDigits = (value: string): string => value.replace(/\D/g, "");
+
 export default function AddBorrowerForm({
   onSubmit,
   onCancel,
@@ -25,7 +28,9 @@ export default function AddBorrowerForm({
   const [fullName, setFullName] = useState(initialValues?.full_name ?? "");
   const [email, setEmail] = useState(initialValues?.email ?? "");
   const [address, setAddress] = useState(initialValues?.address ?? "");
-  const [phone, setPhone] = useState(initialValues?.phone ?? "");
+  const [phone, setPhone] = useState(
+    initialValues?.phone ? String(initialValues.phone) : ""
+  );
   const [monthlyIncome, setMonthlyIncome] = useState(
     typeof initialValues?.monthly_income === "number"
       ? String(initialValues.monthly_income)
@@ -35,7 +40,9 @@ export default function AddBorrowerForm({
     initialValues?.source_of_income ?? "",
   );
   const [secondaryContactNumber, setSecondaryContactNumber] = useState(
-    initialValues?.secondary_contact_number ?? "",
+    initialValues?.secondary_contact_number
+      ? String(initialValues.secondary_contact_number)
+      : "",
   );
   const [secondaryContactName, setSecondaryContactName] = useState(
     initialValues?.secondary_contact_name ?? "",
@@ -52,26 +59,22 @@ export default function AddBorrowerForm({
     const trimmedName = fullName.trim();
     const trimmedEmail = email.trim();
     const trimmedAddress = address.trim();
+    // phone and secondary are already sanitized to digits only
     const trimmedPhone = phone.trim();
     const trimmedMonthlyIncome = monthlyIncome.trim();
     const trimmedSourceOfIncome = sourceOfIncome.trim();
     const trimmedSecondaryName = secondaryContactName.trim();
     const trimmedSecondaryNumber = secondaryContactNumber.trim();
 
-    // Sanitize inputs (strip formatting characters)
-    const sanitizedPhone = trimmedPhone.replace(/\D/g, '');
-    const sanitizedSecondaryNumber = trimmedSecondaryNumber.replace(/\D/g, '');
+    // Sanitize monthly income (extra safety)
     const sanitizedMonthlyIncome = trimmedMonthlyIncome.replace(/[^0-9.]/g, '');
 
-    if (!trimmedName || !trimmedAddress || !sanitizedPhone) {
+    if (!trimmedName || !trimmedAddress || !trimmedPhone) {
       setFormError("Name, address, and phone number are required.");
       return;
     }
 
-    if (
-      sanitizedPhone.length < 7 ||
-      sanitizedPhone.length > 15
-    ) {
+    if (trimmedPhone.length < 7 || trimmedPhone.length > 15) {
       setFormError("Phone number must contain 7 to 15 digits.");
       return;
     }
@@ -82,22 +85,19 @@ export default function AddBorrowerForm({
     }
 
     if (
-      sanitizedSecondaryNumber &&
-      (sanitizedSecondaryNumber.length < 7 ||
-        sanitizedSecondaryNumber.length > 15)
+      trimmedSecondaryNumber &&
+      (trimmedSecondaryNumber.length < 7 || trimmedSecondaryNumber.length > 15)
     ) {
-      setFormError(
-        "Secondary contact number must contain 7 to 15 digits.",
-      );
+      setFormError("Secondary contact number must contain 7 to 15 digits.");
       return;
     }
 
-    if (sanitizedSecondaryNumber && !trimmedSecondaryName) {
+    if (trimmedSecondaryNumber && !trimmedSecondaryName) {
       setFormError("Please provide the secondary contact name.");
       return;
     }
 
-    if (!sanitizedSecondaryNumber && trimmedSecondaryName) {
+    if (!trimmedSecondaryNumber && trimmedSecondaryName) {
       setFormError("Please provide the secondary contact number.");
       return;
     }
@@ -113,12 +113,10 @@ export default function AddBorrowerForm({
       full_name: trimmedName,
       email: trimmedEmail,
       address: trimmedAddress,
-      phone: sanitizedPhone,
-      monthly_income: sanitizedMonthlyIncome
-        ? Number(sanitizedMonthlyIncome)
-        : undefined,
+      phone: trimmedPhone, // already digits only
+      monthly_income: sanitizedMonthlyIncome ? Number(sanitizedMonthlyIncome) : undefined,
       source_of_income: trimmedSourceOfIncome,
-      secondary_contact_number: sanitizedSecondaryNumber,
+      secondary_contact_number: trimmedSecondaryNumber,
       secondary_contact_name: trimmedSecondaryName,
     });
   }
@@ -160,7 +158,7 @@ export default function AddBorrowerForm({
             inputMode="numeric"
             className={styles.input}
             value={phone}
-            onChange={(event) => setPhone(event.target.value)}
+            onChange={(event) => setPhone(sanitizeDigits(event.target.value))}
             placeholder="Enter contact number"
           />
         </label>
@@ -213,12 +211,10 @@ export default function AddBorrowerForm({
             inputMode="numeric"
             className={styles.input}
             value={secondaryContactNumber}
-            onChange={(event) => setSecondaryContactNumber(event.target.value)}
+            onChange={(event) => setSecondaryContactNumber(sanitizeDigits(event.target.value))}
             placeholder="Enter secondary contact number"
           />
         </label>
-
-  
 
         {formError ? <FeedbackMessage message={formError} /> : null}
         {!formError && error ? <FeedbackMessage message={error} /> : null}
