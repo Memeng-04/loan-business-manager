@@ -5,9 +5,9 @@ import {
   FixedInterestStrategy,
   PercentageInterestStrategy
 } from '../../../../strategies/InterestStrategy'
-import { formatCurrency, isValidCurrency } from '../../../../lib/formatters'
-import { SummaryCard } from '../../../../components/ui/SummaryCard'
-import { InfoBox } from '../../../../components/ui/InfoBox'
+import { formatCurrency } from '../../../../lib/formatters'
+import { SummaryCard } from '../../SummaryCard'
+import { InfoBox } from '../../InfoBox'
 import { sanitizeNumber } from '../../../../utils/numberUtils'
 import styles from './Step4InterestDetails.module.css'
 
