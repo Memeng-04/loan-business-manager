@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../../components/Button.tsx";
-import LoadingState from "../../../components/LoadingState.tsx";
-import SearchBar from "../../../components/search/SearchBar.tsx";
+import Button from "../../../components/ui/Button.tsx";
+import LoadingState from "../../../components/ui/LoadingState.tsx";
+import SearchBar from "../../../components/ui/search/SearchBar.tsx";
 import BorrowerCard from "../../../components/borrowers/BorrowerCard/BorrowerCard.tsx";
-import Header from "../../../components/header/Header.tsx";
-import Navbar from "../../../components/navigation/Navbar.tsx";
+import Header from "../../../components/ui/header/Header.tsx";
+import Navbar from "../../../components/ui/navigation/Navbar.tsx";
 import { useBorrowers } from "../../../hooks/useBorrowers.ts";
 import styles from "./BorrowersPage.module.css";
 

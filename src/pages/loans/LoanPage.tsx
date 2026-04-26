@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
-import Header from "../../components/header/Header";
-import Navbar from "../../components/navigation/Navbar";
+import Header from "../../components/ui/header/Header";
+import Navbar from "../../components/ui/navigation/Navbar";
 import styles from "./LoanPage.module.css";
-import ScheduleList from "../../components/loans/ScheduleList";
-import BorrowerList from "../../components/loans/BorrowerList";
-import PaymentActionModal from "../../components/loans/PaymentActionModal";
+import ScheduleList from "../../features/loans/management/ScheduleList";
+import BorrowerList from "../../features/loans/management/BorrowerList";
+import PaymentActionModal from "../../features/loans/management/PaymentActionModal";
 import { ScheduleRepository } from "../../repositories/ScheduleRepository";
 import { useBorrowers } from "../../hooks/useBorrowers";
 import { formatCurrency } from "../../lib/formatters";
-import SearchBar from "../../components/search/SearchBar";
+import SearchBar from "../../components/ui/search/SearchBar";
 
 export default function LoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);

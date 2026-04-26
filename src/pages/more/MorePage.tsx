@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import Card from "../../components/card/Card";
-import FeedbackMessage from "../../components/feedback/FeedbackMessage";
-import Header from "../../components/header/Header";
-import Navbar from "../../components/navigation/Navbar";
+import Button from "../../components/ui/Button";
+import Card from "../../components/ui/card/Card";
+import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
+import Header from "../../components/ui/header/Header";
+import Navbar from "../../components/ui/navigation/Navbar";
 import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";

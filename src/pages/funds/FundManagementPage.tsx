@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BalanceCard from "../../components/home/BalanceCard";
-import Card from "../../components/card/Card";
-import Button from "../../components/Button";
-import Header from "../../components/header/Header";
-import Navbar from "../../components/navigation/Navbar";
-import FeedbackMessage from "../../components/feedback/FeedbackMessage";
+import Card from "../../components/ui/card/Card";
+import Button from "../../components/ui/Button";
+import Header from "../../components/ui/header/Header";
+import Navbar from "../../components/ui/navigation/Navbar";
+import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
 import EditFundsModal, {
   type EditFundsFormData,
 } from "../../components/funds/EditFundsModal";

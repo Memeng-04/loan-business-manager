@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import Card from "../card/Card";
-import Button from "../Button";
+import Card from "../ui/card/Card";
+import Button from "../ui/Button";
 import styles from "./DueCard.module.css";
 
 type DueItem = {

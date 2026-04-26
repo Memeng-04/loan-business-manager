@@ -1,7 +1,7 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
-import Card from "../card/Card";
-import Button from "../Button";
+import Card from "../ui/card/Card";
+import Button from "../ui/Button";
 import styles from "./RevenueCard.module.css";
 
 type RevenueChartDatum = {

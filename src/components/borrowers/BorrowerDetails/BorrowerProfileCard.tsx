@@ -1,6 +1,6 @@
 import { ChevronLeft } from "lucide-react";
-import Button from "../../Button";
-import Card from "../../card/Card";
+import Button from "../../ui/Button";
+import Card from "../../ui/card/Card";
 import styles from "./BorrowerDetailCards.module.css";
 
 type BorrowerProfileCardProps = {

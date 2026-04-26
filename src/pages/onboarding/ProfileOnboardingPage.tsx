@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import FeedbackMessage from "../../components/feedback/FeedbackMessage";
+import Button from "../../components/ui/Button";
+import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import styles from "./OnboardingPage.module.css";
 

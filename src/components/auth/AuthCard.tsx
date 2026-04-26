@@ -1,4 +1,4 @@
-import Button from "../Button";
+import Button from "../ui/Button";
 import styles from "../auth/AuthCard.module.css";
 import { useState } from "react";
 import type { SubmitEvent } from "react";

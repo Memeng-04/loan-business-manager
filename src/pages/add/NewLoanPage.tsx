@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Header from "../../components/header/Header";
-import Navbar from "../../components/navigation/Navbar";
-import { CreateLoanWizard } from "../../components/loans/add/CreateLoanWizard";
-import { RepaymentSchedule } from "../../components/loans/RepaymentSchedule";
+import Header from "../../components/ui/header/Header";
+import Navbar from "../../components/ui/navigation/Navbar";
+import { CreateLoanWizard } from "../../features/loans/create-wizard/CreateLoanWizard";
+import { RepaymentSchedule } from "../../features/loans/create-wizard/RepaymentSchedule";
 import styles from "./NewLoanPage.module.css";
-import LoadingState from "../../components/LoadingState";
+import LoadingState from "../../components/ui/LoadingState";
 
 export default function NewLoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);

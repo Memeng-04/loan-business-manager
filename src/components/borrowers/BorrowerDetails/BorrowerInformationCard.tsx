@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import Button from "../../Button";
-import Card from "../../card/Card";
-import FeedbackMessage from "../../feedback/FeedbackMessage";
+import Button from "../../ui/Button";
+import Card from "../../ui/card/Card";
+import FeedbackMessage from "../../ui/feedback/FeedbackMessage";
 import type { Borrower, CreateBorrowerInput } from "../../../types/borrowers";
 import { sanitizeNumber } from "../../../utils/numberUtils";
 import styles from "./BorrowerDetailCards.module.css";

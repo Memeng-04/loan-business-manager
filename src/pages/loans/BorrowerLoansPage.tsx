@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, CreditCard, Trash2, Plus } from 'lucide-react';
-import Header from '../../components/header/Header';
-import Navbar from '../../components/navigation/Navbar';
-import Card from '../../components/card/Card';
-import Button from '../../components/Button';
-import LoadingState from '../../components/LoadingState';
+import Header from '../../components/ui/header/Header';
+import Navbar from '../../components/ui/navigation/Navbar';
+import Card from '../../components/ui/card/Card';
+import Button from '../../components/ui/Button';
+import LoadingState from '../../components/ui/LoadingState';
 import { LoanRepository } from '../../repositories/LoanRepository';
 import { ScheduleRepository } from '../../repositories/ScheduleRepository';
 import { useBorrowers } from '../../hooks/useBorrowers';
