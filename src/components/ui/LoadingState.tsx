@@ -72,7 +72,7 @@ export default function LoadingState({
   if (isCompact) {
     return (
       <div
-        className={`flex items-center gap-3 height-100 p-3 rounded-2xl bg-gray-50/50 border border-gray-100/30 ${className}`}
+        className={`flex items-center gap-3 h-full p-3 rounded-2xl bg-gray-50/50 border border-gray-100/30 ${className}`}
       >
         <div className="relative flex items-center justify-center">
           <Loader2 size={16} className="text-main-blue animate-spin" />
@@ -95,8 +95,8 @@ export default function LoadingState({
 
   return (
     <div
-      className={`flex flex-col items-center min-h-screen justify-center py-16 text-center gap-6 ${
-        isBlue ? "bg-main-blue min-h-screen w-full" : ""
+      className={`flex flex-col items-center justify-center p-8 text-center gap-6 w-full flex-1 ${
+        isBlue ? "bg-main-blue min-h-screen" : "min-h-[60vh]"
       } ${className}`}
     >
       {isError ? (

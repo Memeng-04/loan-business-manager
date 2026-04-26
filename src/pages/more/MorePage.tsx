@@ -119,7 +119,15 @@ export default function MorePage() {
   };
 
   if (isProfileLoading) {
-    return null;
+    return (
+      <main className={styles.page}>
+        <Header title="More" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
+        <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+        <section className={styles.content}>
+          <LoadingState message="Loading profile..." />
+        </section>
+      </main>
+    );
   }
 
   return (

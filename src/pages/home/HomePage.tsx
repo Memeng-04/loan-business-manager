@@ -182,11 +182,18 @@ export default function HomePage() {
           </div>
 
           <div className={styles.revenueCard}>
-            <RevenueCard data={revenueChartData} totalRevenue={totalRevenue} />
+            <RevenueCard 
+              data={revenueChartData} 
+              totalRevenue={totalRevenue} 
+              isLoading={profileIsLoading || dashboardIsLoading}
+            />
           </div>
 
           <div className={styles.dueCard}>
-            <DueCard items={dueTodayItems} />
+            <DueCard 
+              items={dueTodayItems} 
+              isLoading={profileIsLoading || dashboardIsLoading}
+            />
           </div>
         </div>
       </section>
