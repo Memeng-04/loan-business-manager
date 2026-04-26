@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import LoanSummaryCard from "../borrowers/BorrowerDetails/LoanSummaryCard";
+import LoanSummaryCard from "../../borrowers/BorrowerDetails/LoanSummaryCard";
 
 const meta = {
-  title: "Components/LoanSummaryCard",
+  title: "Components/Borrowers/LoanSummaryCard",
   component: LoanSummaryCard,
   parameters: {
     layout: "centered",
