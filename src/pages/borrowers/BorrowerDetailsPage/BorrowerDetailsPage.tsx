@@ -209,7 +209,7 @@ export default function BorrowerDetailsPage() {
                   latestLoan ? formatCurrency(latestLoan.principal) : "—"
                 }
                 latestLoanCreatedAt={formatDate(latestLoan?.created_at)}
-                onSeeLoans={() => navigate("/loans")}
+                onSeeLoans={() => navigate(`/loans/borrowers/${borrower.id}`)}
               />
             </div>
           </section>
