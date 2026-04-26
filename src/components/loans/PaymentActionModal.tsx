@@ -10,6 +10,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { formatCurrency } from "../../lib/formatters";
+import { sanitizeNumber } from "../../utils/numberUtils";
 
 interface PaymentActionModalProps {
   loanId: string;
@@ -230,11 +231,10 @@ export default function PaymentActionModal({
                     ₱
                   </span>
                   <input
-                    type="number"
-                    step="0.01"
-                    min="1"
+                    type="text"
+                    inputMode="decimal"
                     value={amountPaid}
-                    onChange={(e) => setAmountPaid(e.target.value)}
+                    onChange={(e) => setAmountPaid(sanitizeNumber(e.target.value))}
                     required
                     autoFocus
                     className="w-full bg-gray-50/50 hover:bg-white focus:bg-white py-4 pl-12 pr-6 border-2 border-transparent hover:border-gray-200 focus:border-main-blue rounded-2xl focus:outline-none transition-all text-2xl font-black text-gray-900"

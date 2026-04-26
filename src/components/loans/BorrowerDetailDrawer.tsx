@@ -11,6 +11,7 @@ import type { Borrower } from '../../types/borrowers';
 import type { Loan } from '../../types/loans';
 import type { ScheduleEntry } from '../../types/strategies';
 import type { PaymentFrequency } from '../../types/loans';
+import { sanitizeNumber } from '../../utils/numberUtils';
 
 interface BorrowerDetailDrawerProps {
   borrower: Borrower | null;
@@ -406,12 +407,11 @@ export default function BorrowerDetailDrawer({
                               required
                             />
                             <input
-                              type="number"
+                              type="text"
+                              inputMode="decimal"
                               placeholder="Amount PHP"
-                              min="0"
-                              step="0.01"
                               value={newAmount}
-                              onChange={(e) => setNewAmount(e.target.value)}
+                              onChange={(e) => setNewAmount(sanitizeNumber(e.target.value))}
                               className="flex-1 bg-gray-800 border-0 text-white text-xs p-2.5 rounded-xl focus:ring-2 focus:ring-blue-500"
                               required
                             />

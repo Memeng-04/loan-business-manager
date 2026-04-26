@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../Button";
+import { sanitizeNumber } from "../../utils/numberUtils";
 import styles from "./EditFundsModal.module.css";
 
 export type EditFundsFormData = {
@@ -29,27 +30,23 @@ export default function EditFundsModal({
     addProfit: "",
   });
 
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        withdrawCapital: "",
+        addCapital: "",
+        withdrawProfit: "",
+        addProfit: "",
+      });
+    }
+  }, [isOpen]);
+
+
   const handleInputChange = (field: keyof EditFundsFormData) => {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-
-      // Prevent negative numbers and ensure only numeric/decimal input
-      if (value !== "" && parseFloat(value) < 0) {
-        return;
-      }
-
-      // Allow only digits and a single decimal point
-      let val = value.replace(/[^\d.]/g, "");
-      // Prevent multiple decimal points
-      const parts = val.split(".");
-      if (parts.length > 2) {
-        val = parts[0] + "." + parts.slice(2).join("");
-      }
-
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
+      const sanitized = sanitizeNumber(e.target.value);
+      setFormData((prev) => ({ ...prev, [field]: sanitized }));
     };
   };
 
@@ -58,6 +55,7 @@ export default function EditFundsModal({
   };
 
   const handleClose = () => {
+    // Reset on manual close too
     setFormData({
       withdrawCapital: "",
       addCapital: "",
@@ -74,72 +72,33 @@ export default function EditFundsModal({
       <div className={styles.modal}>
         <div className={styles.header}>
           <h2 className={styles.title}>Edit Funds</h2>
-          <button
-            className={styles.closeButton}
-            onClick={handleClose}
-            aria-label="Close modal"
-          >
+          <button className={styles.closeButton} onClick={handleClose} aria-label="Close modal">
             ✕
           </button>
         </div>
 
         <div className={styles.body}>
           <div className={styles.formGrid}>
-            <div className={styles.formField}>
-              <label className={styles.formLabel}>Withdraw Capital</label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="0.00"
-                value={formData.withdrawCapital}
-                onChange={handleInputChange("withdrawCapital")}
-                className={styles.formInput}
-              />
-            </div>
-
-            <div className={styles.formField}>
-              <label className={styles.formLabel}>Add Capital</label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="0.00"
-                value={formData.addCapital}
-                onChange={handleInputChange("addCapital")}
-                className={styles.formInput}
-              />
-            </div>
-
-            <div className={styles.formField}>
-              <label className={styles.formLabel}>Withdraw Profit</label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="0.00"
-                value={formData.withdrawProfit}
-                onChange={handleInputChange("withdrawProfit")}
-                className={styles.formInput}
-              />
-            </div>
-
-            <div className={styles.formField}>
-              <label className={styles.formLabel}>Add Profit</label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="0.00"
-                value={formData.addProfit}
-                onChange={handleInputChange("addProfit")}
-                className={styles.formInput}
-              />
-            </div>
+            {(["withdrawCapital", "addCapital", "withdrawProfit", "addProfit"] as const).map(
+              (field) => (
+                <div key={field} className={styles.formField}>
+                  <label className={styles.formLabel}>
+                    {field === "withdrawCapital" && "Withdraw Capital"}
+                    {field === "addCapital" && "Add Capital"}
+                    {field === "withdrawProfit" && "Withdraw Profit"}
+                    {field === "addProfit" && "Add Profit"}
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    value={formData[field]}
+                    onChange={handleInputChange(field)}
+                    className={styles.formInput}
+                  />
+                </div>
+              )
+            )}
           </div>
         </div>
 
@@ -147,12 +106,7 @@ export default function EditFundsModal({
           <Button variant="outline" size="md" onClick={handleClose}>
             Cancel
           </Button>
-          <Button
-            variant="blue"
-            size="md"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
+          <Button variant="blue" size="md" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </div>

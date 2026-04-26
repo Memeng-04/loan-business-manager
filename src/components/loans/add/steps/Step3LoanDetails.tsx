@@ -2,9 +2,10 @@ import React from 'react'
 import type { WizardStepProps } from '../../../../types/wizardTypes'
 import type { PaymentFrequency } from '../../../../types/loans'
 import { Lightbulb, Clipboard } from 'lucide-react'
-import { isValidCurrency, isValidPositiveInteger, formatCurrency, formatDate } from '../../../../lib/formatters'
+import { isValidPositiveInteger, formatCurrency, formatDate } from '../../../../lib/formatters'
 import { SummaryCard } from '../../SummaryCard'
 import { InfoBox } from '../../InfoBox'
+import { sanitizeNumber } from '../../../../utils/numberUtils'
 import styles from './Step3LoanDetails.module.css'
 
 /**
@@ -30,11 +31,8 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
   ]
 
   const handlePrincipalChange = (value: string) => {
-    // Limit to 15 characters max - truncate if exceeds
-    const truncated = value.slice(0, 15)
-    if (isValidCurrency(truncated)) {
-      updateState('principal', truncated)
-    }
+    const sanitized = sanitizeNumber(value)
+    updateState('principal', sanitized)
   }
 
   const handleTermDaysChange = (value: string) => {
@@ -77,7 +75,8 @@ export const Step3LoanDetails: React.FC<WizardStepProps> = ({
           <div className={styles.formGroup}>
             <label className={styles.label}>Principal Amount (₱)</label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 50000"
               value={state.principal}
               onChange={e => handlePrincipalChange(e.target.value)}

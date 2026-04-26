@@ -8,6 +8,7 @@ import {
 import { formatCurrency, isValidCurrency } from '../../../../lib/formatters'
 import { SummaryCard } from '../../SummaryCard'
 import { InfoBox } from '../../InfoBox'
+import { sanitizeNumber } from '../../../../utils/numberUtils'
 import styles from './Step4InterestDetails.module.css'
 
 /**
@@ -25,21 +26,15 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
   isLoading
 }) => {
   const handleTotalPayableChange = (value: string) => {
-    if (isValidCurrency(value)) {
-      updateState('totalPayable', value)
-    }
+    updateState('totalPayable', sanitizeNumber(value))
   }
 
   const handleInterestRateChange = (value: string) => {
-    if (isValidCurrency(value)) {
-      updateState('interestRate', value)
-    }
+    updateState('interestRate', sanitizeNumber(value, 1000))
   }
 
   const handlePenaltyRateChange = (value: string) => {
-    if (isValidCurrency(value)) {
-      updateState('penaltyRate', value)
-    }
+    updateState('penaltyRate', sanitizeNumber(value, 100))
   }
 
   // Calculate preview based on loan type
@@ -124,7 +119,8 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 Total Payable Amount (₱)
               </label>
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="e.g. 60000"
                 value={state.totalPayable}
                 onChange={e => handleTotalPayableChange(e.target.value)}
@@ -151,7 +147,8 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
                 Annual Interest Rate (%)
               </label>
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="e.g. 5"
                 value={state.interestRate}
                 onChange={e => handleInterestRateChange(e.target.value)}
@@ -176,7 +173,8 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
               Default Penalty Rate (%)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 5"
               value={state.penaltyRate}
               onChange={e => handlePenaltyRateChange(e.target.value)}

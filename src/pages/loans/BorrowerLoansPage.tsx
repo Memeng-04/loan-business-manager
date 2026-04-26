@@ -12,6 +12,7 @@ import { useBorrowers } from '../../hooks/useBorrowers';
 import { formatCurrency, formatDate } from '../../lib/formatters';
 import { StandardScheduleStrategy } from '../../strategies/ScheduleStrategy';
 import type { PaymentFrequency } from '../../types/loans';
+import { sanitizeNumber } from '../../utils/numberUtils';
 import styles from './LoanPage.module.css';
 
 export default function BorrowerLoansPage() {
@@ -439,12 +440,11 @@ export default function BorrowerLoansPage() {
                               required
                             />
                             <input
-                              type="number"
+                              type="text"
+                              inputMode="decimal"
                               placeholder="Amount PHP"
-                              min="0"
-                              step="0.01"
                               value={newAmount}
-                              onChange={e => setNewAmount(e.target.value)}
+                              onChange={e => setNewAmount(sanitizeNumber(e.target.value))}
                               className="flex-1 bg-gray-50 border border-gray-200 text-gray-900 text-xs p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                               required
                             />

@@ -15,6 +15,7 @@ import Button from "../Button";
 import Card from "../card/Card";
 import FeedbackMessage from "../feedback/FeedbackMessage";
 import { LoanRepository } from "../../repositories/LoanRepository";
+import { sanitizeNumber } from "../../utils/numberUtils";
 import type { Loan } from "../../types/loans";
 import type { PaymentValidation } from "../../types/payment";
 import styles from "./RecordPaymentForm.module.css";
@@ -297,12 +298,11 @@ export const RecordPaymentForm: React.FC<RecordPaymentFormProps> = ({
                 <span className={styles.labelRequired}>*</span>
               </label>
               <input
-                type="number"
-                step="0.01"
-                min="0"
+                type="text"
+                inputMode="decimal"
                 placeholder={`e.g. ${selectedLoan.payment_amount}`}
                 value={amountPaid}
-                onChange={(e) => setAmountPaid(e.target.value)}
+                onChange={(e) => setAmountPaid(sanitizeNumber(e.target.value))}
                 disabled={isLoading}
                 className={styles.input}
                 required
