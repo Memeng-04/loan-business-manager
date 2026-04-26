@@ -7,7 +7,6 @@ vi.mock("../../services/supabase", () => ({
   },
 }));
 
-type QueryResult = { data?: unknown; error: unknown };
 
 describe("UserProfileRepository", () => {
   beforeEach(() => {

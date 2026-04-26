@@ -15,7 +15,7 @@ vi.mock("../../services/supabase", () => ({
 type QueryResult = { data: unknown; error: unknown };
 
 const createSelectSingleChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown | typeof vi.fn> = {
     select: vi.fn(() => chain),
     eq: vi.fn(() => chain),
     single: vi.fn().mockResolvedValue(result),
@@ -24,7 +24,7 @@ const createSelectSingleChain = (result: QueryResult) => {
 };
 
 const createSelectOrderChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown | typeof vi.fn> = {
     select: vi.fn(() => chain),
     eq: vi.fn(() => chain),
     order: vi.fn().mockResolvedValue(result),
@@ -33,7 +33,7 @@ const createSelectOrderChain = (result: QueryResult) => {
 };
 
 const createSummaryChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown | typeof vi.fn> = {
     select: vi.fn(() => chain),
     eq: vi.fn(() => chain),
     not: vi.fn().mockResolvedValue(result),

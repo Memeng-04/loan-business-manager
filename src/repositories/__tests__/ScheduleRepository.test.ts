@@ -15,7 +15,7 @@ vi.mock("../../services/supabase", () => ({
 type QueryResult = { data?: unknown; error: unknown };
 
 const createEqOrderChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown> = {
     select: vi.fn(() => chain),
     eq: vi.fn(() => chain),
     order: vi.fn().mockResolvedValue(result),
@@ -24,7 +24,7 @@ const createEqOrderChain = (result: QueryResult) => {
 };
 
 const createDeleteChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown> = {
     delete: vi.fn(() => chain),
     eq: vi.fn()
       .mockImplementationOnce(() => chain)
@@ -34,7 +34,7 @@ const createDeleteChain = (result: QueryResult) => {
 };
 
 const createUpdateChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown> = {
     update: vi.fn(() => chain),
     eq: vi.fn()
       .mockImplementationOnce(() => chain)
@@ -44,14 +44,14 @@ const createUpdateChain = (result: QueryResult) => {
 };
 
 const createInsertSelectChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown> = {
     select: vi.fn().mockResolvedValue(result),
   };
   return chain;
 };
 
 const createDashboardChain = (result: QueryResult) => {
-  const chain: Record<string, any> = {
+  const chain: Record<string, unknown> = {
     select: vi.fn(() => chain),
     gte: vi.fn(() => chain),
     lte: vi.fn(() => chain),
