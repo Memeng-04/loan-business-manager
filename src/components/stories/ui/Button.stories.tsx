@@ -23,12 +23,12 @@ const meta = {
     },
     variant: {
       control: "select",
-      options: ["white", "blue", "outline", "outlineWhiteText"],
+      options: ["white", "blue", "outline", "outlineWhiteText", "back", "ViewProfile"],
       description: "Visual style variant",
     },
     size: {
       control: "select",
-      options: ["md", "lg"],
+      options: ["sm", "md", "lg"],
       description: "Button size",
     },
   },
@@ -69,6 +69,15 @@ export const BackButton: Story = {
   },
 };
 
+export const ViewProfile: Story = {
+  args: {
+    children: "View Profile",
+    variant: "ViewProfile",
+    size: "lg",
+  },
+};
+
+
 export const MediumSize: Story = {
   args: {
     children: "Medium Button",
@@ -77,19 +86,6 @@ export const MediumSize: Story = {
   },
 };
 
-export const Interactive: Story = {
-  args: {
-    children: "Click Me",
-    variant: "blue",
-    size: "md",
-  },
-  play: async ({ canvasElement }) => {
-    const button = canvasElement.querySelector("button");
-    if (button) {
-      button.click();
-    }
-  },
-};
 
 export const OutlineWhiteText: Story = {
   parameters: {

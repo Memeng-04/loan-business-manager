@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, CreditCard, Trash2, Plus } from 'lucide-react';
+import { Calendar, CreditCard, Trash2, Plus } from 'lucide-react';
 import Header from '../../components/ui/header/Header';
 import Navbar from '../../components/ui/navigation/Navbar';
 import Card from '../../components/ui/card/Card';
@@ -176,20 +176,31 @@ export default function BorrowerLoansPage() {
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <section className={styles.content}>
-        {/* Back Button */}
-        <div className="mb-6 flex items-center gap-3">
-          <button
-            onClick={() => navigate('/loans')}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2 text-main-blue font-bold text-sm"
+        {/* Top bar with Back Button and Profile Link */}
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="back"
+              size="md"
+              onClick={() => navigate('/loans')}
+            >
+              Back
+            </Button>
+            <span className="text-gray-400 text-sm">•</span>
+            <span className="text-gray-600 text-sm">
+              <span className="text-gray-400">Contact: </span>
+              {borrower.phone}
+            </span>
+          </div>
+
+          <Button
+            variant="ViewProfile"
+            size="md"
+            onClick={() => navigate(`/borrowers/${borrowerId}`)}
+            className="flex items-center gap-2"
           >
-            <ArrowLeft size={20} />
-            Back to Loans
-          </button>
-          <span className="text-gray-400 text-sm">•</span>
-          <span className="text-gray-600 text-sm">
-            <span className="text-gray-400">Contact: </span>
-            {borrower.phone}
-          </span>
+            View Profile
+          </Button>
         </div>
 
         {/* Tab Navigation */}
