@@ -8,10 +8,11 @@ export const sanitizeNumber = (rawValue: string, max = 1_000_000_000): string =>
 
   // Remove everything except digits and a single decimal point
   let cleaned = rawValue.replace(/[^\d.]/g, "");
-  const parts = cleaned.split(".");
+  let parts = cleaned.split(".");
   if (parts.length > 2) {
     // Keep only the first decimal point
     cleaned = parts[0] + "." + parts.slice(1).join("");
+    parts = cleaned.split(".");
   }
 
   // Limit decimal places to 2

@@ -10,6 +10,17 @@ export const useRepaymentSchedule = () => {
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState<string | null>(null)
   const [saved, setSaved]       = useState(false)
+  const getErrorMessage = (err: unknown, fallback: string): string => {
+    if (err instanceof Error && err.message) {
+      return err.message
+    }
+
+    if (typeof err === 'string' && err) {
+      return err
+    }
+
+    return fallback
+  }
 
   const previewFromLoan = useCallback(async (loanId: string) => {
     setLoading(true)
@@ -45,8 +56,8 @@ export const useRepaymentSchedule = () => {
       )
 
       setSchedule(generated)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to preview schedule'))
     } finally {
       setLoading(false)
     }
@@ -93,8 +104,8 @@ export const useRepaymentSchedule = () => {
 
       setSaved(true)
       return savedData
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to save schedule'
+    } catch (err: unknown) {
+      const errorMessage = getErrorMessage(err, 'Failed to save schedule')
       setError(errorMessage)
       console.error('Save error:', err)
       return null

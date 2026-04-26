@@ -9,6 +9,17 @@ export const useCreateLoan = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const getErrorMessage = (err: unknown, fallback: string): string => {
+    if (err instanceof Error && err.message) {
+      return err.message
+    }
+
+    if (typeof err === 'string' && err) {
+      return err
+    }
+
+    return fallback
+  }
 
   const createLoan = async (input: CreateLoanInput) => {
     setLoading(true)
@@ -40,8 +51,8 @@ export const useCreateLoan = () => {
 
       setSuccess(true)
       return savedLoan
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to create loan'))
       return null
     } finally {
       setLoading(false)
