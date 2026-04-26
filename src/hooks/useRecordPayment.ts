@@ -20,6 +20,17 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const getErrorMessage = (err: unknown, fallback: string): string => {
+    if (err instanceof Error && err.message) {
+      return err.message;
+    }
+
+    if (typeof err === 'string' && err) {
+      return err;
+    }
+
+    return fallback;
+  };
 
   /**
    * Record a payment and allocate it to the loan
@@ -50,7 +61,7 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
       setSuccess(true);
       return payment;
     } catch (err: unknown) {
-      const errorMessage = (err as Error).message || 'Failed to record payment';
+      const errorMessage = getErrorMessage(err, 'Failed to record payment');
       setError(errorMessage);
       console.error('useRecordPayment.recordPayment error:', err);
       return null;
@@ -113,7 +124,7 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
         status: data.status,
       };
     } catch (err: unknown) {
-      const errorMessage = (err as Error).message || 'Failed to allocate payment';
+      const errorMessage = getErrorMessage(err, 'Failed to allocate payment');
       setError(errorMessage);
       console.error('useRecordPayment.allocatePayment error:', err);
       return null;
@@ -149,7 +160,7 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
       setSuccess(true);
       return updatedPayment;
     } catch (err: unknown) {
-      const errorMessage = (err as Error).message || 'Failed to mark payment as absent';
+      const errorMessage = getErrorMessage(err, 'Failed to mark payment as absent');
       setError(errorMessage);
       console.error('useRecordPayment.markAbsent error:', err);
       return null;
