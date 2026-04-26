@@ -45,8 +45,8 @@ export const useRepaymentSchedule = () => {
       )
 
       setSchedule(generated)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError((err as Error).message)
     } finally {
       setLoading(false)
     }
@@ -93,8 +93,8 @@ export const useRepaymentSchedule = () => {
 
       setSaved(true)
       return savedData
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to save schedule'
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || 'Failed to save schedule'
       setError(errorMessage)
       console.error('Save error:', err)
       return null

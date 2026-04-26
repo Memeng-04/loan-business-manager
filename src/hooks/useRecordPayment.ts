@@ -35,18 +35,22 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
       
       // If schedule_id is provided, trigger allocation
       if (input.schedule_id) {
-        await allocatePayment(
+        const allocation = await allocatePayment(
           input.loan_id,
           input.amount_paid,
           input.schedule_id,
           input.payment_date
         );
+
+        if (!allocation) {
+          return null;
+        }
       }
 
       setSuccess(true);
       return payment;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to record payment';
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || 'Failed to record payment';
       setError(errorMessage);
       console.error('useRecordPayment.recordPayment error:', err);
       return null;
@@ -108,8 +112,8 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
         remaining_balance: data.remainingBalance,
         status: data.status,
       };
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to allocate payment';
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || 'Failed to allocate payment';
       setError(errorMessage);
       console.error('useRecordPayment.allocatePayment error:', err);
       return null;
@@ -144,8 +148,8 @@ export const useRecordPayment = (): UseRecordPaymentReturn => {
 
       setSuccess(true);
       return updatedPayment;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to mark payment as absent';
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || 'Failed to mark payment as absent';
       setError(errorMessage);
       console.error('useRecordPayment.markAbsent error:', err);
       return null;
