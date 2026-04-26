@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Button from "../Button";
+import Button from "../ui/Button";
 import { sanitizeNumber } from "../../utils/numberUtils";
 import styles from "./EditFundsModal.module.css";
 

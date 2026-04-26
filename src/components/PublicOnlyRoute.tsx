@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import LoadingState from "./LoadingState";
+import LoadingState from "./ui/LoadingState";
 import { useAuth } from "../hooks/useAuth";
 
 export default function PublicOnlyRoute() {

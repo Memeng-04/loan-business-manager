@@ -1,6 +1,6 @@
-import Card from "../card/Card";
-import Button from "../Button";
-import LoadingState from "../LoadingState";
+import Card from "../ui/card/Card";
+import Button from "../ui/Button";
+import LoadingState from "../ui/LoadingState";
 import styles from "./BalanceCard.module.css";
 
 type BalanceCardProps = {

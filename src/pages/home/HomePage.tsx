@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import BalanceCard from "../../components/home/BalanceCard";
 import DueCard from "../../components/home/DueCard";
 import RevenueCard from "../../components/home/RevenueCard";
-import FeedbackMessage from "../../components/feedback/FeedbackMessage";
-import Header from "../../components/header/Header";
-import Navbar from "../../components/navigation/Navbar";
+import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
+import Header from "../../components/ui/header/Header";
+import Navbar from "../../components/ui/navigation/Navbar";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import {
   DashboardRepository,

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AddBorrowerForm from "../../../components/borrowers/AddBorrowerForm/AddBorrowerForm";
-import Header from "../../../components/header/Header";
-import Navbar from "../../../components/navigation/Navbar";
+import Header from "../../../components/ui/header/Header";
+import Navbar from "../../../components/ui/navigation/Navbar";
 import { useCreateBorrower } from "../../../hooks/useCreateBorrower";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
 import styles from "./AddBorrowerPage.module.css";
