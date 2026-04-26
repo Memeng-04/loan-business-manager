@@ -47,3 +47,12 @@ export const ReadOnly: Story = {
     onManageFunds: undefined,
   },
 };
+
+export const Loading: Story = {
+  args: {
+    outstandingBalance: 5000,
+    initialCapital: 50000,
+    initialProfit: 15000,
+    isLoading: true,
+  },
+};

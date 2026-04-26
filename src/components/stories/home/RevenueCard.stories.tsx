@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
 import RevenueCard from "../../home/RevenueCard";
 
 const meta = {
@@ -7,10 +8,18 @@ const meta = {
   parameters: {
     layout: "padded",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 } satisfies Meta<typeof RevenueCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
 
 const mockData = [
   { name: "Daily", value: 5000 },
@@ -30,5 +39,13 @@ export const NoData: Story = {
   args: {
     data: mockData,
     totalRevenue: 0,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    data: mockData,
+    totalRevenue: 18000,
+    isLoading: true,
   },
 };

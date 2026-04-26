@@ -49,3 +49,10 @@ export const ManyItems: Story = {
     ],
   },
 };
+
+export const Loading: Story = {
+  args: {
+    items: mockItems,
+    isLoading: true,
+  },
+};
