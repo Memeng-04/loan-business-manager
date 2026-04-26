@@ -15,14 +15,14 @@ import { Step5ReviewConfirm } from './steps/Step5ReviewConfirm'
 import { ConfirmLoanModal } from './ConfirmLoanModal'
 import { FixedInterestStrategy, PercentageInterestStrategy } from '../../strategies/InterestStrategy'
 import Button from '../Button'
-import styles from './CreateLoanWizard.module.css'
+import styles from './LoanCreationFlow.module.css'
 
-interface CreateLoanWizardProps {
+interface LoanCreationFlowProps {
   onSuccess?: (loanData: { loanId: string; borrowerId: string }) => void;
 }
 
 /**
- * Multi-step wizard component for creating loans.
+ * Multi-step flow component for creating loans.
  * Manages unified state across 5 steps:
  * 1. Loan Type Selection
  * 2. Borrower Selection
@@ -30,9 +30,9 @@ interface CreateLoanWizardProps {
  * 4. Interest Details
  * 5. Review & Submit
  */
-export const CreateLoanWizard = ({
+export const LoanCreationFlow = ({
   onSuccess
-}: CreateLoanWizardProps) => {
+}: LoanCreationFlowProps) => {
   const [currentStep, setCurrentStep] = useState<WizardStep>(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
