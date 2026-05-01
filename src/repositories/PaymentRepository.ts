@@ -2,6 +2,7 @@
 // Repository for all payment-related Supabase operations (US-09: Record Payment)
 // Updated for multi-user support with explicit user_id filtering
 
+import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '../services/supabase';
 import { getCurrentUserId } from '../services/auth';
 import type { Payment, CreatePaymentInput } from '../types/payment';
@@ -10,10 +11,10 @@ export class PaymentRepository {
   /**
    * Create a new payment record for the current authenticated user
    */
-  static async create(payment: CreatePaymentInput): Promise<Payment> {
+  static async create(payment: CreatePaymentInput, client: SupabaseClient = supabase): Promise<Payment> {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payments')
       .insert([
         {
@@ -37,10 +38,10 @@ export class PaymentRepository {
   /**
    * Fetch all payments for a specific loan (only if user owns loan)
    */
-  static async getByLoanId(loanId: string): Promise<Payment[]> {
+  static async getByLoanId(loanId: string, client: SupabaseClient = supabase): Promise<Payment[]> {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
@@ -59,11 +60,12 @@ export class PaymentRepository {
    */
   static async getByDate(
     loanId: string,
-    date: string
+    date: string,
+    client: SupabaseClient = supabase
   ): Promise<Payment | null> {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payments')
       .select('*')
       .eq('loan_id', loanId)
@@ -83,11 +85,12 @@ export class PaymentRepository {
    */
   static async update(
     paymentId: string,
-    updates: Partial<Payment>
+    updates: Partial<Payment>,
+    client: SupabaseClient = supabase
   ): Promise<Payment> {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payments')
       .update(updates)
       .eq('id', paymentId)
@@ -105,14 +108,14 @@ export class PaymentRepository {
   /**
    * Get payment summary for a loan (only if user owns loan)
    */
-  static async getSummary(loanId: string): Promise<{
+  static async getSummary(loanId: string, client: SupabaseClient = supabase): Promise<{
     totalPaid: number;
     count: number;
     latestPaymentDate: string | null;
   }> {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payments')
       .select('amount_paid, payment_date')
       .eq('loan_id', loanId)
