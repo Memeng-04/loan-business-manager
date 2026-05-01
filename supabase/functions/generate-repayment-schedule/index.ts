@@ -1,21 +1,35 @@
-import { serve } from "std/http/server.ts"
+// @ts-nocheck
 import { createClient } from "supabase"
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
-  console.log('Function called with method:', req.method)
+Deno.serve(async (req) => {
+  console.log('DEBUG: Function started - Method:', req.method)
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    // 1. Get the authorization header and verify JWT first (Security First)
+    const authHeader = req.headers.get('authorization')
+    console.log('DEBUG: Auth Header present:', !!authHeader)
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('DEBUG: Rejecting with 401 - Missing/Invalid Header')
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Missing or invalid authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // 2. Parse request body
     console.log('Parsing request body...')
-    const { loanId } = await req.json()
+    const body = await req.json().catch(() => ({}))
+    const { loanId } = body
     console.log('Received loanId:', loanId)
 
     if (!loanId) {
@@ -24,35 +38,21 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
-
-    // Get the authorization header and extract user from JWT
-    const authHeader = req.headers.get('authorization')
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
     
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      {
-        global: {
-          headers: {
-            Authorization: authHeader,
-          },
-        },
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // Verify we have an authenticated user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    const token = authHeader.replace('Bearer ', '');
+
+    // Verify we have an authenticated user explicitly
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token)
     
     if (userError || !user?.id) {
       console.error('Auth error:', userError)
       return new Response(
-        JSON.stringify({ error: 'Unauthorized: Invalid token' }),
+        JSON.stringify({ error: `Unauthorized: ${userError?.message || 'Invalid token'}` }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -62,6 +62,7 @@ serve(async (req) => {
       .from('loans')
       .select('total_payable, frequency, start_date, end_date')
       .eq('id', loanId)
+      .eq('user_id', user.id)
       .single()
 
     if (loanError || !loan) {
@@ -89,6 +90,7 @@ serve(async (req) => {
       .from('payment_schedules')
       .delete()
       .eq('loan_id', loanId)
+      .eq('user_id', user.id)
 
     if (deleteError) throw deleteError
 
