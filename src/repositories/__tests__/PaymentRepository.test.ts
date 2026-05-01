@@ -133,21 +133,13 @@ describe('PaymentRepository Integration Test', { timeout: 30000 }, () => {
       status: 'active'
     }).select('id').single();
 
-    const { data: payment } = await supabaseAdmin.from('payments').insert({
+    await supabaseAdmin.from('payments').insert({
       loan_id: loan!.id,
       user_id: otherUserId,
       amount_paid: 500,
       payment_date: '2025-01-15'
     }).select('id').single();
 
-    // Fetch using anon key (supabaseUser)
-    let error: any;
-    try {
-      await PaymentRepository.getByDate(loan!.id, '2025-01-15', supabaseUser);
-    } catch (e) {
-      error = e;
-    }
-    
     // getByDate ignores PGRST116 and returns null, so no error should be thrown, but it should return null
     const result = await PaymentRepository.getByDate(loan!.id, '2025-01-15', supabaseUser);
     expect(result).toBeNull();

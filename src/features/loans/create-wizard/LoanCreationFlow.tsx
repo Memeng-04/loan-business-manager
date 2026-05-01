@@ -1,19 +1,16 @@
 import { useState, useCallback, useEffect } from 'react'
-import {
+import type {
   CreateLoanWizardState,
   WizardStep
 } from '../../../types/wizardTypes'
 import { CheckCircle } from 'lucide-react'
 import { useCreateLoan } from '../../../hooks/useCreateFixedLoan'
 import { useCreatePercentageLoan } from '../../../hooks/useCreatePercentageLoan'
-import { useBorrowers } from '../../../hooks/useBorrowers'
 import { Step1LoanCategory } from './steps/Step1LoanCategory'
 import { Step2Borrower } from './steps/Step2Borrower'
 import { Step3LoanDetails } from './steps/Step3LoanDetails'
 import { Step4InterestDetails } from './steps/Step4InterestDetails'
 import { Step5ReviewConfirm } from './steps/Step5ReviewConfirm'
-import { ConfirmLoanModal } from './ConfirmLoanModal'
-import { FixedInterestStrategy, PercentageInterestStrategy } from '../../../strategies/InterestStrategy'
 import Button from '../../../components/ui/Button'
 import styles from './LoanCreationFlow.module.css'
 
