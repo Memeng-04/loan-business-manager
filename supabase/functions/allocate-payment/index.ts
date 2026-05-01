@@ -1,3 +1,4 @@
+// @ts-nocheck
 // supabase/functions/allocate-payment/index.ts
 // Edge Function for US-11: Auto Allocation - Allocates payments between interest and principal
 // Deploy with: supabase functions deploy allocate-payment
@@ -41,34 +42,30 @@ Deno.serve(async (req: Request) => {
 
   try {
     // Get authorization header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Missing authorization header' }),
+        JSON.stringify({ success: false, error: 'Unauthorized: Missing or invalid authorization header' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Create Supabase client with user's JWT token (respects RLS policies)
-    // Pass Authorization header so that Supabase will use the user's JWT for auth
+    // Create Supabase client with SERVICE_ROLE_KEY for system-level operations
+    // We still verify the user's JWT below
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') || '',
-      Deno.env.get('SUPABASE_ANON_KEY') || '',
-      {
-        global: {
-          headers: {
-            Authorization: authHeader,
-          },
-        },
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '',
     );
 
-    // Verify we have an authenticated user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    // Extract token from "Bearer <token>"
+    const token = authHeader.replace('Bearer ', '');
+
+    // Verify we have an authenticated user explicitly with the token
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     
     if (userError || !user?.id) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Unauthorized: No authenticated user' }),
+        JSON.stringify({ success: false, error: `Unauthorized: ${userError?.message || 'No authenticated user'}` }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -93,6 +90,7 @@ Deno.serve(async (req: Request) => {
       .from('loans')
       .select('*')
       .eq('id', loanId)
+      .eq('user_id', user.id)
       .single();
 
     if (loanError || !loanData) {
@@ -108,6 +106,7 @@ Deno.serve(async (req: Request) => {
       .from('payment_schedules')
       .select('*')
       .eq('id', scheduleId)
+      .eq('user_id', user.id)
       .single();
 
     if (scheduleError || !scheduleData) {
@@ -148,10 +147,6 @@ Deno.serve(async (req: Request) => {
           amount_paid: amountPaid,
           payment_date: paymentDate,
           schedule_id: scheduleId,
-          interest_portion: interestPortion,
-          principal_portion: principalPortion,
-          remaining_balance: remainingBalance,
-          status: paymentStatus,
           user_id: user.id,
         },
       ])
@@ -174,7 +169,8 @@ Deno.serve(async (req: Request) => {
         amount_paid: newAmountPaid,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', scheduleId);
+      .eq('id', scheduleId)
+      .eq('user_id', user.id);
 
     if (scheduleUpdateError) {
       console.error('Warning: Failed to update schedule status:', scheduleUpdateError);
@@ -192,7 +188,8 @@ Deno.serve(async (req: Request) => {
         amount_paid: (loanData.amount_paid || 0) + amountPaid,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', loanId);
+      .eq('id', loanId)
+      .eq('user_id', user.id);
 
     if (loanUpdateError) {
       console.error('Warning: Failed to update loan balance:', loanUpdateError);

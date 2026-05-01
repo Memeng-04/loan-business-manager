@@ -1,25 +1,28 @@
 import { useState, useCallback, useEffect } from 'react'
-import type {
+import {
   CreateLoanWizardState,
-  WizardStep,
-} from "../../../types/wizardTypes";
-import { CheckCircle } from "lucide-react";
-import { useCreateLoan } from "../../../hooks/useCreateFixedLoan";
-import { useCreatePercentageLoan } from "../../../hooks/useCreatePercentageLoan";
-import { Step1LoanCategory } from "./steps/Step1LoanCategory";
-import { Step2Borrower } from "./steps/Step2Borrower";
-import { Step3LoanDetails } from "./steps/Step3LoanDetails";
-import { Step4InterestDetails } from "./steps/Step4InterestDetails";
-import { Step5ReviewConfirm } from "./steps/Step5ReviewConfirm";
-import Button from "../../../components/ui/Button";
-import styles from "./CreateLoanWizard.module.css";
+  WizardStep
+} from '../../../types/wizardTypes'
+import { CheckCircle } from 'lucide-react'
+import { useCreateLoan } from '../../../hooks/useCreateFixedLoan'
+import { useCreatePercentageLoan } from '../../../hooks/useCreatePercentageLoan'
+import { useBorrowers } from '../../../hooks/useBorrowers'
+import { Step1LoanCategory } from './steps/Step1LoanCategory'
+import { Step2Borrower } from './steps/Step2Borrower'
+import { Step3LoanDetails } from './steps/Step3LoanDetails'
+import { Step4InterestDetails } from './steps/Step4InterestDetails'
+import { Step5ReviewConfirm } from './steps/Step5ReviewConfirm'
+import { ConfirmLoanModal } from './ConfirmLoanModal'
+import { FixedInterestStrategy, PercentageInterestStrategy } from '../../../strategies/InterestStrategy'
+import Button from '../../../components/ui/Button'
+import styles from './LoanCreationFlow.module.css'
 
-interface CreateLoanWizardProps {
+interface LoanCreationFlowProps {
   onSuccess?: (loanData: { loanId: string; borrowerId: string }) => void;
 }
 
 /**
- * Multi-step wizard component for creating loans.
+ * Multi-step flow component for creating loans.
  * Manages unified state across 5 steps:
  * 1. Loan Type Selection
  * 2. Borrower Selection
@@ -27,9 +30,9 @@ interface CreateLoanWizardProps {
  * 4. Interest Details
  * 5. Review & Submit
  */
-export const CreateLoanWizard = ({
+export const LoanCreationFlow = ({
   onSuccess
-}: CreateLoanWizardProps) => {
+}: LoanCreationFlowProps) => {
   const [currentStep, setCurrentStep] = useState<WizardStep>(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)

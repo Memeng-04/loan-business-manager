@@ -1,141 +1,179 @@
-import { PaymentRepository } from "../PaymentRepository";
-import { getCurrentUserId } from "../../services/auth";
-import { supabase } from "../../services/supabase";
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { PaymentRepository } from '../PaymentRepository';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
 
-vi.mock("../../services/auth", () => ({
-  getCurrentUserId: vi.fn(),
+vi.mock('../../services/auth', () => ({
+  getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
 }));
 
-vi.mock("../../services/supabase", () => ({
-  supabase: {
-    from: vi.fn(),
-  },
-}));
+describe('PaymentRepository Integration Test', { timeout: 30000 }, () => {
+  let testBorrowerId: string;
+  let testLoanId: string;
 
-type QueryResult = { data: unknown; error: unknown };
+  beforeEach(async () => {
+    // Ensure user exists
+    await supabaseAdmin.auth.admin.createUser({
+      id: TEST_USER_ID,
+      email: `test-lender-${Date.now()}@example.com`,
+      password: 'password123',
+      email_confirm: true,
+    }).catch(() => {});
 
-const createSelectSingleChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    single: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
+    // Clean up
+    await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('payment_schedules').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
 
-const createSelectOrderChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    order: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
+    // Create a borrower
+    const { data: borrower } = await supabaseAdmin.from('borrowers').insert({
+      full_name: 'Payment Borrower',
+      phone: '123456',
+      user_id: TEST_USER_ID
+    }).select('id').single();
+    testBorrowerId = borrower!.id;
 
-const createSummaryChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    not: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
-
-describe("PaymentRepository", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.mocked(getCurrentUserId).mockResolvedValue("user-123");
+    // Create a loan
+    const { data: loan } = await supabaseAdmin.from('loans').insert({
+      borrower_id: testBorrowerId,
+      user_id: TEST_USER_ID,
+      principal: 1000,
+      total_payable: 1100,
+      interest: 100,
+      interest_rate: 10,
+      frequency: 'monthly',
+      payment_amount: 1100,
+      start_date: '2025-01-01',
+      end_date: '2025-02-01',
+      penalty_rate: 1,
+      status: 'active'
+    }).select('id').single();
+    testLoanId = loan!.id;
   });
 
-  it("includes the current user id when creating a payment", async () => {
-    const chain = createSelectSingleChain({
-      data: { id: "payment-1" },
-      error: null,
-    });
-
-    const insert = vi.fn(() => chain);
-    vi.mocked(supabase.from).mockReturnValue({
-      insert,
-    } as never);
-
-    const result = await PaymentRepository.create({
-      loan_id: "loan-1",
-      amount_paid: 250,
-      payment_date: "2026-04-27",
-      schedule_id: "schedule-1",
-    });
-
-    expect(supabase.from).toHaveBeenCalledWith("payments");
-    expect(insert).toHaveBeenCalledWith([
-      {
-        loan_id: "loan-1",
-        amount_paid: 250,
-        payment_date: "2026-04-27",
-        schedule_id: "schedule-1",
-        user_id: "user-123",
-      },
-    ]);
-    expect(result).toEqual({ id: "payment-1" });
+  afterEach(async () => {
+    await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
   });
 
-  it("returns null for not-found payment lookups", async () => {
-    const chain = createSelectSingleChain({
-      data: null,
-      error: { code: "PGRST116", message: "No rows found" },
-    });
+  // --- GOOD PATHS ---
 
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
+  it('should create and fetch a payment', async () => {
+    const paymentInput = {
+      loan_id: testLoanId,
+      amount_paid: 500,
+      payment_date: '2025-01-15'
+    };
 
-    const result = await PaymentRepository.getByDate("loan-2", "2026-04-27");
+    // Create
+    const payment = await PaymentRepository.create(paymentInput, supabaseAdmin);
+    expect(payment).toBeDefined();
+    expect(payment.amount_paid).toBe(500);
 
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "loan_id", "loan-2");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "payment_date", "2026-04-27");
-    expect(chain.eq).toHaveBeenNthCalledWith(3, "user_id", "user-123");
+    // Fetch by Date
+    const fetched = await PaymentRepository.getByDate(testLoanId, '2025-01-15', supabaseAdmin);
+    expect(fetched).not.toBeNull();
+    expect(fetched?.amount_paid).toBe(500);
+    
+    // Fetch by Loan ID
+    const loanPayments = await PaymentRepository.getByLoanId(testLoanId, supabaseAdmin);
+    expect(loanPayments.length).toBe(1);
+    expect(loanPayments[0].id).toBe(payment.id);
+
+    // Get Summary
+    const summary = await PaymentRepository.getSummary(testLoanId, supabaseAdmin);
+    expect(summary.count).toBe(1);
+    expect(summary.totalPaid).toBe(500);
+  });
+
+  it('should update a payment', async () => {
+    const paymentInput = {
+      loan_id: testLoanId,
+      amount_paid: 500,
+      payment_date: '2025-01-15'
+    };
+
+    const payment = await PaymentRepository.create(paymentInput, supabaseAdmin);
+    
+    const updated = await PaymentRepository.update(payment.id!, { amount_paid: 600 }, supabaseAdmin);
+    expect(updated.amount_paid).toBe(600);
+  });
+
+  // --- SAD PATHS ---
+
+  it('should not allow fetching payments of another user (RLS Check)', async () => {
+    const otherUserId = '550e8400-e29b-41d4-a716-446655440000';
+    
+    await supabaseAdmin.auth.admin.createUser({
+      id: otherUserId,
+      email: `other-lender-${Date.now()}@example.com`,
+      password: 'password123',
+      email_confirm: true,
+    }).catch(() => {});
+
+    const { data: borrower } = await supabaseAdmin.from('borrowers').insert({
+      full_name: 'Other Borrower',
+      user_id: otherUserId,
+      phone: '999'
+    }).select('id').single();
+
+    const { data: loan } = await supabaseAdmin.from('loans').insert({
+      borrower_id: borrower!.id,
+      user_id: otherUserId,
+      principal: 1000,
+      total_payable: 1100,
+      interest: 100,
+      interest_rate: 10,
+      frequency: 'monthly',
+      payment_amount: 1100,
+      start_date: '2025-01-01',
+      end_date: '2025-02-01',
+      penalty_rate: 1,
+      status: 'active'
+    }).select('id').single();
+
+    const { data: payment } = await supabaseAdmin.from('payments').insert({
+      loan_id: loan!.id,
+      user_id: otherUserId,
+      amount_paid: 500,
+      payment_date: '2025-01-15'
+    }).select('id').single();
+
+    // Fetch using anon key (supabaseUser)
+    let error: any;
+    try {
+      await PaymentRepository.getByDate(loan!.id, '2025-01-15', supabaseUser);
+    } catch (e) {
+      error = e;
+    }
+    
+    // getByDate ignores PGRST116 and returns null, so no error should be thrown, but it should return null
+    const result = await PaymentRepository.getByDate(loan!.id, '2025-01-15', supabaseUser);
     expect(result).toBeNull();
+
+    await supabaseAdmin.from('payments').delete().eq('user_id', otherUserId);
+    await supabaseAdmin.from('loans').delete().eq('user_id', otherUserId);
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', otherUserId);
   });
 
-  it("aggregates payment summary totals and latest payment date", async () => {
-    const chain = createSummaryChain({
-      data: [
-        { amount_paid: 50, payment_date: "2026-04-20" },
-        { amount_paid: 125.5, payment_date: "2026-04-27" },
-        { amount_paid: 0, payment_date: "2026-04-10" },
-      ],
-      error: null,
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
-
-    const result = await PaymentRepository.getSummary("loan-3");
-
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "loan_id", "loan-3");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
-    expect(chain.not).toHaveBeenCalledWith("amount_paid", "is", null);
-    expect(result).toEqual({
-      totalPaid: 175.5,
-      count: 3,
-      latestPaymentDate: "2026-04-27",
-    });
+  it('should return empty summary for non-existent loan', async () => {
+    const nonExistentLoanId = '00000000-0000-0000-0000-000000000000';
+    const summary = await PaymentRepository.getSummary(nonExistentLoanId, supabaseAdmin);
+    expect(summary.totalPaid).toBe(0);
+    expect(summary.count).toBe(0);
+    expect(summary.latestPaymentDate).toBeNull();
   });
 
-  it("throws a wrapped error when fetching payments fails", async () => {
-    const chain = createSelectOrderChain({
-      data: null,
-      error: { message: "db offline" },
-    });
+  it('should throw error when updating non-existent payment', async () => {
+    const nonExistentId = '00000000-0000-0000-0000-000000000000';
+    await expect(PaymentRepository.update(nonExistentId, { amount_paid: 100 }, supabaseAdmin))
+      .rejects.toThrow();
+  });
 
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
-
-    await expect(PaymentRepository.getByLoanId("loan-4")).rejects.toThrow(
-      "Failed to fetch payments: db offline",
-    );
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "loan_id", "loan-4");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
+  it('should return null when fetching payment by non-existent loan ID and date', async () => {
+    const nonExistentLoanId = '00000000-0000-0000-0000-000000000000';
+    const result = await PaymentRepository.getByDate(nonExistentLoanId, '2025-01-01', supabaseAdmin);
+    expect(result).toBeNull();
   });
 });

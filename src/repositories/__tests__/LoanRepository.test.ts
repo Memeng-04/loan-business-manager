@@ -1,126 +1,168 @@
-import { LoanRepository } from "../LoanRepository";
-import { getCurrentUserId } from "../../services/auth";
-import { supabase } from "../../services/supabase";
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { LoanRepository } from '../LoanRepository';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
 
-vi.mock("../../services/auth", () => ({
-  getCurrentUserId: vi.fn(),
+vi.mock('../../services/auth', () => ({
+  getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
 }));
 
-vi.mock("../../services/supabase", () => ({
-  supabase: {
-    from: vi.fn(),
-  },
-}));
+describe('LoanRepository Integration Test', { timeout: 30000 }, () => {
+  let testBorrowerId: string;
 
-type QueryResult = { data?: unknown; error: unknown };
+  beforeEach(async () => {
+    // Ensure user exists
+    await supabaseAdmin.auth.admin.createUser({
+      id: TEST_USER_ID,
+      email: `test-lender-${Date.now()}@example.com`,
+      password: 'password123',
+      email_confirm: true,
+    }).catch(() => {});
 
-const createSelectSingleChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    single: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
+    // Clean up
+    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
 
-const createSelectOrderChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    order: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
-
-describe("LoanRepository", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.mocked(getCurrentUserId).mockResolvedValue("user-123");
+    // Create a borrower to attach loans to
+    const { data: borrower } = await supabaseAdmin.from('borrowers').insert({
+      full_name: 'Loan Borrower',
+      phone: '123456',
+      user_id: TEST_USER_ID
+    }).select('id').single();
+    
+    testBorrowerId = borrower!.id;
   });
 
-  it("adds user_id when creating a loan", async () => {
-    const chain = createSelectSingleChain({
-      data: { id: "loan-1" },
-      error: null,
-    });
-    const insert = vi.fn(() => chain);
+  afterEach(async () => {
+    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
+  });
 
-    vi.mocked(supabase.from).mockReturnValue({
-      insert,
-    } as never);
+  // --- GOOD PATHS ---
 
-    const payload = {
-      borrower_id: "borrower-1",
+  it('should create and fetch a loan', async () => {
+    const loanInput = {
+      borrower_id: testBorrowerId,
       principal: 1000,
-      total_payable: 1200,
-      interest: 200,
-      interest_rate: 20,
-      frequency: "weekly",
-      payment_amount: 600,
-      start_date: "2026-04-01",
-      end_date: "2026-04-15",
-      status: "active",
-      penalty_rate: 5,
+      total_payable: 1100,
+      interest: 100,
+      interest_rate: 10,
+      frequency: 'monthly' as const,
+      payment_amount: 1100,
+      start_date: '2025-01-01',
+      end_date: '2025-02-01',
+      penalty_rate: 1,
+      status: 'active' as const
     };
 
-    const result = await LoanRepository.create(payload as never);
+    // Create
+    const loan = await LoanRepository.create(loanInput, supabaseAdmin);
+    expect(loan).toBeDefined();
+    expect(loan.principal).toBe(1000);
 
-    expect(supabase.from).toHaveBeenCalledWith("loans");
-    expect(insert).toHaveBeenCalledWith({ ...payload, user_id: "user-123" });
-    expect(result).toEqual({ id: "loan-1" });
+    // Fetch by ID
+    const fetched = await LoanRepository.getById(loan.id!, supabaseAdmin);
+    expect(fetched).not.toBeNull();
+    expect(fetched?.principal).toBe(1000);
+    
+    // Fetch by Borrower ID
+    const borrowerLoans = await LoanRepository.getByBorrowerId(testBorrowerId, supabaseAdmin);
+    expect(borrowerLoans.length).toBeGreaterThan(0);
+    expect(borrowerLoans.some(l => l.id === loan.id)).toBeTruthy();
+
+    // Fetch All
+    const allLoans = await LoanRepository.getAll(supabaseAdmin);
+    expect(allLoans.length).toBeGreaterThan(0);
+    expect(allLoans.some(l => l.id === loan.id)).toBeTruthy();
   });
 
-  it("filters borrower loan lookups by borrower id and user id", async () => {
-    const chain = createSelectOrderChain({
-      data: [{ id: "loan-2" }],
-      error: null,
-    });
+  it('should update loan status', async () => {
+    const loanInput = {
+      borrower_id: testBorrowerId,
+      principal: 1000,
+      total_payable: 1100,
+      interest: 100,
+      interest_rate: 10,
+      frequency: 'monthly' as const,
+      payment_amount: 1100,
+      start_date: '2025-01-01',
+      end_date: '2025-02-01',
+      penalty_rate: 1,
+      status: 'active' as const
+    };
 
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
-
-    const result = await LoanRepository.getByBorrowerId("borrower-2");
-
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "borrower_id", "borrower-2");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
-    expect(chain.order).toHaveBeenCalledWith("created_at", { ascending: false });
-    expect(result).toEqual([{ id: "loan-2" }]);
+    const loan = await LoanRepository.create(loanInput, supabaseAdmin);
+    
+    const updated = await LoanRepository.updateStatus(loan.id!, 'completed', supabaseAdmin);
+    expect(updated.status).toBe('completed');
   });
 
-  it("loads a single loan by id within the current user scope", async () => {
-    const chain = createSelectSingleChain({
-      data: { id: "loan-3" },
-      error: null,
-    });
+  // --- SAD PATHS ---
 
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
+  it('should not allow fetching a loan of another user (RLS Check)', async () => {
+    const otherUserId = '550e8400-e29b-41d4-a716-446655440000';
+    
+    await supabaseAdmin.auth.admin.createUser({
+      id: otherUserId,
+      email: `other-lender-${Date.now()}@example.com`,
+      password: 'password123',
+      email_confirm: true,
+    }).catch(() => {});
 
-    const result = await LoanRepository.getById("loan-3");
+    const { data: borrower } = await supabaseAdmin.from('borrowers').insert({
+      full_name: 'Other Borrower',
+      user_id: otherUserId,
+      phone: '999'
+    }).select('id').single();
 
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "id", "loan-3");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
-    expect(result).toEqual({ id: "loan-3" });
+    const { data: loan } = await supabaseAdmin.from('loans').insert({
+      borrower_id: borrower!.id,
+      user_id: otherUserId,
+      principal: 1000,
+      total_payable: 1100,
+      interest: 100,
+      interest_rate: 10,
+      frequency: 'monthly',
+      payment_amount: 1100,
+      start_date: '2025-01-01',
+      end_date: '2025-02-01',
+      penalty_rate: 1,
+      status: 'active'
+    }).select('id').single();
+
+    // Fetch using anon key (supabaseUser)
+    // Note: getById might throw an error if `.single()` finds 0 rows, so we need to handle it.
+    // LoanRepository throws error if single() fails, but it catches PGRST116? Let's check: 
+    // Oh, LoanRepository doesn't catch PGRST116. It will throw the error.
+    let error: any;
+    try {
+      await LoanRepository.getById(loan!.id, supabaseUser);
+    } catch (e) {
+      error = e;
+    }
+    
+    // PGRST116 is Supabase's "JSON object requested, multiple (or no) rows returned"
+    expect(error).toBeDefined();
+    expect(error.code).toBe('PGRST116');
+
+    await supabaseAdmin.from('loans').delete().eq('user_id', otherUserId);
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', otherUserId);
   });
 
-  it("updates loan status within the current user scope", async () => {
-    const chain = createSelectSingleChain({
-      data: { id: "loan-4", status: "closed" },
-      error: null,
-    });
-    const update = vi.fn(() => chain);
+  it('should throw error when fetching non-existent loan by ID', async () => {
+    const nonExistentId = '00000000-0000-0000-0000-000000000000';
+    await expect(LoanRepository.getById(nonExistentId, supabaseAdmin))
+      .rejects.toThrow();
+  });
 
-    vi.mocked(supabase.from).mockReturnValue({
-      update,
-    } as never);
+  it('should return empty array when fetching loans for non-existent borrower', async () => {
+    const nonExistentBorrowerId = '00000000-0000-0000-0000-000000000000';
+    const loans = await LoanRepository.getByBorrowerId(nonExistentBorrowerId, supabaseAdmin);
+    expect(loans).toEqual([]);
+  });
 
-    const result = await LoanRepository.updateStatus("loan-4", "closed");
-
-    expect(update).toHaveBeenCalledWith({ status: "closed" });
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "id", "loan-4");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
-    expect(result).toEqual({ id: "loan-4", status: "closed" });
+  it('should throw error when updating status of non-existent loan', async () => {
+    const nonExistentId = '00000000-0000-0000-0000-000000000000';
+    await expect(LoanRepository.updateStatus(nonExistentId, 'completed', supabaseAdmin))
+      .rejects.toThrow();
   });
 });

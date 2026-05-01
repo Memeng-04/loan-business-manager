@@ -1,3 +1,4 @@
+import { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "../services/supabase";
 import { getCurrentUserId } from "../services/auth";
 import type { Loan } from "../types/loans";
@@ -6,10 +7,10 @@ export class LoanRepository {
   /**
    * Create a new loan for the current authenticated user
    */
-  static async create(loan: Loan) {
+  static async create(loan: Loan, client: SupabaseClient = supabase) {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("loans")
       .insert({ ...loan, user_id: userId })
       .select()
@@ -22,10 +23,10 @@ export class LoanRepository {
   /**
    * Get all loans for a specific borrower (only if user owns borrower)
    */
-  static async getByBorrowerId(borrowerId: string): Promise<Loan[]> {
+  static async getByBorrowerId(borrowerId: string, client: SupabaseClient = supabase): Promise<Loan[]> {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("loans")
       .select("*")
       .eq("borrower_id", borrowerId)
@@ -39,10 +40,10 @@ export class LoanRepository {
   /**
    * Get all loans for the current authenticated user
    */
-  static async getAll() {
+  static async getAll(client: SupabaseClient = supabase) {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("loans")
       .select(
         `
@@ -64,10 +65,10 @@ export class LoanRepository {
   /**
    * Get a specific loan by ID (only if owned by current user)
    */
-  static async getById(id: string) {
+  static async getById(id: string, client: SupabaseClient = supabase) {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("loans")
       .select(
         `
@@ -90,10 +91,10 @@ export class LoanRepository {
   /**
    * Update loan status (only if owned by current user)
    */
-  static async updateStatus(id: string, status: string) {
+  static async updateStatus(id: string, status: string, client: SupabaseClient = supabase) {
     const userId = await getCurrentUserId();
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("loans")
       .update({ status })
       .eq("id", id)

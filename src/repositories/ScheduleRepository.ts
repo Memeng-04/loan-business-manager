@@ -1,12 +1,13 @@
+import { SupabaseClient } from '@supabase/supabase-js'
 import { supabase } from '../services/supabase'
 import { getCurrentUserId } from '../services/auth'
 import type { ScheduleEntry } from '../types/strategies';
 
 export class ScheduleRepository {
-  static async getByLoanId(loanId: string): Promise<ScheduleEntry[]> {
+  static async getByLoanId(loanId: string, client: SupabaseClient = supabase): Promise<ScheduleEntry[]> {
     const userId = await getCurrentUserId()
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payment_schedules')
       .select('*')
       .eq('loan_id', loanId)
@@ -17,7 +18,7 @@ export class ScheduleRepository {
     return data as ScheduleEntry[]
   }
 
-  static async saveSchedule(schedules: ScheduleEntry[]): Promise<ScheduleEntry[]> {
+  static async saveSchedule(schedules: ScheduleEntry[], client: SupabaseClient = supabase): Promise<ScheduleEntry[]> {
     const userId = await getCurrentUserId()
 
     // Map schedules to include user_id for RLS compliance
@@ -26,7 +27,7 @@ export class ScheduleRepository {
       user_id: userId
     }))
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payment_schedules')
       .insert(schedulesWithUserId)
       .select()
@@ -35,10 +36,10 @@ export class ScheduleRepository {
     return data as ScheduleEntry[]
   }
 
-  static async deleteByLoanId(loanId: string): Promise<void> {
+  static async deleteByLoanId(loanId: string, client: SupabaseClient = supabase): Promise<void> {
     const userId = await getCurrentUserId()
 
-    const { error } = await supabase
+    const { error } = await client
       .from('payment_schedules')
       .delete()
       .eq('loan_id', loanId)
@@ -47,10 +48,10 @@ export class ScheduleRepository {
     if (error) throw error
   }
 
-  static async deleteById(scheduleId: string): Promise<void> {
+  static async deleteById(scheduleId: string, client: SupabaseClient = supabase): Promise<void> {
     const userId = await getCurrentUserId()
 
-    const { error } = await supabase
+    const { error } = await client
       .from('payment_schedules')
       .delete()
       .eq('id', scheduleId)
@@ -59,10 +60,10 @@ export class ScheduleRepository {
     if (error) throw error
   }
 
-  static async updateSchedule(scheduleId: string, updates: Partial<ScheduleEntry>): Promise<void> {
+  static async updateSchedule(scheduleId: string, updates: Partial<ScheduleEntry>, client: SupabaseClient = supabase): Promise<void> {
     const userId = await getCurrentUserId()
 
-    const { error } = await supabase
+    const { error } = await client
       .from('payment_schedules')
       .update(updates)
       .eq('id', scheduleId)
@@ -71,10 +72,10 @@ export class ScheduleRepository {
     if (error) throw error
   }
 
-  static async getDashboardSchedules(startDate: string, endDate: string): Promise<any[]> {
+  static async getDashboardSchedules(startDate: string, endDate: string, client: SupabaseClient = supabase): Promise<any[]> {
     const userId = await getCurrentUserId()
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('payment_schedules')
       .select(`
         *,
@@ -91,4 +92,4 @@ export class ScheduleRepository {
     if (error) throw error
     return data || []
   }
-}
+}
