@@ -429,37 +429,39 @@ export default function BorrowerLoansPage() {
                           </div>
                         )}
 
-                        {/* Pagination Controls */}
-                        <div className="flex flex-col items-stretch justify-center gap-3 py-4 border-t border-gray-100 mt-4 sm:flex-row sm:items-center sm:gap-4">
-                          <Button
-                            variant="outline"
-                            size="md"
-                            onClick={() =>
-                              setCurrentPage((p) => Math.max(1, p - 1))
-                            }
-                            disabled={currentPage === 1}
-                            className="w-full text-xs sm:w-auto"
-                          >
-                            ← Prev
-                          </Button>
-                          <span className="text-center text-xs font-medium text-gray-600 sm:text-left">
-                            Page {currentPage} of {totalPages}
-                            <span className="text-gray-400">
-                              &nbsp;({schedules.length} total)
+                        {/* Pagination Controls (show only when more than 1 page) */}
+                        {totalPages > 1 && (
+                          <div className="flex flex-col items-stretch justify-center gap-3 py-4 border-t border-gray-100 mt-4 sm:flex-row sm:items-center sm:gap-4">
+                            <Button
+                              variant="outline"
+                              size="md"
+                              onClick={() =>
+                                setCurrentPage((p) => Math.max(1, p - 1))
+                              }
+                              disabled={currentPage === 1}
+                              className="w-full text-xs sm:w-auto"
+                            >
+                              ← Prev
+                            </Button>
+                            <span className="text-center text-xs font-medium text-gray-600 sm:text-left">
+                              Page {currentPage} of {totalPages}
+                              <span className="text-gray-400">
+                                &nbsp;({schedules.length} total)
+                              </span>
                             </span>
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="md"
-                            onClick={() =>
-                              setCurrentPage((p) => Math.min(totalPages, p + 1))
-                            }
-                            disabled={currentPage === totalPages}
-                            className="w-full text-xs sm:w-auto"
-                          >
-                            Next →
-                          </Button>
-                        </div>
+                            <Button
+                              variant="outline"
+                              size="md"
+                              onClick={() =>
+                                setCurrentPage((p) => Math.min(totalPages, p + 1))
+                              }
+                              disabled={currentPage === totalPages}
+                              className="w-full text-xs sm:w-auto"
+                            >
+                              Next →
+                            </Button>
+                          </div>
+                        )}
 
                         {/* Add Tool */}
                         <form
