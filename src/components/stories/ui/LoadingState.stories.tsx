@@ -17,12 +17,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const WithCustomMessage: Story = {
-  args: {
-    message: "Loading data...",
-  },
-};
-
 export const Authenticating: Story = {
   args: {
     message: "Authenticating...",

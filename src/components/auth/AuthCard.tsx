@@ -43,18 +43,18 @@ export default function AuthCard({
         <Button
           type="button"
           onClick={() => onModeChange("login")}
-          variant={mode === "login" ? "white" : "outlineWhiteText"}
+          variant={mode === "login" ? "white" : "outline"}
           size="md"
-          className={styles.halfButton}
+          className={`${styles.halfButton} ${mode === "login" ? "" : "border-white text-white hover:bg-white/10"}`}
         >
           Log in
         </Button>
         <Button
           type="button"
           onClick={() => onModeChange("signup")}
-          variant={mode === "signup" ? "white" : "outlineWhiteText"}
+          variant={mode === "signup" ? "white" : "outline"}
           size="md"
-          className={styles.halfButton}
+          className={`${styles.halfButton} ${mode === "signup" ? "" : "border-white text-white hover:bg-white/10"}`}
         >
           Sign up
         </Button>
@@ -103,7 +103,9 @@ export default function AuthCard({
           </div>
         </label>
 
-        {errorMessage ? <p className={styles.errorMessage}>{errorMessage}</p> : null}
+        {errorMessage ? (
+          <p className={styles.errorMessage}>{errorMessage}</p>
+        ) : null}
 
         {successMessage ? (
           <p className={styles.message}>{successMessage}</p>
