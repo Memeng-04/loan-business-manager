@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../../../components/ui/card/Card';
 import { User, ChevronRight, Phone } from 'lucide-react';
 import SearchBar from '../../../components/ui/search/SearchBar';
+import type { Borrower } from '../../../types/borrowers';
 import LoadingState from '../../../components/ui/LoadingState';
 
 interface BorrowerListProps {
-  borrowers: any[];
+  borrowers: Borrower[];
   loading: boolean;
 }
 

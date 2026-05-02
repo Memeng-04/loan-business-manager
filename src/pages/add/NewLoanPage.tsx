@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "../../components/ui/header/Header";
 import Navbar from "../../components/ui/navigation/Navbar";
 import { CreateLoanWizard } from "../../features/loans/create-wizard/CreateLoanWizard";
@@ -8,22 +8,20 @@ import LoadingState from "../../components/ui/LoadingState";
 
 export default function NewLoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [createdLoanData, setCreatedLoanData] = useState<{ loanId: string; borrowerId: string } | null>(null);
+  const [createdLoanData, setCreatedLoanData] = useState<{ loanId: string; borrowerId: string } | null>(() => {
+    const saved = sessionStorage.getItem('createdLoanData');
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved) as { loanId: string; borrowerId: string };
+    } catch (error) {
+      console.error('Failed to restore loan data from sessionStorage:', error);
+      sessionStorage.removeItem('createdLoanData');
+      return null;
+    }
+  });
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Load loan data from sessionStorage on mount
-  useEffect(() => {
-    const savedLoanData = sessionStorage.getItem('createdLoanData');
-    if (savedLoanData) {
-      try {
-        const parsedData = JSON.parse(savedLoanData);
-        setCreatedLoanData(parsedData);
-      } catch (error) {
-        console.error('Failed to restore loan data from sessionStorage:', error);
-        sessionStorage.removeItem('createdLoanData');
-      }
-    }
-  }, []);
+
 
   const handleWizardSuccess = (loanData: { loanId: string; borrowerId: string }) => {
     setCreatedLoanData(loanData);

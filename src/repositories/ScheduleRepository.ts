@@ -1,6 +1,17 @@
 import { supabase } from '../services/supabase'
 import { getCurrentUserId } from '../services/auth'
 import type { ScheduleEntry } from '../types/strategies';
+import type { Loan } from '../types/loans';
+import type { Borrower } from '../types/borrowers';
+
+export type DashboardScheduleWithLoan = {
+  id: string;
+  loan_id: string;
+  due_date?: string;
+  amount_due: number;
+  status: string;
+  loan?: Loan & { borrower?: Borrower };
+}
 
 export class ScheduleRepository {
   static async getByLoanId(loanId: string): Promise<ScheduleEntry[]> {
@@ -71,7 +82,7 @@ export class ScheduleRepository {
     if (error) throw error
   }
 
-  static async getDashboardSchedules(startDate: string, endDate: string): Promise<any[]> {
+  static async getDashboardSchedules(startDate: string, endDate: string): Promise<DashboardScheduleWithLoan[]> {
     const userId = await getCurrentUserId()
 
     const { data, error } = await supabase
@@ -89,6 +100,6 @@ export class ScheduleRepository {
       .order('due_date', { ascending: true })
 
     if (error) throw error
-    return data || []
+    return (data ?? []) as DashboardScheduleWithLoan[]
   }
 }

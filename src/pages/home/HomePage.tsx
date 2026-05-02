@@ -28,6 +28,14 @@ type RevenueChartDatum = {
   value: number;
 };
 
+// Local type for payments returned by the dashboard repository
+type Payment = {
+  id?: string;
+  amount_paid?: number;
+  interest_portion?: number;
+  [key: string]: unknown;
+};
+
 export default function HomePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
@@ -35,7 +43,7 @@ export default function HomePage() {
   const [loans, setLoans] = useState<DashboardLoan[]>([]);
   const [borrowers, setBorrowers] = useState<DashboardBorrower[]>([]);
   const [dueSchedules, setDueSchedules] = useState<DashboardSchedule[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [dashboardIsLoading, setDashboardIsLoading] = useState(true);
 

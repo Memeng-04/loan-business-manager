@@ -9,6 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";
 import styles from "./MorePage.module.css";
+import LoadingState from "../../components/ui/LoadingState";
 
 const TERMS_TEXT = `1. NO LEGAL OR FINANCIAL ADVICE
 ────────────────────────────────

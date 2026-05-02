@@ -1,11 +1,12 @@
 // Removed unused React
 import Card from '../../../components/ui/card/Card';
 import { formatCurrency } from '../../../lib/formatters';
+import type { DashboardScheduleWithLoan } from '../../../repositories/ScheduleRepository';
 import LoadingState from '../../../components/ui/LoadingState';
 
 interface ScheduleListProps {
-  schedules: any[];
-  onScheduleClick: (schedule: any) => void;
+  schedules: DashboardScheduleWithLoan[];
+  onScheduleClick: (schedule: DashboardScheduleWithLoan) => void;
   loading: boolean;
 }
 

@@ -11,7 +11,7 @@ import EditFundsModal, {
 } from "../../components/funds/EditFundsModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";
-import { DashboardRepository } from "../../repositories/DashboardRepository";
+import { DashboardRepository, type DashboardLoan } from "../../repositories/DashboardRepository";
 import styles from "./FundManagementPage.module.css";
 
 type Transaction = {
@@ -31,8 +31,9 @@ export default function FundManagementPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [loans, setLoans] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
+  const [loans, setLoans] = useState<DashboardLoan[]>([]);
+  type PaymentRow = { amount_paid?: number; interest_portion?: number; principal_portion?: number };
+  const [payments, setPayments] = useState<PaymentRow[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
   useEffect(() => {
@@ -56,15 +57,9 @@ export default function FundManagementPage() {
   const initialCapital = profile?.initial_capital ?? 0;
   const initialProfit = profile?.initial_profit ?? 0;
 
-  const totalPrincipalLent = loans.reduce((sum, loan) => sum + loan.principal, 0);
-  const totalPaymentsReceived = payments.reduce(
-    (sum, p) => sum + (p.amount_paid || 0),
-    0,
-  );
-  const totalInterestEarned = payments.reduce(
-    (sum, p) => sum + (p.interest_portion || 0),
-    0,
-  );
+  const totalPrincipalLent = loans.reduce((sum, loan) => sum + (loan.principal || 0), 0);
+  const totalPaymentsReceived = payments.reduce((sum, p) => sum + (p.amount_paid ?? 0), 0);
+  const totalInterestEarned = payments.reduce((sum, p) => sum + (p.interest_portion ?? 0), 0);
 
   const outstandingBalance =
     initialCapital + initialProfit - totalPrincipalLent + totalPaymentsReceived;

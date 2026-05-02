@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Header from "../../components/ui/header/Header";
 import Navbar from "../../components/ui/navigation/Navbar";
 import styles from "./LoanPage.module.css";
@@ -10,6 +10,8 @@ import { useBorrowers } from "../../hooks/useBorrowers";
 import { formatCurrency } from "../../lib/formatters";
 import SearchBar from "../../components/ui/search/SearchBar";
 
+import type { DashboardScheduleWithLoan } from '../../repositories/ScheduleRepository';
+
 export default function LoanPage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'schedules' | 'borrowers'>('schedules');
@@ -20,9 +22,9 @@ export default function LoanPage() {
 
 
   const { borrowers, loading: borrowersLoading } = useBorrowers();
-  const [schedules, setSchedules] = useState<any[]>([]);
+  const [schedules, setSchedules] = useState<DashboardScheduleWithLoan[]>([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<DashboardScheduleWithLoan | null>(null);
 
   // Calculate Date Ranges based on filter
   const dateRange = useMemo(() => {
@@ -52,7 +54,7 @@ export default function LoanPage() {
     }
   }, [dateFilter, customDate]);
 
-  const loadSchedules = async () => {
+  const loadSchedules = useCallback(async () => {
     setSchedulesLoading(true);
     try {
       const data = await ScheduleRepository.getDashboardSchedules(dateRange.startDate, dateRange.endDate);
@@ -62,13 +64,13 @@ export default function LoanPage() {
     } finally {
       setSchedulesLoading(false);
     }
-  };
+  }, [dateRange.startDate, dateRange.endDate]);
 
   useEffect(() => {
     if (activeTab === 'schedules') {
       loadSchedules();
     }
-  }, [dateRange, activeTab]);
+  }, [activeTab, loadSchedules]);
 
   const filteredSchedules = useMemo(() => {
     return schedules.filter(s => {
@@ -127,17 +129,17 @@ export default function LoanPage() {
                     value={searchQuery} 
                     onChange={setSearchQuery} 
                     placeholder="Search borrower or loan ID..."
-                    className="!shadow-none"
+                    className="shadow-none!"
                   />
                 </div>
 
                 {/* Filters - Right aligned on desktop */}
                 <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                   <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
-                    {['today', 'week', 'month'].map((filter) => (
+                    {(['today', 'week', 'month'] as const).map((filter) => (
                       <button
                         key={filter}
-                        onClick={() => setDateFilter(filter as any)}
+                        onClick={() => setDateFilter(filter)}
                         className={`px-4 py-2 rounded-full text-xs font-bold uppercase transition-all whitespace-nowrap ${dateFilter === filter ? 'bg-blue-100 text-main-blue border-blue-200 border' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
                       >
                         {filter}
@@ -204,7 +206,7 @@ export default function LoanPage() {
         <PaymentActionModal
           loanId={selectedSchedule.loan_id}
           scheduleId={selectedSchedule.id}
-          defaultAmountDue={selectedSchedule.amount_due}
+          defaultAmountDue={Number(selectedSchedule.amount_due) || 0}
           onClose={() => setSelectedSchedule(null)}
           onSuccess={() => {
             setSelectedSchedule(null);
