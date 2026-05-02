@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ScheduleRepository } from '../ScheduleRepository';
-import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
+import { supabaseAdmin, TEST_USER_ID } from './test-utils';
 import type { ScheduleEntry } from '../../types/strategies';
 
 vi.mock('../../services/auth', () => ({
@@ -97,12 +97,12 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
     ];
 
     // Create
-    const saved = await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
+    const saved = await ScheduleRepository.saveSchedule(schedulesInput);
     expect(saved.length).toBe(2);
     expect(saved[0].amount_due).toBe(550);
 
     // Fetch
-    const fetched = await ScheduleRepository.getByLoanId(testLoanId, supabaseAdmin);
+    const fetched = await ScheduleRepository.getByLoanId(testLoanId);
     expect(fetched.length).toBe(2);
     expect(fetched[0].due_date).toBe('2025-01-15');
     expect(fetched[1].due_date).toBe('2025-02-15');
@@ -119,14 +119,14 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
       }
     ];
 
-    const saved = await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
+    const saved = await ScheduleRepository.saveSchedule(schedulesInput);
     const scheduleId = saved[0].id!;
 
     // Update
-    await ScheduleRepository.updateSchedule(scheduleId, { status: 'paid' }, supabaseAdmin);
+    await ScheduleRepository.updateSchedule(scheduleId, { status: 'paid' });
     
     // Verify
-    const fetched = await ScheduleRepository.getByLoanId(testLoanId, supabaseAdmin);
+    const fetched = await ScheduleRepository.getByLoanId(testLoanId);
     expect(fetched[0].status).toBe('paid');
   });
 
@@ -141,13 +141,13 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
       }
     ];
 
-    await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
+    await ScheduleRepository.saveSchedule(schedulesInput);
     
     // Delete
-    await ScheduleRepository.deleteByLoanId(testLoanId, supabaseAdmin);
+    await ScheduleRepository.deleteByLoanId(testLoanId);
     
     // Verify
-    const fetched = await ScheduleRepository.getByLoanId(testLoanId, supabaseAdmin);
+    const fetched = await ScheduleRepository.getByLoanId(testLoanId);
     expect(fetched.length).toBe(0);
   });
 
@@ -168,15 +168,15 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
       }
     ];
 
-    await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
+    await ScheduleRepository.saveSchedule(schedulesInput);
 
     // Fetch dashboard schedules
-    const dashboard = await ScheduleRepository.getDashboardSchedules('2025-01-01', '2025-02-01', supabaseAdmin);
+    const dashboard = await ScheduleRepository.getDashboardSchedules('2025-01-01', '2025-02-01');
     expect(dashboard.length).toBe(1);
     expect(dashboard[0].due_date).toBe('2025-01-15');
     // Ensure relations are fetched
     expect(dashboard[0].loan).toBeDefined();
-    expect(dashboard[0].loan.borrower).toBeDefined();
+    expect(dashboard[0].loan?.borrower).toBeDefined();
   });
 
   // --- SAD PATHS ---
@@ -221,7 +221,7 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
     });
 
     // Fetch using anon key (supabaseUser)
-    const result = await ScheduleRepository.getByLoanId(loan!.id, supabaseUser);
+    const result = await ScheduleRepository.getByLoanId(loan!.id);
     
     // RLS should hide this record
     expect(result).toEqual([]);
@@ -232,13 +232,13 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
   });
 
   it('should return empty array for dashboard when no schedules exist in range', async () => {
-    const dashboard = await ScheduleRepository.getDashboardSchedules('2099-01-01', '2099-02-01', supabaseAdmin);
+    const dashboard = await ScheduleRepository.getDashboardSchedules('2099-01-01', '2099-02-01');
     expect(dashboard).toEqual([]);
   });
 
   it('should not throw when deleting non-existent schedule', async () => {
     const nonExistentId = '00000000-0000-0000-0000-000000000000';
-    await expect(ScheduleRepository.deleteById(nonExistentId, supabaseAdmin))
+    await expect(ScheduleRepository.deleteById(nonExistentId))
       .resolves.not.toThrow();
   });
 });

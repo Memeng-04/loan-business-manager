@@ -48,7 +48,7 @@ export default function ScheduleList({
         >
           <div className="flex flex-col">
             <span className="text-[10px] text-gray-400 font-black tracking-widest uppercase mb-1">
-              Due: {new Date(schedule.due_date).toLocaleDateString()}
+              Due: {schedule.due_date ? new Date(schedule.due_date).toLocaleDateString() : "N/A"}
             </span>
             <span className="font-bold text-lg text-main-blue truncate max-w-[200px] sm:max-w-[300px]">
               {schedule.loan?.borrower?.full_name || "Unknown Borrower"}
