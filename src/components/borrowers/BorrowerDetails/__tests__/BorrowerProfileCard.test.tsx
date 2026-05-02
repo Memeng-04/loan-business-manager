@@ -7,7 +7,11 @@ describe("BorrowerProfileCard", () => {
   test("renders borrower name and view profile button calls handler", () => {
     const onView = vi.fn();
     render(
-      <BorrowerProfileCard name="Juan Dela Cruz" onViewProfile={onView} onBack={() => {}} />,
+      <BorrowerProfileCard
+        name="Juan Dela Cruz"
+        onViewProfile={onView}
+        onBack={() => {}}
+      />,
     );
 
     expect(screen.getByText("Juan Dela Cruz")).toBeInTheDocument();

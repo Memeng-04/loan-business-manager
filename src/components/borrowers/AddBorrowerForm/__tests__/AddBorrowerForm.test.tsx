@@ -17,7 +17,9 @@ describe("AddBorrowerForm", () => {
     fireEvent.submit(form);
 
     // Component sets a formError string when required fields are missing
-    expect(await screen.findByText(/Name, address, and phone number are required./i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Name, address, and phone number are required./i),
+    ).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
   });
 });

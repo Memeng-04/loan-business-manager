@@ -27,6 +27,8 @@ describe("BorrowerInformationCard", () => {
 
     expect(screen.getByText(/INFORMATION/i)).toBeInTheDocument();
     expect(screen.getByText("Apr 8, 2026")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /edit borrower details/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /edit borrower details/i }),
+    ).toBeInTheDocument();
   });
 });
