@@ -13,6 +13,7 @@ import type { Loan } from '../../../types/loans';
 import type { ScheduleEntry } from '../../../types/strategies';
 import type { PaymentFrequency } from '../../../types/loans';
 import { sanitizeNumber } from '../../../utils/numberUtils';
+import PaymentActionModal from './PaymentActionModal';
 
 interface BorrowerDetailDrawerProps {
   borrower: Borrower | null;
@@ -38,6 +39,12 @@ export default function BorrowerDetailDrawer({
   const [newDate, setNewDate] = useState("");
   const [newAmount, setNewAmount] = useState("");
   const [addLoading, setAddLoading] = useState(false);
+
+  // Payment Modal States
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEntry | null>(
+    null,
+  );
 
   const fetchLoans = useCallback(async () => {
     if (!borrower?.id) return;
@@ -342,13 +349,23 @@ export default function BorrowerDetailDrawer({
                                       <td className="px-4 py-3 font-black text-main-blue">{formatCurrency(sch.amount_due)}</td>
                                       <td className="px-4 py-3">
                                         <div className="flex flex-col gap-1">
-                                          <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase w-fit ${
-                                            sch.status === "paid" ? "text-green-600 bg-green-50" :
-                                            sch.status === "missed" ? "text-red-600 bg-red-50" :
-                                            sch.status === "partial" ? "text-orange-600 bg-orange-50" : "text-blue-600 bg-blue-50"
-                                          }`}>
+                                          <button
+                                            onClick={() => {
+                                              setSelectedSchedule(sch);
+                                              setPaymentModalOpen(true);
+                                            }}
+                                            className={`px-2 py-0.5 rounded text-[9px] font-black uppercase w-fit cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-md ${
+                                              sch.status === "paid"
+                                                ? "text-green-600 bg-green-50 hover:bg-green-100"
+                                                : sch.status === "missed"
+                                                  ? "text-red-600 bg-red-50 hover:bg-red-100"
+                                                  : sch.status === "partial"
+                                                    ? "text-orange-600 bg-orange-50 hover:bg-orange-100"
+                                                    : "text-blue-600 bg-blue-50 hover:bg-blue-100"
+                                            }`}
+                                          >
                                             {sch.status}
-                                          </span>
+                                          </button>
                                           {sch.is_penalty && (
                                             <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-red-600 text-white w-fit animate-pulse">
                                               Penalty
@@ -394,13 +411,23 @@ export default function BorrowerDetailDrawer({
                                       <p className="text-lg font-black text-main-blue">{formatCurrency(sch.amount_due)}</p>
                                     </div>
                                     <div className="flex flex-col items-end gap-1">
-                                      <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
-                                        sch.status === "paid" ? "text-green-700 bg-green-100" :
-                                        sch.status === "missed" ? "text-red-700 bg-red-100" :
-                                        sch.status === "partial" ? "text-orange-700 bg-orange-100" : "text-blue-700 bg-blue-100"
-                                      }`}>
+                                      <button
+                                        onClick={() => {
+                                          setSelectedSchedule(sch);
+                                          setPaymentModalOpen(true);
+                                        }}
+                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-md ${
+                                          sch.status === "paid"
+                                            ? "text-green-700 bg-green-100 hover:bg-green-200"
+                                            : sch.status === "missed"
+                                              ? "text-red-700 bg-red-100 hover:bg-red-200"
+                                              : sch.status === "partial"
+                                                ? "text-orange-700 bg-orange-100 hover:bg-orange-200"
+                                                : "text-blue-700 bg-blue-100 hover:bg-blue-200"
+                                        }`}
+                                      >
                                         {sch.status}
-                                      </span>
+                                      </button>
                                       {sch.is_penalty && (
                                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-red-600 text-white animate-pulse">
                                           Penalty
@@ -514,6 +541,24 @@ export default function BorrowerDetailDrawer({
           </div>
         </footer>
       </aside>
+
+      {/* Payment Action Modal */}
+      {paymentModalOpen && selectedSchedule && selectedLoan && (
+        <PaymentActionModal
+          loanId={selectedLoan.id!}
+          scheduleId={selectedSchedule.id!}
+          defaultAmountDue={selectedSchedule.amount_due}
+          onClose={() => {
+            setPaymentModalOpen(false);
+            setSelectedSchedule(null);
+          }}
+          onSuccess={() => {
+            setPaymentModalOpen(false);
+            setSelectedSchedule(null);
+            fetchSchedules();
+          }}
+        />
+      )}
     </>
   );
 }
