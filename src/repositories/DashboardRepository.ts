@@ -65,7 +65,9 @@ export class DashboardRepository {
     return (data ?? []) as DashboardSchedule[];
   }
 
-  static async getAllPayments(): Promise<Pick<Payment, 'amount_paid' | 'interest_portion' | 'principal_portion'>[]> {
+  static async getAllPayments(): Promise<
+    Pick<Payment, "amount_paid" | "interest_portion" | "principal_portion">[]
+  > {
     const { data, error } = await supabase
       .from("payments")
       .select("amount_paid, interest_portion, principal_portion");
@@ -74,6 +76,9 @@ export class DashboardRepository {
       throw error;
     }
 
-    return (data ?? []) as Pick<Payment, 'amount_paid' | 'interest_portion' | 'principal_portion'>[];
+    return (data ?? []) as Pick<
+      Payment,
+      "amount_paid" | "interest_portion" | "principal_portion"
+    >[];
   }
 }

@@ -56,12 +56,13 @@ export default function HomePage() {
 
       try {
         const today = getTodayDateKey();
-        const [loanRows, borrowerRows, scheduleRows, paymentRows] = await Promise.all([
-          DashboardRepository.getLoans(),
-          DashboardRepository.getBorrowers(),
-          DashboardRepository.getDueSchedulesForDate(today),
-          DashboardRepository.getAllPayments(),
-        ]);
+        const [loanRows, borrowerRows, scheduleRows, paymentRows] =
+          await Promise.all([
+            DashboardRepository.getLoans(),
+            DashboardRepository.getBorrowers(),
+            DashboardRepository.getDueSchedulesForDate(today),
+            DashboardRepository.getAllPayments(),
+          ]);
 
         if (isMounted) {
           setLoans(loanRows);
@@ -190,16 +191,16 @@ export default function HomePage() {
           </div>
 
           <div className={styles.revenueCard}>
-            <RevenueCard 
-              data={revenueChartData} 
-              totalRevenue={totalRevenue} 
+            <RevenueCard
+              data={revenueChartData}
+              totalRevenue={totalRevenue}
               isLoading={profileIsLoading || dashboardIsLoading}
             />
           </div>
 
           <div className={styles.dueCard}>
-            <DueCard 
-              items={dueTodayItems} 
+            <DueCard
+              items={dueTodayItems}
               isLoading={profileIsLoading || dashboardIsLoading}
             />
           </div>

@@ -30,12 +30,12 @@ export default function SearchBar({
         placeholder={placeholder}
         aria-label={ariaLabel ?? placeholder}
       />
-      
+
       {/* Search Progress/Clear Indicator */}
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
         {value && (
           <button
-            onClick={() => onChange('')}
+            onClick={() => onChange("")}
             className="p-2 rounded-xl bg-gray-100/50 hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all active:scale-90"
             type="button"
             aria-label="Clear search"
