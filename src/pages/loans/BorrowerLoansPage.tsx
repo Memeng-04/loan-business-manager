@@ -453,7 +453,9 @@ export default function BorrowerLoansPage() {
                               variant="outline"
                               size="md"
                               onClick={() =>
-                                setCurrentPage((p) => Math.min(totalPages, p + 1))
+                                setCurrentPage((p) =>
+                                  Math.min(totalPages, p + 1),
+                                )
                               }
                               disabled={currentPage === totalPages}
                               className="w-full text-xs sm:w-auto"
