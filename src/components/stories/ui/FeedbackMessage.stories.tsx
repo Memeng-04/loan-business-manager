@@ -14,7 +14,7 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["error", "info", "success"],
+      options: ["error", "success"],
     },
   },
 } satisfies Meta<typeof FeedbackMessage>;
@@ -23,13 +23,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Error: Story = {};
-
-export const Info: Story = {
-  args: {
-    variant: "info",
-    message: "Borrower details are saved locally until submit.",
-  },
-};
 
 export const Success: Story = {
   args: {

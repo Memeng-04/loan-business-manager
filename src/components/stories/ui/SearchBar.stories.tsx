@@ -22,7 +22,7 @@ const meta = {
   },
   args: {
     value: "",
-    placeholder: "Search borrowers",
+    placeholder: "Search...",
     onChange: () => {},
   },
   render: (args) => <SearchBarStoryRender {...args} />,
@@ -35,20 +35,13 @@ export const Default: Story = {};
 
 export const WithValue: Story = {
   args: {
-    value: "Maria Clara",
+    value: "Jose Rizal",
   },
 };
 
 export const CustomPlaceholder: Story = {
   args: {
-    placeholder: "Search by phone or reference ID...",
+    placeholder: "Search borrower or loan ID...",
   },
 };
 
-export const Wide: Story = {
-  render: (args) => (
-    <div style={{ width: "800px", maxWidth: "100%" }}>
-      <SearchBarStoryRender {...args} />
-    </div>
-  ),
-};

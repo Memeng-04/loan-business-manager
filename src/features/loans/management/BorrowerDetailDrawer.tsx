@@ -230,7 +230,7 @@ export default function BorrowerDetailDrawer({
                           setSelectedLoan(loan);
                           setActiveTab("schedules");
                         }}
-                        className={`group border-2 transition-all ${selectedLoan?.id === loan.id ? "border-main-blue bg-blue-50/50 ring-1 ring-main-blue" : "border-gray-100 hover:border-gray-200"}`}
+                        className={`group border-2 transition-all ${selectedLoan?.id === loan.id ? "border-main-blue bg-white" : "border-gray-100 hover:border-gray-200"}`}
                       >
                         <div className="flex justify-between items-start">
                           <div className="space-y-1">

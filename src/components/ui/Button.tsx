@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
-import { ChevronLeft, User} from "lucide-react"; 
+import { ChevronLeft } from "lucide-react";
 
-type ButtonVariant = "white" | "blue" | "outline" | "outlineWhiteText" | "back" | "ViewProfile";
+type ButtonVariant =
+  | "white"
+  | "blue"
+  | "outline"
+  | "back"
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps {
@@ -17,18 +21,14 @@ interface ButtonProps {
 const variantClasses: Record<ButtonVariant, string> = {
   white:
     "bg-white text-main-blue hover:opacity-90 focus-visible:ring-white focus-visible:ring-offset-main-blue",
-  
+
   blue: "bg-main-blue text-white hover:opacity-90 focus-visible:ring-light-main-blue focus-visible:ring-offset-main-blue",
-  
+
   outline:
     "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
 
-  outlineWhiteText:
-    "border border-white border-2 bg-transparent text-white hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
-    
   back: "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
-  
-  ViewProfile:"bg-main-blue text-white hover:opacity-90 focus-visible:ring-light-main-blue focus-visible:ring-offset-main-blue mt-2",
+ 
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -54,7 +54,6 @@ export default function Button({
       className={`inline-flex items-center justify-center rounded-full font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
     >
       {variant === "back" && <ChevronLeft className="mr-2" size={24} />}
-      {variant === "ViewProfile" && <User className="mr-2" size={24} /> }
       
       {children}
     </button>

@@ -68,10 +68,3 @@ export const Interactive: Story = {
   },
 };
 
-export const SubtleLargePadding: Story = {
-  args: {
-    ...baseArgs,
-    variant: "subtle",
-    padding: "lg",
-  },
-};

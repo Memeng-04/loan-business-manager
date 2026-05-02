@@ -23,3 +23,12 @@ export const Default: Story = {
     <BorrowerProfileCard {...args} />
   </div>,
 };
+
+export const WithViewProfile: Story = {
+  args: {
+    onViewProfile: () => console.log("View Profile clicked"),
+  },
+  render: (args) =>  <div style={{ width: "min(800px, 92vw)" }}>
+    <BorrowerProfileCard {...args} />
+  </div>,
+};
