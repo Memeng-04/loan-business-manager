@@ -182,9 +182,7 @@ export default function BorrowerDetailsPage() {
       {!loading && !error && borrower ? (
         <main className={styles.content}>
           <section className={styles.container}>
-            <BorrowerProfileCard
-              name={borrower.full_name}
-            />
+            <BorrowerProfileCard name={borrower.full_name} />
 
             <div className={styles.detailsGrid}>
               <BorrowerInformationCard
