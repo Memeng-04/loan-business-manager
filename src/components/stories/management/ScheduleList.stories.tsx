@@ -71,7 +71,7 @@ const mockSchedules = [
 
 export const Default: Story = {
   args: {
-    schedules: mockSchedules,
+    schedules: mockSchedules as any,
     loading: false,
   },
 };
