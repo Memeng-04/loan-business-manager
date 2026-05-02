@@ -184,7 +184,6 @@ export default function BorrowerDetailsPage() {
           <section className={styles.container}>
             <BorrowerProfileCard
               name={borrower.full_name}
-              onBack={() => navigate("/borrowers")}
             />
 
             <div className={styles.detailsGrid}>
