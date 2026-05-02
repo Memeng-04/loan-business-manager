@@ -39,6 +39,13 @@ export default defineConfig({
     setupFiles: './src/setupTests.ts', 
     testTimeout: 30000,
     hookTimeout: 30000,
-    fileParallelism: false // Sequential is still safer for shared remote DBs
+    fileParallelism: false, // Sequential is still safer for shared remote DBs
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/E2E/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,playwright}.config.*'
+    ],
   },
 })
