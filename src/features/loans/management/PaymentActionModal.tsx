@@ -73,8 +73,8 @@ export default function PaymentActionModal({
       });
 
       onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Failed to process payment");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to process payment");
     } finally {
       setLoading(false);
     }
@@ -158,7 +158,7 @@ export default function PaymentActionModal({
       <Card
         variant="elevated"
         padding="lg"
-        className="w-full max-w-[420px] bg-white relative z-10 shadow-2xl rounded-3xl border border-gray-100 overflow-hidden transform transition-all flex flex-col max-h-[90vh]"
+        className="w-full max-w-105 bg-white relative z-10 shadow-2xl rounded-3xl border border-gray-100 overflow-hidden transform transition-all flex flex-col max-h-[90vh]"
       >
         {/* Header */}
         <div className="flex justify-between items-start mb-6">

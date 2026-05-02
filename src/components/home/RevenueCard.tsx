@@ -2,6 +2,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
 import Card from "../ui/card/Card";
 import Button from "../ui/Button";
+import LoadingState from "../ui/LoadingState";
 import styles from "./RevenueCard.module.css";
 
 type RevenueChartDatum = {
@@ -12,6 +13,7 @@ type RevenueChartDatum = {
 type RevenueCardProps = {
   data: RevenueChartDatum[];
   totalRevenue: number;
+  isLoading?: boolean;
 };
 
 const CHART_COLORS = ["#012A6A", "#1F3CA8", "#6DB6FE", "#93C5FD"];
@@ -24,7 +26,7 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-export default function RevenueCard({ data, totalRevenue }: RevenueCardProps) {
+export default function RevenueCard({ data, totalRevenue, isLoading = false }: RevenueCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -32,11 +34,15 @@ export default function RevenueCard({ data, totalRevenue }: RevenueCardProps) {
       <div className={styles.headerRow}>
         <p className={styles.label}>Revenue Report by Frequency</p>
         <strong className={styles.totalLabel}>
-          Total: {formatCurrency(totalRevenue)}
+          Total: {isLoading ? "..." : formatCurrency(totalRevenue)}
         </strong>
       </div>
 
-      {totalRevenue <= 0 ? (
+      {isLoading ? (
+        <div className={styles.emptyContainer}>
+          <LoadingState variant="compact" message="Analyzing revenue metrics..." />
+        </div>
+      ) : totalRevenue <= 0 ? (
         <div className={styles.emptyContainer}>
           <p className={styles.emptyText}>No loan revenue yet.</p>
         </div>

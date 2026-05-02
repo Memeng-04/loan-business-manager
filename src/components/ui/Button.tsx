@@ -54,6 +54,7 @@ export default function Button({
       className={`inline-flex items-center justify-center rounded-full font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
     >
       {variant === "back" && <ChevronLeft className="mr-2" size={24} />}
+      
       {children}
     </button>
   );

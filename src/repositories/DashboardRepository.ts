@@ -1,6 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "../services/supabase";
 import type { PaymentFrequency } from "../types/loans";
+import type { Payment } from "../types/payment";
 
 export type DashboardLoan = {
   id: string;
@@ -66,7 +67,9 @@ export class DashboardRepository {
     return (data ?? []) as DashboardSchedule[];
   }
 
-  static async getAllPayments(): Promise<any[]> {
+  static async getAllPayments(): Promise<
+    Pick<Payment, "amount_paid" | "interest_portion" | "principal_portion">[]
+  > {
     const { data, error } = await supabase
       .from("payments")
       .select("amount_paid, interest_portion, principal_portion");
@@ -75,6 +78,9 @@ export class DashboardRepository {
       throw error;
     }
 
-    return (data ?? []) as any[];
+    return (data ?? []) as Pick<
+      Payment,
+      "amount_paid" | "interest_portion" | "principal_portion"
+    >[];
   }
 }

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Card from "../ui/card/Card";
 import Button from "../ui/Button";
+import LoadingState from "../ui/LoadingState";
 import styles from "./DueCard.module.css";
 
 type DueItem = {
@@ -10,6 +11,7 @@ type DueItem = {
 
 type DueCardProps = {
   items: DueItem[];
+  isLoading?: boolean;
 };
 
 function formatCurrency(value: number) {
@@ -20,14 +22,16 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-export default function DueCard({ items }: DueCardProps) {
+export default function DueCard({ items, isLoading = false }: DueCardProps) {
   const navigate = useNavigate();
 
   return (
     <Card className={styles.card} variant="default" padding="lg">
       <p className={styles.label}>Due Today List</p>
 
-      {items.length === 0 ? (
+      {isLoading ? (
+        <LoadingState variant="compact" message="Fetching due repayments..." className="py-8" />
+      ) : items.length === 0 ? (
         <p className={styles.emptyText}>No repayments due today.</p>
       ) : (
         <ul className={styles.list}>
