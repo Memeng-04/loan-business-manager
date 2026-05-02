@@ -97,12 +97,12 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
     ];
 
     // Create
-    const saved = await ScheduleRepository.saveSchedule(schedulesInput);
+    const saved = await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
     expect(saved.length).toBe(2);
     expect(saved[0].amount_due).toBe(550);
 
     // Fetch
-    const fetched = await ScheduleRepository.getByLoanId(testLoanId);
+    const fetched = await ScheduleRepository.getByLoanId(testLoanId, supabaseAdmin);
     expect(fetched.length).toBe(2);
     expect(fetched[0].due_date).toBe('2025-01-15');
     expect(fetched[1].due_date).toBe('2025-02-15');
@@ -119,14 +119,14 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
       }
     ];
 
-    const saved = await ScheduleRepository.saveSchedule(schedulesInput);
+    const saved = await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
     const scheduleId = saved[0].id!;
 
     // Update
-    await ScheduleRepository.updateSchedule(scheduleId, { status: 'paid' });
+    await ScheduleRepository.updateSchedule(scheduleId, { status: 'paid' }, supabaseAdmin);
     
     // Verify
-    const fetched = await ScheduleRepository.getByLoanId(testLoanId);
+    const fetched = await ScheduleRepository.getByLoanId(testLoanId, supabaseAdmin);
     expect(fetched[0].status).toBe('paid');
   });
 
@@ -141,13 +141,13 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
       }
     ];
 
-    await ScheduleRepository.saveSchedule(schedulesInput);
+    await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
     
     // Delete
-    await ScheduleRepository.deleteByLoanId(testLoanId);
+    await ScheduleRepository.deleteByLoanId(testLoanId, supabaseAdmin);
     
     // Verify
-    const fetched = await ScheduleRepository.getByLoanId(testLoanId);
+    const fetched = await ScheduleRepository.getByLoanId(testLoanId, supabaseAdmin);
     expect(fetched.length).toBe(0);
   });
 
@@ -168,10 +168,10 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
       }
     ];
 
-    await ScheduleRepository.saveSchedule(schedulesInput);
+    await ScheduleRepository.saveSchedule(schedulesInput, supabaseAdmin);
 
     // Fetch dashboard schedules
-    const dashboard = await ScheduleRepository.getDashboardSchedules('2025-01-01', '2025-02-01');
+    const dashboard = await ScheduleRepository.getDashboardSchedules('2025-01-01', '2025-02-01', supabaseAdmin);
     expect(dashboard.length).toBe(1);
     expect(dashboard[0].due_date).toBe('2025-01-15');
     // Ensure relations are fetched
@@ -232,13 +232,13 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
   });
 
   it('should return empty array for dashboard when no schedules exist in range', async () => {
-    const dashboard = await ScheduleRepository.getDashboardSchedules('2099-01-01', '2099-02-01');
+    const dashboard = await ScheduleRepository.getDashboardSchedules('2099-01-01', '2099-02-01', supabaseAdmin);
     expect(dashboard).toEqual([]);
   });
 
   it('should not throw when deleting non-existent schedule', async () => {
     const nonExistentId = '00000000-0000-0000-0000-000000000000';
-    await expect(ScheduleRepository.deleteById(nonExistentId))
+    await expect(ScheduleRepository.deleteById(nonExistentId, supabaseAdmin))
       .resolves.not.toThrow();
   });
 });
