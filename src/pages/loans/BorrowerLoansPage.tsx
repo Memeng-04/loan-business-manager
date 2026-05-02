@@ -301,7 +301,7 @@ export default function BorrowerLoansPage() {
                 </div>
               )}
 
-              {/* Tab 2: Schedule Editor */}
+              {/* Tab 2: Edit Timeline */}
               {activeTab === "schedules" && (
                 <div className="space-y-6">
                   {selectedLoan ? (
@@ -340,15 +340,15 @@ export default function BorrowerLoansPage() {
                           />
                         ) : (
                           <div className="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
-                            <table className="min-w-180 text-sm">
+                            <table className="min-w-180 text-sm w-full">
                               <thead className="bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-100">
                                 <tr>
-                                  <th className="px-4 py-3 font-black">Date</th>
-                                  <th className="px-4 py-3 font-black">Due</th>
-                                  <th className="px-4 py-3 font-black">
+                                  <th className="px-4 py-3 font-black text-left">Date</th>
+                                  <th className="px-4 py-3 font-black text-left">Due</th>
+                                  <th className="px-4 py-3 font-black text-left">
                                     Status
                                   </th>
-                                  <th className="px-4 py-3 text-right">
+                                  <th className="px-4 py-3 text-right font-black">
                                     Action
                                   </th>
                                 </tr>
@@ -359,13 +359,13 @@ export default function BorrowerLoansPage() {
                                     key={sch.id}
                                     className="hover:bg-gray-50/50 transition-colors"
                                   >
-                                    <td className="px-4 py-3 font-medium text-gray-600">
+                                    <td className="px-4 py-3 font-medium text-gray-600 text-left">
                                       {formatDate(sch.due_date)}
                                     </td>
-                                    <td className="px-4 py-3 font-black text-main-blue">
+                                    <td className="px-4 py-3 font-black text-main-blue text-left">
                                       {formatCurrency(sch.amount_due)}
                                     </td>
-                                    <td className="px-4 py-3">
+                                    <td className="px-4 py-3 text-left">
                                       <div className="flex flex-col gap-1">
                                         <span
                                           className={`px-2 py-0.5 rounded text-[9px] font-black uppercase w-fit ${
@@ -392,7 +392,7 @@ export default function BorrowerLoansPage() {
                                         onClick={() =>
                                           sch.id && handleDeleteSchedule(sch.id)
                                         }
-                                        className="p-1.5 text-red-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="p-1.5 text-red-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-40 ml-auto"
                                         disabled={!sch.id}
                                       >
                                         <Trash2 size={16} />
