@@ -1,11 +1,23 @@
-# LEND – Lending Efficiency through Networked Data
+# LEND (Lending Efficiency through Networked Data)
 
-**PWA for private micro-lenders** – digitizes borrower registration, loan creation, payment tracking, and profit reporting.
+LEND is a **Progressive Web App (PWA)** designed specifically for private micro-lenders. It digitizes the entire loan lifecycle – from borrower registration and loan creation to payment tracking and profit reporting. The system allows lenders to record payments instantly and provides real-time financial insights.
+
+## Final Project Submission
+
+This project is submitted for the following subjects:
+
+- **Software Testing**
+- **Software Component Design**
+- **Software Requirements Specification**
+- **Software Engineering Project Management**
+
+**Submitted by BSSE-2 Team Cortisol:**
+
+- **Venz Onver Bidaure** (Project Manager)
+- **Gian Gamir Umadhay**
+- **Sophia Marielle C. Mendoza**
 
 **Live Demo:** [https://loan-business-manager-three.vercel.app](https://loan-business-manager-three.vercel.app)
-
-**Submitted by Team Cortisol (BSSE-2):** Venz Onver Bidaure (PM), Gian Gamir Umadhay, Sophia Marielle C. Mendoza  
-*Subjects: Software Testing, Component Design, Requirements, Project Management*
 
 ---
 
