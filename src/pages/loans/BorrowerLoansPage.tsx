@@ -343,8 +343,12 @@ export default function BorrowerLoansPage() {
                             <table className="min-w-180 text-sm w-full">
                               <thead className="bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-100">
                                 <tr>
-                                  <th className="px-4 py-3 font-black text-left">Date</th>
-                                  <th className="px-4 py-3 font-black text-left">Due</th>
+                                  <th className="px-4 py-3 font-black text-left">
+                                    Date
+                                  </th>
+                                  <th className="px-4 py-3 font-black text-left">
+                                    Due
+                                  </th>
                                   <th className="px-4 py-3 font-black text-left">
                                     Status
                                   </th>
