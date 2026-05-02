@@ -1,7 +1,13 @@
 import type { ReactNode } from "react";
-import { ChevronLeft } from "lucide-react"; 
+import { ChevronLeft } from "lucide-react";
 
-type ButtonVariant = "white" | "blue" | "outline" | "outlineWhiteText" | "back";
+type ButtonVariant =
+  | "white"
+  | "blue"
+  | "outline"
+  | "outlineWhiteText"
+  | "back"
+  | "viewProfile"
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps {
@@ -17,18 +23,19 @@ interface ButtonProps {
 const variantClasses: Record<ButtonVariant, string> = {
   white:
     "bg-white text-main-blue hover:opacity-90 focus-visible:ring-white focus-visible:ring-offset-main-blue",
-  
+
   blue: "bg-main-blue text-white hover:opacity-90 focus-visible:ring-light-main-blue focus-visible:ring-offset-main-blue",
-  
+
   outline:
     "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
 
   outlineWhiteText:
     "border border-white border-2 bg-transparent text-white hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
-    
-  back: "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
 
-  };
+  back: "border border-main-blue border-2 bg-transparent text-main-blue hover:bg-black/10 focus-visible:ring-white focus-visible:ring-offset-main-blue",
+  viewProfile:
+    "bg-main-blue text-white hover:opacity-95 focus-visible:ring-light-main-blue focus-visible:ring-offset-main-blue",
+};
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: "px-4 py-1.5 text-xs",
