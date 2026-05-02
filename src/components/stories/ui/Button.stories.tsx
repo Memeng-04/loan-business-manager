@@ -23,7 +23,7 @@ const meta = {
     },
     variant: {
       control: "select",
-      options: ["white", "blue", "outline", "outlineWhiteText", "back", "viewProfile"],
+      options: ["white", "blue", "outline", "back"],
       description: "Visual style variant",
     },
     size: {
@@ -37,12 +37,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const WhiteVariant: Story = {
   args: {
     children: "Get Started",
     variant: "white",
     size: "lg",
   },
+  render: (args) => (
+    <div style={{ backgroundColor: "var(--color-main-blue)", padding: 50}}>
+      <Button {...args} />  
+    </div>
+  ),
 };
 
 export const BlueVariant: Story = {
@@ -69,75 +74,3 @@ export const BackButton: Story = {
   },
 };
 
-export const MediumSize: Story = {
-  args: {
-    children: "Medium Button",
-    variant: "white",
-    size: "md",
-  },
-};
-
-export const Interactive: Story = {
-  args: {
-    children: "Click Me",
-    variant: "blue",
-    size: "md",
-  },
-  play: async ({ canvasElement }) => {
-    const button = canvasElement.querySelector("button");
-    if (button) {
-      button.click();
-    }
-  },
-};
-
-export const OutlineWhiteText: Story = {
-  parameters: {
-    layout: "fullscreen",
-    backgrounds: {
-      default: "main-blue",
-      values: [
-        {
-          name: "main-blue",
-          value: "#012a6a",
-        },
-      ],
-    },
-  },
-  args: {
-    children: "Outline White Text",
-    variant: "outlineWhiteText",
-    size: "lg",
-  },
-  render: (args) => (
-    <div
-      style={{
-        justifyContent: "center",
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        height: "100vh",
-        padding: "2rem",
-      }}
-    >
-      <Button {...args} />
-    </div>
-  ),
-};
-
-export const back: Story = {
-  args: {
-    children: "Back",
-    variant: "back",
-    size: "lg",
-    type: "button"
-  },
-};
-
-export const viewProfile: Story = {
-  args: {
-    children: "View Profile",
-    variant: "viewProfile",
-    size: "lg",
-  },
-};
