@@ -1,3 +1,4 @@
+import { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "../services/supabase";
 import type { PaymentFrequency } from "../types/loans";
 import type { Payment } from "../types/payment";
@@ -24,8 +25,8 @@ export type DashboardBorrower = {
 };
 
 export class DashboardRepository {
-  static async getLoans(): Promise<DashboardLoan[]> {
-    const { data, error } = await supabase
+  static async getLoans(client: SupabaseClient = supabase): Promise<DashboardLoan[]> {
+    const { data, error } = await client
       .from("loans")
       .select("id, borrower_id, principal, interest, frequency, status");
 
@@ -36,8 +37,8 @@ export class DashboardRepository {
     return (data ?? []) as DashboardLoan[];
   }
 
-  static async getBorrowers(): Promise<DashboardBorrower[]> {
-    const { data, error } = await supabase
+  static async getBorrowers(client: SupabaseClient = supabase): Promise<DashboardBorrower[]> {
+    const { data, error } = await client
       .from("borrowers")
       .select("id, full_name");
 
@@ -50,8 +51,9 @@ export class DashboardRepository {
 
   static async getDueSchedulesForDate(
     dueDate: string,
+    client: SupabaseClient = supabase
   ): Promise<DashboardSchedule[]> {
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from("payment_schedules")
       .select("loan_id, due_date, amount_due, status")
       .eq("due_date", dueDate)

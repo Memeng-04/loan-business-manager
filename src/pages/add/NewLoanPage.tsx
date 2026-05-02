@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "../../components/ui/header/Header";
 import Navbar from "../../components/ui/navigation/Navbar";
-import { CreateLoanWizard } from "../../features/loans/create-wizard/CreateLoanWizard";
+import { LoanCreationFlow } from "../../features/loans/create-wizard/LoanCreationFlow";
 import { RepaymentSchedule } from "../../features/loans/create-wizard/RepaymentSchedule";
 import styles from "./NewLoanPage.module.css";
 import LoadingState from "../../components/ui/LoadingState";
@@ -24,10 +24,7 @@ export default function NewLoanPage() {
   });
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const handleWizardSuccess = (loanData: {
-    loanId: string;
-    borrowerId: string;
-  }) => {
+  const handleFlowSuccess = (loanData: { loanId: string; borrowerId: string }) => {
     setCreatedLoanData(loanData);
     // Save to sessionStorage so it persists across page refreshes
     sessionStorage.setItem("createdLoanData", JSON.stringify(loanData));
@@ -56,7 +53,9 @@ export default function NewLoanPage() {
 
       {!createdLoanData && !isTransitioning && (
         <section className={styles.content}>
-          <CreateLoanWizard onSuccess={handleWizardSuccess} />
+          <LoanCreationFlow
+            onSuccess={handleFlowSuccess}
+          />
         </section>
       )}
 

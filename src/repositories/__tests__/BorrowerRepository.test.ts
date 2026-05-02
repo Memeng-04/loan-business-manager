@@ -1,138 +1,118 @@
-import { BorrowerRepository } from "../BorrowerRepository";
-import { BorrowerFactory } from "../../factories/BorrowerFactory";
-import { getCurrentUserId } from "../../services/auth";
-import { supabase } from "../../services/supabase";
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { BorrowerRepository } from '../BorrowerRepository';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
 
-vi.mock("../../factories/BorrowerFactory", () => ({
-  BorrowerFactory: {
-    create: vi.fn(),
-  },
+vi.mock('../../services/auth', () => ({
+  getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
 }));
 
-vi.mock("../../services/auth", () => ({
-  getCurrentUserId: vi.fn(),
-}));
+describe('BorrowerRepository Integration Test', () => {
+  beforeEach(async () => {
+    // Ensure the test user exists in auth.users
+    await supabaseAdmin.auth.admin.createUser({
+      id: TEST_USER_ID,
+      email: `test-lender-${Date.now()}@example.com`,
+      password: 'password123',
+      email_confirm: true,
+    }).catch(() => {});
 
-vi.mock("../../services/supabase", () => ({
-  supabase: {
-    from: vi.fn(),
-  },
-}));
-
-type QueryResult = { data?: unknown; error: unknown };
-
-const createSelectSingleChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    single: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
-
-const createSelectOrderChain = (result: QueryResult) => {
-  const chain: Record<string, unknown | typeof vi.fn> = {
-    select: vi.fn(() => chain),
-    eq: vi.fn(() => chain),
-    order: vi.fn().mockResolvedValue(result),
-  };
-  return chain;
-};
-
-describe("BorrowerRepository", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.mocked(getCurrentUserId).mockResolvedValue("user-123");
+    // Clean up
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
   });
 
-  it("filters borrower list queries by current user", async () => {
-    const chain = createSelectOrderChain({
-      data: [{ id: "borrower-1" }],
-      error: null,
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
-
-    const result = await BorrowerRepository.getAll();
-
-    expect(chain.eq).toHaveBeenCalledWith("user_id", "user-123");
-    expect(chain.order).toHaveBeenCalledWith("created_at", { ascending: false });
-    expect(result).toEqual([{ id: "borrower-1" }]);
+  afterEach(async () => {
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
   });
 
-  it("returns null when a borrower does not exist for this user", async () => {
-    const chain = createSelectSingleChain({
-      data: null,
-      error: { code: "PGRST116", message: "No rows found" },
-    });
+  // --- GOOD PATHS ---
 
-    vi.mocked(supabase.from).mockReturnValue({
-      select: vi.fn(() => chain),
-    } as never);
+  it('should create and fetch a borrower', async () => {
+    const input = {
+      full_name: 'John Doe',
+      phone: '1234567890',
+      email: 'john@example.com',
+      monthly_income: 5000
+    };
 
-    const result = await BorrowerRepository.getById("borrower-2");
+    // Create
+    const borrower = await BorrowerRepository.create(input, supabaseAdmin);
+    expect(borrower).toBeDefined();
+    expect(borrower.full_name).toBe('John Doe');
+    
+    // Fetch
+    const fetched = await BorrowerRepository.getById(borrower.id!, supabaseAdmin);
+    expect(fetched).not.toBeNull();
+    expect(fetched?.email).toBe('john@example.com');
+  });
 
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "id", "borrower-2");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
+  it('should update a borrower', async () => {
+    const input = { full_name: 'Jane Doe', phone: '0987654321' };
+    const borrower = await BorrowerRepository.create(input, supabaseAdmin);
+    
+    const updateInput = { ...input, full_name: 'Jane Smith', monthly_income: 6000 };
+    const updated = await BorrowerRepository.update(borrower.id!, updateInput, supabaseAdmin);
+    
+    expect(updated.full_name).toBe('Jane Smith');
+    expect(updated.monthly_income).toBe(6000);
+  });
+
+  it('should get all borrowers for the user', async () => {
+    await BorrowerRepository.create({ full_name: 'Borrower 1', phone: '111' }, supabaseAdmin);
+    await BorrowerRepository.create({ full_name: 'Borrower 2', phone: '222' }, supabaseAdmin);
+
+    const all = await BorrowerRepository.getAll(supabaseAdmin);
+    expect(all.length).toBeGreaterThanOrEqual(2);
+    expect(all.some(b => b.full_name === 'Borrower 1')).toBeTruthy();
+  });
+
+  // --- SAD PATHS ---
+
+  it('should return null for non-existent borrower ID', async () => {
+    const nonExistentId = '11111111-1111-1111-1111-111111111111';
+    const fetched = await BorrowerRepository.getById(nonExistentId, supabaseAdmin);
+    expect(fetched).toBeNull();
+  });
+
+  it('should not allow fetching borrower of another user (RLS Check)', async () => {
+    const otherUserId = '550e8400-e29b-41d4-a716-446655440000';
+    
+    await supabaseAdmin.auth.admin.createUser({
+      id: otherUserId,
+      email: `other-lender-${Date.now()}@example.com`,
+      password: 'password123',
+      email_confirm: true,
+    }).catch(() => {});
+
+    // Insert as admin for another user
+    const { data } = await supabaseAdmin.from('borrowers').insert({
+      full_name: 'Other Borrower',
+      user_id: otherUserId,
+      phone: '999'
+    }).select('id').single();
+
+    // Fetch using the anon key (supabaseUser) which mimics testUserId
+    const result = await BorrowerRepository.getById(data!.id, supabaseUser);
+    
+    // RLS should hide this record
     expect(result).toBeNull();
+
+    await supabaseAdmin.from('borrowers').delete().eq('user_id', otherUserId);
   });
 
-  it("creates a borrower from the normalized factory payload", async () => {
-    vi.mocked(BorrowerFactory.create).mockReturnValue({
-      full_name: "Jane Doe",
-      phone: null,
-    } as never);
-
-    const chain = createSelectSingleChain({
-      data: { id: "borrower-3" },
-      error: null,
-    });
-    const insert = vi.fn(() => chain);
-
-    vi.mocked(supabase.from).mockReturnValue({
-      insert,
-    } as never);
-
-    const input = { full_name: " Jane Doe ", phone: " " };
-    const result = await BorrowerRepository.create(input as never);
-
-    expect(BorrowerFactory.create).toHaveBeenCalledWith(input);
-    expect(insert).toHaveBeenCalledWith({
-      full_name: "Jane Doe",
-      phone: null,
-      user_id: "user-123",
-    });
-    expect(result).toEqual({ id: "borrower-3" });
+  it('should throw error when updating a non-existent borrower', async () => {
+    const nonExistentId = '00000000-0000-0000-0000-000000000000';
+    const updateInput = { full_name: 'Ghost', phone: '000' };
+    
+    // update() uses .single() which throws PGRST116 if no rows matched
+    await expect(BorrowerRepository.update(nonExistentId, updateInput, supabaseAdmin))
+      .rejects.toThrow();
   });
 
-  it("updates a borrower from the normalized factory payload", async () => {
-    vi.mocked(BorrowerFactory.create).mockReturnValue({
-      full_name: "John Smith",
-      phone: "08012345678",
-    } as never);
-
-    const chain = createSelectSingleChain({
-      data: { id: "borrower-4" },
-      error: null,
-    });
-    const update = vi.fn(() => chain);
-
-    vi.mocked(supabase.from).mockReturnValue({
-      update,
-    } as never);
-
-    const input = { full_name: " John Smith ", phone: "08012345678" };
-    const result = await BorrowerRepository.update("borrower-4", input as never);
-
-    expect(BorrowerFactory.create).toHaveBeenCalledWith(input);
-    expect(update).toHaveBeenCalledWith({
-      full_name: "John Smith",
-      phone: "08012345678",
-    });
-    expect(chain.eq).toHaveBeenNthCalledWith(1, "id", "borrower-4");
-    expect(chain.eq).toHaveBeenNthCalledWith(2, "user_id", "user-123");
-    expect(result).toEqual({ id: "borrower-4" });
+  it('should throw error when creating a borrower with invalid data', async () => {
+    // missing phone which is likely required in DB
+    const invalidInput = { full_name: 'Invalid' } as any;
+    
+    await expect(BorrowerRepository.create(invalidInput, supabaseAdmin))
+      .rejects.toThrow();
   });
 });
