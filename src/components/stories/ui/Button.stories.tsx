@@ -23,12 +23,12 @@ const meta = {
     },
     variant: {
       control: "select",
-      options: ["white", "blue", "outline", "outlineWhiteText"],
+      options: ["white", "blue", "outline", "outlineWhiteText", "back", "viewProfile"],
       description: "Visual style variant",
     },
     size: {
       control: "select",
-      options: ["md", "lg"],
+      options: ["sm", "md", "lg"],
       description: "Button size",
     },
   },
@@ -123,4 +123,21 @@ export const OutlineWhiteText: Story = {
       <Button {...args} />
     </div>
   ),
+};
+
+export const back: Story = {
+  args: {
+    children: "Back",
+    variant: "back",
+    size: "lg",
+    type: "button"
+  },
+};
+
+export const viewProfile: Story = {
+  args: {
+    children: "View Profile",
+    variant: "viewProfile",
+    size: "lg",
+  },
 };
