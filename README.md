@@ -24,7 +24,7 @@ This project is submitted for the following subjects:
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/your-repo/loan-business-manager.git
+git clone https://github.com/Memeng-04/loan-business-manager.git
 cd loan-business-manager
 npm install
 ```
@@ -45,7 +45,8 @@ Run Storybook: `npm run storybook`
 ### 1. Unit Tests – Logic only
 Pure math, formatting, factories, hooks. **No network/database.**  
 📍 `src/utils/`, `src/strategies/`, `src/factories/`, `src/hooks/__tests__/`  
-⚡ Ultra-fast – hundreds per second.
+⚡ Ultra-fast – hundreds per second.  
+🎭 Run: `npm run test:unit`
 
 ### 2. Component Tests – UI in isolation
 Visual rendering + interactions. Uses **Storybook** + React Testing Library.  
@@ -54,12 +55,16 @@ Visual rendering + interactions. Uses **Storybook** + React Testing Library.
 🚀 Run: `npm run storybook` (interactive) or `npm run test` (headless).
 
 ### 3. Integration Tests – Code + Real Supabase
-Verifies DB operations, RLS security, Edge Functions. Uses a **real test database** (clean per test).  
+Verifies DB operations, RLS security, and Edge Functions. Uses a **real test database** (clean per test).  
 📍 `src/repositories/__tests__/`, `supabase/functions/__tests__/`  
-🐢 Slower (0.5‑2s each) – but proves real connectivity.
+🐢 Slower (0.5‑2s each) – but proves real connectivity.  
+🎭 Run: `npm run test:integration` or `npm run test:api`
 
-### 4. End‑to‑End Tests – Full user journeys (🔜 Coming soon)
-Planned with Playwright/Cypress – will simulate login → loan → payment → report.
+### 4. End‑to‑End Tests – Full User Journeys
+Simulates real borrower and loan management flows using **Playwright**. Covers login → borrower creation → loan disbursement → payment recording.  
+📍 `E2E/*.spec.ts`  
+📍 `E2E/pages/` (Page Object Model)  
+🎭 Run: `npm run e2e`
 
 ---
 
@@ -67,12 +72,13 @@ Planned with Playwright/Cypress – will simulate login → loan → payment →
 
 | Command | Runs |
 |---------|------|
-| `npm run test` | Unit + Component + Integration (all automated) |
-| `npm run test:ui` | Vitest UI debugger |
+| `npm run test` | Standard Unit Tests |
+| `npm run test:integration` | Database Integration Tests |
+| `npm run test:api` | Supabase Edge Function Tests |
+| `npm run e2e` | End-to-End Tests (Full Journey) |
+| `npm run e2e:ui` | Playwright UI Debugger |
 | `npm run storybook` | Interactive component explorer |
 | `npm run lint` | ESLint |
-
-> **Note:** Integration tests require Supabase running (set `VITE_SUPABASE_URL`/`ANON_KEY`). E2E not yet implemented.
 
 ---
 
@@ -81,7 +87,7 @@ Planned with Playwright/Cypress – will simulate login → loan → payment →
 **Frontend:** React 19, TypeScript, Vite, Tailwind, CSS Modules  
 **Backend/DB:** Supabase (Postgres, Auth, RLS, Edge Functions)  
 **State:** React Context  
-**Testing:** Vitest, React Testing Library, Storybook  
+**Testing:** Vitest, React Testing Library, Storybook, Playwright  
 **Other:** Lucide Icons, Recharts
 
 ---
