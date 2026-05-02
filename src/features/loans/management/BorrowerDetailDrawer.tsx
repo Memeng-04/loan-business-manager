@@ -7,6 +7,7 @@ import { ScheduleRepository } from '../../../repositories/ScheduleRepository';
 import { formatCurrency, formatDate } from '../../../lib/formatters';
 import LoadingState from '../../../components/ui/LoadingState';
 import { StandardScheduleStrategy } from '../../../strategies/ScheduleStrategy';
+import { PaymentRepository } from '../../../repositories/PaymentRepository';
 import type { Borrower } from '../../../types/borrowers';
 import type { Loan } from '../../../types/loans';
 import type { ScheduleEntry } from '../../../types/strategies';
@@ -96,7 +97,12 @@ export default function BorrowerDetailDrawer({
     if (!selectedLoan) return;
     setSchedulesLoading(true);
     try {
-      // Calculate term days from start and end dates
+      // 1. Fetch total paid amount so far to avoid "resetting" progress
+      const loanId = selectedLoan.id!;
+      const { totalPaid } = await PaymentRepository.getSummary(loanId);
+      let runningBalance = totalPaid;
+
+      // 2. Calculate term days and generate ideal schedule
       const start = new Date(selectedLoan.start_date);
       const end = new Date(selectedLoan.end_date);
       const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -110,12 +116,28 @@ export default function BorrowerDetailDrawer({
         diffDays,
       );
 
-      const schedulesForDb = generated.map((entry) => ({
-        ...entry,
-        loan_id: selectedLoan.id,
-      }));
+      // 3. Reconcile with running balance
+      const reconciled = generated.map((entry) => {
+        let status: "paid" | "unpaid" | "partial" = "unpaid";
+        
+        if (runningBalance >= entry.amount_due) {
+          status = "paid";
+          runningBalance -= entry.amount_due;
+        } else if (runningBalance > 0) {
+          status = "partial";
+          runningBalance = 0;
+        }
 
-      await ScheduleRepository.saveSchedule(schedulesForDb);
+        return {
+          ...entry,
+          loan_id: loanId,
+          status
+        };
+      });
+
+      // 4. Wipe orphans and save reconciled schedule
+      await ScheduleRepository.deleteByLoanId(loanId);
+      await ScheduleRepository.saveSchedule(reconciled);
       fetchSchedules();
     } catch {
       console.error("Failed to regenerate schedule");
@@ -301,91 +323,111 @@ export default function BorrowerDetailDrawer({
                             className="py-8"
                           />
                         ) : (
-                          <div className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-                            <table className="min-w-full text-sm">
-                              <thead className="bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-100">
-                                <tr>
-                                  <th className="px-4 py-3 font-black">Date</th>
-                                  <th className="px-4 py-3 font-black">Due</th>
-                                  <th className="px-4 py-3 font-black">
-                                    Status
-                                  </th>
-                                  <th className="px-4 py-3 text-right">
-                                    Action
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-gray-50">
-                                {schedules.map((sch) => (
-                                  <tr
-                                    key={sch.id}
-                                    className="hover:bg-gray-50/50 transition-colors"
-                                  >
-                                    <td className="px-4 py-3 font-medium text-gray-600">
-                                      {formatDate(sch.due_date)}
-                                    </td>
-                                    <td className="px-4 py-3 font-black text-main-blue">
-                                      {formatCurrency(sch.amount_due)}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                      <div className="flex flex-col gap-1">
-                                        <span
-                                          className={`px-2 py-0.5 rounded text-[9px] font-black uppercase w-fit ${
-                                            sch.status === "paid"
-                                              ? "text-green-600 bg-green-50"
-                                              : sch.status === "missed"
-                                                ? "text-red-600 bg-red-50"
-                                                : sch.status === "partial"
-                                                  ? "text-orange-600 bg-orange-50"
-                                                  : "text-blue-600 bg-blue-50"
-                                          }`}
-                                        >
-                                          {sch.status}
-                                        </span>
-                                        {sch.is_penalty && (
-                                          <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-red-600 text-white w-fit animate-pulse">
-                                            Penalty Fee
-                                          </span>
-                                        )}
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-3 text-right">
-                                      <button
-                                        onClick={() => {
-                                          if (sch.id) {
-                                            handleDeleteSchedule(sch.id);
-                                          }
-                                        }}
-                                        className="p-1.5 text-red-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                        disabled={!sch.id}
-                                      >
-                                        <Trash2 size={16} />
-                                      </button>
-                                    </td>
-                                  </tr>
-                                ))}
-                                {schedules.length === 0 && (
+                          <div className="space-y-3">
+                            {/* Desktop Table View */}
+                            <div className="hidden sm:block overflow-hidden rounded-2xl border border-gray-100 shadow-sm bg-white">
+                              <table className="w-full text-sm">
+                                <thead className="bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-100">
                                   <tr>
-                                    <td
-                                      colSpan={4}
-                                      className="text-center py-12 text-gray-400 italic text-xs"
-                                    >
-                                      <div className="flex flex-col items-center gap-3">
-                                        <p>No entries found for this loan.</p>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={handleFixSchedule}
-                                          className="text-[10px] font-black uppercase tracking-widest border-red-200 text-red-600 hover:bg-red-50"
-                                        >
-                                          Fix Missing Schedule
-                                        </Button>
-                                      </div>
-                                    </td>
+                                    <th className="px-4 py-3 text-left">Date</th>
+                                    <th className="px-4 py-3 text-left">Due</th>
+                                    <th className="px-4 py-3 text-left">Status</th>
+                                    <th className="px-4 py-3 text-right">Action</th>
                                   </tr>
-                                )}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                  {schedules.map((sch) => (
+                                    <tr key={sch.id} className="hover:bg-gray-50/50 transition-colors">
+                                      <td className="px-4 py-3 font-medium text-gray-600">{formatDate(sch.due_date)}</td>
+                                      <td className="px-4 py-3 font-black text-main-blue">{formatCurrency(sch.amount_due)}</td>
+                                      <td className="px-4 py-3">
+                                        <div className="flex flex-col gap-1">
+                                          <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase w-fit ${
+                                            sch.status === "paid" ? "text-green-600 bg-green-50" :
+                                            sch.status === "missed" ? "text-red-600 bg-red-50" :
+                                            sch.status === "partial" ? "text-orange-600 bg-orange-50" : "text-blue-600 bg-blue-50"
+                                          }`}>
+                                            {sch.status}
+                                          </span>
+                                          {sch.is_penalty && (
+                                            <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-red-600 text-white w-fit animate-pulse">
+                                              Penalty
+                                            </span>
+                                          )}
+                                        </div>
+                                      </td>
+                                      <td className="px-4 py-3 text-right">
+                                        <button
+                                          onClick={() => sch.id && handleDeleteSchedule(sch.id)}
+                                          className="p-1.5 text-red-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                          disabled={!sch.id}
+                                        >
+                                          <Trash2 size={16} />
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+
+                            {/* Mobile Card View */}
+                            <div className="sm:hidden space-y-3">
+                              {schedules.map((sch) => (
+                                <div key={sch.id} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+                                  <div className="flex justify-between items-start">
+                                    <div className="space-y-1">
+                                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Due Date</span>
+                                      <p className="text-sm font-bold text-gray-700">{formatDate(sch.due_date)}</p>
+                                    </div>
+                                    <button
+                                      onClick={() => sch.id && handleDeleteSchedule(sch.id)}
+                                      className="p-2 text-red-400 bg-red-50 rounded-xl transition-all"
+                                      disabled={!sch.id}
+                                    >
+                                      <Trash2 size={16} />
+                                    </button>
+                                  </div>
+                                  <div className="flex justify-between items-end pt-3 border-t border-gray-50">
+                                    <div className="space-y-1">
+                                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount Due</span>
+                                      <p className="text-lg font-black text-main-blue">{formatCurrency(sch.amount_due)}</p>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-1">
+                                      <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
+                                        sch.status === "paid" ? "text-green-700 bg-green-100" :
+                                        sch.status === "missed" ? "text-red-700 bg-red-100" :
+                                        sch.status === "partial" ? "text-orange-700 bg-orange-100" : "text-blue-700 bg-blue-100"
+                                      }`}>
+                                        {sch.status}
+                                      </span>
+                                      {sch.is_penalty && (
+                                        <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-red-600 text-white animate-pulse">
+                                          Penalty
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Empty State */}
+                            {schedules.length === 0 && (
+                              <div className="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100">
+                                <div className="flex flex-col items-center gap-4 px-6">
+                                  <p className="text-gray-400 text-sm italic">No entries found for this loan.</p>
+                                  <Button
+                                    variant="outline"
+                                    size="md"
+                                    onClick={handleFixSchedule}
+                                    className="w-full sm:w-auto text-[10px] font-black uppercase tracking-widest border-red-200 text-red-600 hover:bg-red-50"
+                                  >
+                                    Fix Missing Schedule
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
 
