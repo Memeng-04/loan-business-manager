@@ -29,7 +29,7 @@ export const Saving: Story = {
   },
 };
 
-export const blueBackground: Story = {
+export const BlueBackground: Story = {
   args: {
     variant: "blueBackground",
     message: "Loading data in blue background...",
@@ -40,13 +40,6 @@ export const Compact: Story = {
   args: {
     variant: "compact",
     message: "Fetching records...",
-  },
-};
-
-export const Inline: Story = {
-  args: {
-    variant: "inline",
-    message: "Updating status...",
   },
 };
 
