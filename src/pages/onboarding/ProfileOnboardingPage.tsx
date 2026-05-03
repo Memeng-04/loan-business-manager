@@ -11,10 +11,12 @@ const STORAGE_KEY = "onboarding_profile_step";
 export default function ProfileOnboardingPage() {
   const navigate = useNavigate();
   const { profile, error } = useCurrentUserProfile();
-  const [legalFullName, setLegalFullName] = useState("");
-  const [displayName, setDisplayName] = useState("");
+  const [legalFullName, setLegalFullName] = useState(profile?.legal_full_name || "");
+  const [displayName, setDisplayName] = useState(profile?.display_name || "");
 
-  if (profile) {
+  const isProfileComplete = Boolean(profile?.legal_full_name && profile?.display_name);
+
+  if (isProfileComplete) {
     return <Navigate to="/dashboard" replace />;
   }
 
