@@ -26,7 +26,23 @@ export default function SearchBar({
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className={`w-full bg-gray-50/50 hover:bg-white focus:bg-white p-4 pl-12 pr-12 border-2 border-transparent hover:border-gray-200 focus:border-main-blue rounded-4xl shadow-sm focus:outline-none transition-all font-medium placeholder:text-gray-300 text-gray-900 ${className}`.trim()}
+        className={`
+          w-full 
+          bg-white 
+          p-4 pl-12 pr-12 
+          border-2 border-gray-300 
+          hover:border-gray-400 
+          focus:border-main-blue 
+          rounded-4xl 
+          shadow-sm 
+          focus:outline-none 
+          focus:ring-2 focus:ring-main-blue/20 
+          transition-all 
+          font-medium 
+          placeholder:text-gray-400 
+          text-gray-900
+          ${className}
+        `.trim()}
         placeholder={placeholder}
         aria-label={ariaLabel ?? placeholder}
       />
@@ -36,7 +52,7 @@ export default function SearchBar({
         {value && (
           <button
             onClick={() => onChange("")}
-            className="p-2 rounded-xl bg-gray-100/50 hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all active:scale-90"
+            className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-all active:scale-90"
             type="button"
             aria-label="Clear search"
           >
