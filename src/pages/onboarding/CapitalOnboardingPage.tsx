@@ -76,7 +76,9 @@ export default function CapitalOnboardingPage() {
     return <Navigate to="/auth" replace />;
   }
 
-  if (profile) {
+  const isProfileComplete = Boolean(profile?.legal_full_name && profile?.display_name);
+
+  if (isProfileComplete) {
     return <Navigate to="/dashboard" replace />;
   }
 

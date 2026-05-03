@@ -32,12 +32,13 @@ export default function ProtectedRoute() {
   }
 
   const isOnboardingPath = location.pathname.startsWith("/onboarding");
+  const isProfileComplete = Boolean(profile?.legal_full_name && profile?.display_name);
 
-  if (!profile && !isOnboardingPath) {
+  if (!isProfileComplete && !isOnboardingPath) {
     return <Navigate to="/onboarding/profile" replace />;
   }
 
-  if (profile && isOnboardingPath) {
+  if (isProfileComplete && isOnboardingPath) {
     return <Navigate to="/dashboard" replace />;
   }
 
