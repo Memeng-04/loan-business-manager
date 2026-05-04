@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { PaymentRepository } from '../PaymentRepository';
-import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID, ensureTestUser } from './test-utils';
 
 vi.mock('../../services/auth', () => ({
   getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
@@ -12,12 +12,7 @@ describe('PaymentRepository Integration Test', { timeout: 30000 }, () => {
 
   beforeEach(async () => {
     // Ensure user exists
-    await supabaseAdmin.auth.admin.createUser({
-      id: TEST_USER_ID,
-      email: `test-lender-${Date.now()}@example.com`,
-      password: 'password123',
-      email_confirm: true,
-    }).catch(() => {});
+    await ensureTestUser();
 
     // Clean up
     await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
@@ -147,6 +142,7 @@ describe('PaymentRepository Integration Test', { timeout: 30000 }, () => {
     await supabaseAdmin.from('payments').delete().eq('user_id', otherUserId);
     await supabaseAdmin.from('loans').delete().eq('user_id', otherUserId);
     await supabaseAdmin.from('borrowers').delete().eq('user_id', otherUserId);
+    await supabaseAdmin.auth.admin.deleteUser(otherUserId);
   });
 
   it('should return empty summary for non-existent loan', async () => {

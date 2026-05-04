@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ScheduleRepository } from '../ScheduleRepository';
-import { supabaseAdmin, TEST_USER_ID } from './test-utils';
+import { supabaseAdmin, TEST_USER_ID, ensureTestUser } from './test-utils';
 import type { ScheduleEntry } from '../../types/strategies';
 
 vi.mock('../../services/auth', () => ({
@@ -16,18 +16,8 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
     setupFailed = false;
     try {
       // Ensure user exists
-      const { error: userError } = await supabaseAdmin.auth.admin.createUser({
-        id: TEST_USER_ID,
-        email: `test-lender-${Date.now()}@example.com`,
-        password: 'password123',
-        email_confirm: true,
-      }).catch((e) => ({ error: e }));
+      await ensureTestUser();
       
-      // Ignore "User already exists" errors
-      if (userError && !userError.message?.includes('already exists')) {
-        console.warn('User creation warning:', userError.message);
-      }
-
       // Clean up
       await supabaseAdmin.from('payment_schedules').delete().eq('user_id', TEST_USER_ID);
       await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
@@ -229,6 +219,7 @@ describe('ScheduleRepository Integration Test', { timeout: 30000 }, () => {
     await supabaseAdmin.from('payment_schedules').delete().eq('user_id', otherUserId);
     await supabaseAdmin.from('loans').delete().eq('user_id', otherUserId);
     await supabaseAdmin.from('borrowers').delete().eq('user_id', otherUserId);
+    await supabaseAdmin.auth.admin.deleteUser(otherUserId);
   });
 
   it('should return empty array for dashboard when no schedules exist in range', async () => {

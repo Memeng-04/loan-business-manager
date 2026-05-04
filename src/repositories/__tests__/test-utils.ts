@@ -16,7 +16,8 @@ export const TEST_USER_ID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'; // Fixed tes
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
+    persistSession: false,
+    storageKey: `sb-admin-${Math.random().toString(36).slice(2)}-auth-token`,
   }
 });
 
@@ -25,6 +26,10 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
  * Use this to verify that lenders can only see their own data.
  */
 export const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: false,
+    storageKey: `sb-user-${Math.random().toString(36).slice(2)}-auth-token`,
+  },
   global: {
     headers: {
       // This helps Supabase Platform Audit Logs identify the user
@@ -32,6 +37,32 @@ export const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
     },
   },
 });
+
+/**
+ * Robustly ensures the test user exists in the auth.users table.
+ * Handles the fixed TEST_USER_ID and suppresses "already exists" errors.
+ */
+export async function ensureTestUser(id: string = TEST_USER_ID): Promise<void> {
+  const { error } = await supabaseAdmin.auth.admin.createUser({
+    id,
+    email: `test-lender-${id.slice(0, 8)}@example.com`,
+    password: 'password123',
+    email_confirm: true,
+  }).catch((e) => ({ error: e }));
+
+  if (error) {
+    const msg = error.message?.toLowerCase() || '';
+    // Ignore common "already exists" errors
+    if (
+      msg.includes('already exists') || 
+      msg.includes('database error creating new user') ||
+      msg.includes('duplicate key')
+    ) {
+      return;
+    }
+    console.warn(`User creation warning for ${id}:`, error.message);
+  }
+}
 
 /**
  * Helper to execute a database operation with a specific user's identity

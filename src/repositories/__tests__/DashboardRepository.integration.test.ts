@@ -1,16 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { DashboardRepository } from '../DashboardRepository';
-import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID, ensureTestUser } from './test-utils';
+
+vi.mock('../../services/auth', () => ({
+  getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
+}));
 
 describe('DashboardRepository Integration Test', { timeout: 30000 }, () => {
   beforeEach(async () => {
-    // Ensure user exists
-    await supabaseAdmin.auth.admin.createUser({
-      id: TEST_USER_ID,
-      email: `test-lender-${Date.now()}@example.com`,
-      password: 'password123',
-      email_confirm: true,
-    }).catch(() => {});
+    // Ensure the test user exists
+    await ensureTestUser();
 
     // Clean up dashboard related data (borrowers, loans, schedules)
     await supabaseAdmin.from('payment_schedules').delete().neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all (in a real app we'd scope this or use a test DB)

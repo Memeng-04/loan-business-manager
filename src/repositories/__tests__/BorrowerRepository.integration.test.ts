@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { BorrowerRepository } from '../BorrowerRepository';
-import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID, ensureTestUser } from './test-utils';
 
 vi.mock('../../services/auth', () => ({
   getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
@@ -9,12 +9,7 @@ vi.mock('../../services/auth', () => ({
 describe('BorrowerRepository Integration Test', () => {
   beforeEach(async () => {
     // Ensure the test user exists in auth.users
-    await supabaseAdmin.auth.admin.createUser({
-      id: TEST_USER_ID,
-      email: `test-lender-${Date.now()}@example.com`,
-      password: 'password123',
-      email_confirm: true,
-    }).catch(() => {});
+    await ensureTestUser();
 
     // Clean up
     await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
@@ -97,6 +92,7 @@ describe('BorrowerRepository Integration Test', () => {
     expect(result).toBeNull();
 
     await supabaseAdmin.from('borrowers').delete().eq('user_id', otherUserId);
+    await supabaseAdmin.auth.admin.deleteUser(otherUserId);
   });
 
   it('should throw error when updating a non-existent borrower', async () => {

@@ -1,25 +1,16 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { UserProfileRepository } from '../UserProfileRepository';
-import { supabaseAdmin, supabaseUser, TEST_USER_ID } from './test-utils';
+import { supabaseAdmin, supabaseUser, TEST_USER_ID, ensureTestUser } from './test-utils';
+
+vi.mock('../../services/auth', () => ({
+  getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
+}));
 
 describe('UserProfileRepository Integration Test', () => {
   // Before each test, ensure we have a clean state for our test user
   beforeEach(async () => {
     // 1. Ensure the test user exists in auth.users
-    const { data: userData } = await supabaseAdmin.auth.admin.getUserById(TEST_USER_ID);
-    
-    if (!userData || !userData.user) {
-      const { error: createError } = await supabaseAdmin.auth.admin.createUser({
-        id: TEST_USER_ID,
-        email: `test-profile-${TEST_USER_ID}@example.com`,
-        password: 'password123',
-        email_confirm: true,
-      });
-      
-      if (createError) {
-        console.warn('Could not create test user (may already exist):', createError.message);
-      }
-    }
+    await ensureTestUser();
 
     // 2. Clean up any existing profile
     await supabaseAdmin
