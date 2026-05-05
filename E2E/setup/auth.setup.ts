@@ -31,57 +31,39 @@ setup("authenticate", async ({ page }) => {
   await page.waitForLoadState("networkidle");
   await loginPage.login(email, password);
 
-  // 3. Wait for the app to settle on a protected route.
-  // It can land on onboarding first and only reach /dashboard after profile setup.
-  await expect(page).toHaveURL(
-    /\/(onboarding\/profile|onboarding\/capital|dashboard)$/,
-    {
-      timeout: 20000,
-    },
-  );
+  // 3. Wait for the app to settle on the profile onboarding route.
+  // A freshly created user must complete their profile first.
+  await expect(page).toHaveURL(/\/onboarding\/profile$/, { timeout: 30000 });
 
-  // 4. Handle Onboarding if the app requires it
-  const isAtOnboarding =
-    page.url().includes("/onboarding") ||
-    (await page
-      .getByRole("heading", { name: "Tell us your name details." })
-      .isVisible());
+  // 4. Handle Onboarding
+  // Stage 1: Profile details
+  const fullNameInput = page.getByLabel("Government Full Name");
+  await fullNameInput.waitFor({ state: "visible", timeout: 15000 });
+  await fullNameInput.fill("E2E Tester");
+  await page.getByLabel("Display Name").fill("Mr. Tester");
+  await page.getByRole("button", { name: "Continue" }).click();
 
-  if (isAtOnboarding) {
-    // Stage 1: Profile details
-    await page.getByLabel("Government Full Name").fill("E2E Tester");
-    await page.getByLabel("Display Name").fill("Mr. Tester");
-
-    // Click and wait for either the capital step or Dashboard to avoid racing navigation
-    await Promise.all([
-      page.getByRole("button", { name: "Continue" }).click(),
-      page
-        .waitForURL(/.*\/onboarding\/capital|.*\/dashboard/, { timeout: 15000 })
-        .catch(() => {}),
-      page
-        .getByLabel("Capital Lent Out So Far")
-        .waitFor({ timeout: 15000 })
-        .catch(() => {}),
-    ]);
-
-    // If we are at the capital step, fill and continue
-    if (
-      page.url().includes("/onboarding/capital") ||
-      (await page.getByLabel("Capital Lent Out So Far").count()) > 0
-    ) {
-      await page.getByLabel("Capital Lent Out So Far").fill("100000");
-      await page.getByLabel("Total Profit Earned So Far").fill("0");
-      await Promise.all([
-        page.getByRole("button", { name: "Get Started" }).click(),
-        page.waitForURL(/.*\/dashboard/, { timeout: 15000 }).catch(() => {}),
-      ]);
-    }
-  }
+  // Stage 2: Capital details
+  await expect(page).toHaveURL(/\/onboarding\/capital$/, { timeout: 15000 });
+  const capitalInput = page.getByLabel("Capital Lent Out So Far");
+  await capitalInput.waitFor({ state: "visible", timeout: 15000 });
+  await capitalInput.fill("100000");
+  await page.getByLabel("Total Profit Earned So Far").fill("0");
+  await page.getByRole("button", { name: "Get Started" }).click();
 
   // 5. Final verification: Dashboard should be visible
-  await expect(page.getByTestId("dashboard-root")).toBeVisible({
-    timeout: 30000,
-  });
+  try {
+    await expect(page).toHaveURL(/\/dashboard$/, { timeout: 30000 });
+    await expect(page.getByTestId("dashboard-root")).toBeVisible({
+      timeout: 15000,
+    });
+  } catch (e) {
+    const currentUrl = page.url();
+    const bodyText = await page.locator("body").innerText();
+    throw new Error(
+      `Failed to load dashboard. Current URL: ${currentUrl}\nPage Text:\n${bodyText}`,
+    );
+  }
   await expect(
     page.getByRole("heading", { level: 2, name: /^Hi,/ }),
   ).toBeVisible();
