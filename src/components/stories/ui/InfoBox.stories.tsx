@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Info as InfoIcon, AlertCircle } from "lucide-react";
 import { InfoBox } from "../../../components/ui/InfoBox";
 
 const meta = {
@@ -19,17 +18,24 @@ export const Default: Story = {
   },
 };
 
-export const WithIcon: Story = {
-  args: {
-    icon: <InfoIcon size={20} />,
-    children: "This info box includes an icon to grab attention.",
-  },
-};
-
 export const InfoVariant: Story = {
   args: {
     variant: "info",
-    icon: <AlertCircle size={20} />,
     children: "This uses the 'info' variant style.",
+  },
+};
+
+export const LightbulbVariant: Story = {
+  args: {
+    variant: "lightbulb",
+    children: "This uses the lightbulb variant style.",
+  },
+};
+
+export const LongText: Story = {
+  args: {
+    variant: "info",
+    children:
+      "This info box contains a longer piece of text to demonstrate how it handles wrapping and layout when the content exceeds the typical length.",
   },
 };
