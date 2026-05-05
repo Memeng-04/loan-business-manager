@@ -1,13 +1,12 @@
 import { useState } from "react";
-import Header from "../../components/ui/header/Header";
-import Navbar from "../../components/ui/navigation/Navbar";
+
+
 import { LoanCreationFlow } from "../../features/loans/create-wizard/LoanCreationFlow";
 import { RepaymentSchedule } from "../../features/loans/create-wizard/RepaymentSchedule";
-import styles from "./NewLoanPage.module.css";
+
 import LoadingState from "../../components/ui/LoadingState";
 
 export default function NewLoanPage() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [createdLoanData, setCreatedLoanData] = useState<{
     loanId: string;
     borrowerId: string;
@@ -44,7 +43,7 @@ export default function NewLoanPage() {
   };
 
   return (
-    <main className={styles.page}>
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
       <Header
         title="Add Loan"
         onMenuClick={() => setIsNavOpen((prev) => !prev)}
@@ -52,31 +51,31 @@ export default function NewLoanPage() {
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       {!createdLoanData && !isTransitioning && (
-        <section className={styles.content}>
+        <div className="max-w-4xl mx-auto p-8 w-full">
           <LoanCreationFlow
             onSuccess={handleFlowSuccess}
           />
-        </section>
+        </div>
       )}
 
       {isTransitioning && (
-        <section className={styles.content}>
+        <div className="max-w-4xl mx-auto p-8 w-full">
           <LoadingState
             message="Generating Repayment Schedule..."
             fullScreen={false}
           />
-        </section>
+        </div>
       )}
 
       {createdLoanData && !isTransitioning && (
-        <section className={styles.content}>
+        <div className="max-w-4xl mx-auto p-8 w-full">
           <RepaymentSchedule
             loanId={createdLoanData.loanId}
             borrowerId={createdLoanData.borrowerId}
             onScheduleSaved={handleScheduleSaved}
           />
-        </section>
+        </div>
       )}
-    </main>
+    </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Header from "../../../components/ui/header/Header";
+
 import LoadingState from "../../../components/ui/LoadingState";
-import Navbar from "../../../components/ui/navigation/Navbar";
+
 import { BorrowerRepository } from "../../../repositories/BorrowerRepository";
 import { LoanRepository } from "../../../repositories/LoanRepository";
 import type { Borrower } from "../../../types/borrowers";
@@ -10,7 +10,7 @@ import type { Loan } from "../../../types/loans";
 import BorrowerInformationCard from "../../../components/borrowers/BorrowerDetails/BorrowerInformationCard";
 import BorrowerProfileCard from "../../../components/borrowers/BorrowerDetails/BorrowerProfileCard";
 import LoanSummaryCard from "../../../components/borrowers/BorrowerDetails/LoanSummaryCard";
-import styles from "./BorrowerDetailsPage.module.css";
+
 import { useUpdateBorrower } from "../../../hooks/useUpdateBorrower";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
 
@@ -43,7 +43,6 @@ function formatCurrency(value: number) {
 export default function BorrowerDetailsPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [borrower, setBorrower] = useState<Borrower | null>(null);
   const [loans, setLoans] = useState<Loan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -147,70 +146,58 @@ export default function BorrowerDetailsPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <Header
-        title="Borrower Details"
-        onMenuClick={() => setIsNavOpen((prev) => !prev)}
-      />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
       {loading ? (
-        <main className={styles.content}>
-          <section className={styles.loadingContainer}>
-            <LoadingState
-              message="Loading borrower details..."
-              fullScreen={false}
-            />
-          </section>
-        </main>
+        <div className="flex-1 flex items-center justify-center">
+          <LoadingState
+            message="Loading borrower details..."
+            fullScreen={false}
+          />
+        </div>
       ) : null}
 
       {!loading && error ? (
-        <main className={styles.content}>
-          <section className={styles.container}>
-            <LoadingState
-              variant="error"
-              message={error}
-              fullScreen={false}
-              actionLabel="Back to borrowers"
-              onAction={() => navigate("/borrowers")}
-            />
-          </section>
-        </main>
+        <div className="flex-1 flex items-center justify-center">
+          <LoadingState
+            variant="error"
+            message={error}
+            fullScreen={false}
+            actionLabel="Back to borrowers"
+            onAction={() => navigate("/borrowers")}
+          />
+        </div>
       ) : null}
 
       {!loading && !error && borrower ? (
-        <main className={styles.content}>
-          <section className={styles.container}>
-            <BorrowerProfileCard name={borrower.full_name} />
+        <div className="max-w-5xl mx-auto p-8 w-full">
+          <BorrowerProfileCard name={borrower.full_name} />
 
-            <div className={styles.detailsGrid}>
-              <BorrowerInformationCard
-                borrower={borrower}
-                createdDate={formatDate(borrower.created_at)}
-                onSave={handleSaveBorrower}
-                saving={updating}
-                saveError={updateError}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <BorrowerInformationCard
+              borrower={borrower}
+              createdDate={formatDate(borrower.created_at)}
+              onSave={handleSaveBorrower}
+              saving={updating}
+              saveError={updateError}
+            />
 
-              <LoanSummaryCard
-                loanError={loanError}
-                totalLoans={loans.length}
-                activeLoans={activeLoanCount}
-                doneLoans={doneLoanCount}
-                totalPrincipal={formatCurrency(totalPrincipal)}
-                totalPayable={formatCurrency(totalPayable)}
-                averageLoanAmount={formatCurrency(averageLoanAmount)}
-                latestLoan={latestLoan}
-                latestLoanAmount={
-                  latestLoan ? formatCurrency(latestLoan.principal) : "—"
-                }
-                latestLoanCreatedAt={formatDate(latestLoan?.created_at)}
-                onSeeLoans={() => navigate(`/loans/borrowers/${borrower.id}`)}
-              />
-            </div>
-          </section>
-        </main>
+            <LoanSummaryCard
+              loanError={loanError}
+              totalLoans={loans.length}
+              activeLoans={activeLoanCount}
+              doneLoans={doneLoanCount}
+              totalPrincipal={formatCurrency(totalPrincipal)}
+              totalPayable={formatCurrency(totalPayable)}
+              averageLoanAmount={formatCurrency(averageLoanAmount)}
+              latestLoan={latestLoan}
+              latestLoanAmount={
+                latestLoan ? formatCurrency(latestLoan.principal) : "—"
+              }
+              latestLoanCreatedAt={formatDate(latestLoan?.created_at)}
+              onSeeLoans={() => navigate(`/loans/borrowers/${borrower.id}`)}
+            />
+          </div>
+        </div>
       ) : null}
     </div>
   );

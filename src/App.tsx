@@ -13,6 +13,7 @@ import NewLoanPage from "./pages/add/NewLoanPage";
 import FundManagementPage from "./pages/funds/FundManagementPage";
 import ProfileOnboardingPage from "./pages/onboarding/ProfileOnboardingPage";
 import CapitalOnboardingPage from "./pages/onboarding/CapitalOnboardingPage";
+import AppLayout from "./components/layout/AppLayout";
 
 function App() {
   return (
@@ -24,15 +25,18 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding/profile" element={<ProfileOnboardingPage />} />
         <Route path="/onboarding/capital" element={<CapitalOnboardingPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/borrowers" element={<BorrowersPage />} />
-        <Route path="/borrowers/new" element={<AddBorrowerPage />} />
-        <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
-        <Route path="/more" element={<MorePage />} />
-        <Route path="/loans" element={<LoanPage />} />
-        <Route path="/loans/borrowers/:borrowerId" element={<BorrowerLoansPage />} />
-        <Route path="/add" element={<NewLoanPage />} />
-        <Route path="/funds" element={<FundManagementPage />} />
+        
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/borrowers" element={<BorrowersPage />} />
+          <Route path="/borrowers/new" element={<AddBorrowerPage />} />
+          <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
+          <Route path="/more" element={<MorePage />} />
+          <Route path="/loans" element={<LoanPage />} />
+          <Route path="/loans/borrowers/:borrowerId" element={<BorrowerLoansPage />} />
+          <Route path="/add" element={<NewLoanPage />} />
+          <Route path="/funds" element={<FundManagementPage />} />
+        </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />

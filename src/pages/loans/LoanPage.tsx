@@ -1,38 +1,29 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import Header from "../../components/ui/header/Header";
-import Navbar from "../../components/ui/navigation/Navbar";
-import styles from "./LoanPage.module.css";
-import ScheduleList from "../../features/loans/management/ScheduleList";
-import BorrowerList from "../../features/loans/management/BorrowerList";
+import { useOutletContext } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowUpDown } from "lucide-react";
 import PaymentActionModal from "../../features/loans/management/PaymentActionModal";
 import { ScheduleRepository } from "../../repositories/ScheduleRepository";
 import { useBorrowers } from "../../hooks/useBorrowers";
 import { formatCurrency } from "../../lib/formatters";
-import SearchBar from "../../components/ui/search/SearchBar";
-
+import type { AppLayoutContext } from "../../components/layout/AppLayout";
 import type { DashboardScheduleWithLoan } from "../../repositories/ScheduleRepository";
 
-export default function LoanPage() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"schedules" | "borrowers">(
-    "schedules",
-  );
-  const [dateFilter, setDateFilter] = useState<
-    "today" | "week" | "month" | "custom"
-  >("today");
-  const [customDate, setCustomDate] = useState(
-    new Date().toISOString().split("T")[0],
-  );
-  const [frequencyFilter, setFrequencyFilter] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  show: { opacity: 1, scale: 1, transition: { duration: 0.2 } }
+};
 
-  const { borrowers, loading: borrowersLoading } = useBorrowers();
+export default function LoanPage() {
+  const { searchQuery } = useOutletContext<AppLayoutContext>();
+  const [dateFilter, setDateFilter] = useState<"today" | "week" | "month" | "custom">("month");
+  const [customDate, setCustomDate] = useState(new Date().toISOString().split("T")[0]);
+  const [frequencyFilter, setFrequencyFilter] = useState<string>("all");
+
   const [schedules, setSchedules] = useState<DashboardScheduleWithLoan[]>([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] =
-    useState<DashboardScheduleWithLoan | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<DashboardScheduleWithLoan | null>(null);
 
-  // Calculate Date Ranges based on filter
   const dateRange = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -47,14 +38,15 @@ export default function LoanPage() {
       end.setDate(end.getDate() + 7);
     } else if (dateFilter === "month") {
       end.setMonth(end.getMonth() + 1);
+      start.setMonth(start.getMonth() - 1); // Get recent past to see late/paid ones
     }
 
     try {
-      const startISO = start.toISOString().split("T")[0];
-      const endISO = end.toISOString().split("T")[0];
-      return { startDate: startISO, endDate: endISO };
+      return { 
+        startDate: start.toISOString().split("T")[0], 
+        endDate: end.toISOString().split("T")[0] 
+      };
     } catch (e) {
-      console.error("Invalid date generated:", e);
       const now = new Date().toISOString().split("T")[0];
       return { startDate: now, endDate: now };
     }
@@ -63,35 +55,25 @@ export default function LoanPage() {
   const loadSchedules = useCallback(async () => {
     setSchedulesLoading(true);
     try {
-      const data = await ScheduleRepository.getDashboardSchedules(
-        dateRange.startDate,
-        dateRange.endDate,
-      );
+      const data = await ScheduleRepository.getDashboardSchedules(dateRange.startDate, dateRange.endDate);
       setSchedules(data);
-    } catch (e) {
-      console.error("Error fetching schedules:", e);
+    } catch {
+      console.error("Error fetching schedules");
     } finally {
       setSchedulesLoading(false);
     }
   }, [dateRange.startDate, dateRange.endDate]);
 
   useEffect(() => {
-    if (activeTab === "schedules") {
-      loadSchedules();
-    }
-  }, [activeTab, loadSchedules]);
+    loadSchedules();
+  }, [loadSchedules]);
 
   const filteredSchedules = useMemo(() => {
     return schedules.filter((s) => {
-      // 1. Frequency Filter
-      const matchesFreq =
-        frequencyFilter === "all" ||
-        s.loan?.frequency?.toLowerCase() === frequencyFilter.toLowerCase();
-
+      const matchesFreq = frequencyFilter === "all" || s.loan?.frequency?.toLowerCase() === frequencyFilter.toLowerCase();
       if (!matchesFreq) return false;
 
-      // 2. Search Filter
-      if (!searchQuery.trim()) return true;
+      if (!searchQuery?.trim()) return true;
       const query = searchQuery.toLowerCase();
       const borrower = s.loan?.borrower;
 
@@ -103,120 +85,145 @@ export default function LoanPage() {
     });
   }, [schedules, frequencyFilter, searchQuery]);
 
+  // Grouping into Kanban Columns
+  const columnsData: Record<string, DashboardScheduleWithLoan[]> = {
+    pending: [],
+    active: [],
+    delinquent: [],
+    paid: []
+  };
+
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  filteredSchedules.forEach(s => {
+    const status = s.status?.toLowerCase();
+    if (status === 'paid') {
+      columnsData.paid.push(s);
+    } else if (status === 'late' || (s.due_date && s.due_date < todayStr && status !== 'paid')) {
+      columnsData.delinquent.push(s);
+    } else if (s.due_date === todayStr) {
+      columnsData.active.push(s);
+    } else {
+      columnsData.pending.push(s);
+    }
+  });
+
+  const columns = [
+    { id: 'pending', title: 'Upcoming', items: columnsData.pending },
+    { id: 'active', title: 'Due Today', items: columnsData.active },
+    { id: 'delinquent', title: 'Delinquent', items: columnsData.delinquent },
+    { id: 'paid', title: 'Paid', items: columnsData.paid },
+  ];
+
   return (
-    <main className={styles.page}>
-      <Header
-        title="Loans Dashboard"
-        onMenuClick={() => setIsNavOpen((prev) => !prev)}
-      />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8]">
+      {/* Filters Area */}
+      <div className="px-8 pt-4 pb-2 shrink-0">
+        <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
+            {(["today", "week", "month"] as const).map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setDateFilter(filter)}
+                className={`px-5 py-2 rounded-xl text-xs font-bold uppercase transition-all whitespace-nowrap ${dateFilter === filter ? "bg-[#012a6a] text-white" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
 
-      <section className={styles.content}>
-        {/* Top Toggle */}
-        <div className="flex gap-2 bg-white p-1 rounded-full shadow-sm mb-6 max-w-sm mx-auto">
-          <button
-            className={`flex-1 py-2 px-4 rounded-full text-sm font-bold transition-colors ${activeTab === "schedules" ? "bg-main-blue text-white" : "text-gray-500 hover:text-main-blue"}`}
-            onClick={() => setActiveTab("schedules")}
-          >
-            Schedules
-          </button>
-          <button
-            className={`flex-1 py-2 px-4 rounded-full text-sm font-bold transition-colors ${activeTab === "borrowers" ? "bg-main-blue text-white" : "text-gray-500 hover:text-main-blue"}`}
-            onClick={() => setActiveTab("borrowers")}
-          >
-            Borrowers
-          </button>
-        </div>
-
-        {/* Schedules View */}
-        {activeTab === "schedules" && (
-          <div className="flex flex-col gap-6">
-            {/* Unified Filter Bar */}
-            <div className={styles.filterCard}>
-              <div className="p-4 flex flex-col lg:flex-row items-center gap-4">
-                {/* Search - Growing to fill space */}
-                <div className="w-full lg:flex-1">
-                  <SearchBar
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    placeholder="Search borrower or loan ID..."
-                    className="shadow-none!"
-                  />
-                </div>
-
-                {/* Filters - Right aligned on desktop */}
-                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                  <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
-                    {(["today", "week", "month"] as const).map((filter) => (
-                      <button
-                        key={filter}
-                        onClick={() => setDateFilter(filter)}
-                        className={`px-4 py-2 rounded-full text-xs font-bold uppercase transition-all whitespace-nowrap ${dateFilter === filter ? "bg-blue-100 text-main-blue border-blue-200 border" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
-                      >
-                        {filter}
-                      </button>
-                    ))}
-                  </div>
-
-                  <select
-                    className={`px-4 py-2 rounded-full text-xs font-bold uppercase transition-all cursor-pointer focus:outline-none ${
-                      frequencyFilter !== "all"
-                        ? "bg-blue-100 text-main-blue border-blue-200 border"
-                        : "bg-gray-100 text-gray-500 hover:bg-gray-200 border-transparent border"
-                    }`}
-                    value={frequencyFilter}
-                    onChange={(e) => setFrequencyFilter(e.target.value)}
-                  >
-                    <option value="all">All Freq</option>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="bi-monthly">Bi-Monthly</option>
-                    <option value="monthly">Monthly</option>
-                  </select>
-
-                  <input
-                    type="date"
-                    value={customDate}
-                    onChange={(e) => {
-                      setCustomDate(e.target.value);
-                      setDateFilter("custom");
-                    }}
-                    className="px-4 py-2 border border-gray-200 rounded-xl text-xs bg-white shadow-sm focus:outline-none focus:border-main-blue focus:ring-4 focus:ring-main-blue/5 transition-all font-bold text-main-blue grow sm:grow-0"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <ScheduleList
-              schedules={filteredSchedules}
-              loading={schedulesLoading}
-              onScheduleClick={(schedule) => setSelectedSchedule(schedule)}
+          <div className="flex items-center gap-3">
+            <select
+              className="px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer bg-gray-50 border border-gray-200 text-gray-600 focus:outline-none focus:border-[#012a6a]"
+              value={frequencyFilter}
+              onChange={(e) => setFrequencyFilter(e.target.value)}
+            >
+              <option value="all">All Freq</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="bi-monthly">Bi-Monthly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+            <input
+              type="date"
+              value={customDate}
+              onChange={(e) => {
+                setCustomDate(e.target.value);
+                setDateFilter("custom");
+              }}
+              className="px-4 py-2 border border-gray-200 rounded-xl text-xs bg-white focus:outline-none focus:border-[#012a6a] font-bold text-[#012a6a] transition-colors"
             />
+          </div>
+        </div>
+      </div>
 
-            {/* Total collections overview logic could be injected here */}
-            {filteredSchedules.length > 0 && !schedulesLoading && (
-              <div className="text-right text-gray-600 font-medium text-sm mt-4">
-                Total Due for selection:{" "}
-                {formatCurrency(
-                  filteredSchedules
-                    .filter((s) => s.status !== "paid")
-                    .reduce(
-                      (acc, curr) => acc + (Number(curr.amount_due) || 0),
-                      0,
-                    ),
-                )}
+      {/* Kanban Board Area */}
+      <div className="flex-1 overflow-x-auto overflow-y-hidden px-8 pb-8 pt-2">
+        {schedulesLoading ? (
+          <div className="h-full flex items-center justify-center text-gray-500 font-medium">Loading schedules...</div>
+        ) : (
+          <div className="flex gap-6 h-full min-w-max">
+            {columns.map(col => (
+              <div key={col.id} className="w-[320px] flex flex-col h-full">
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <h2 className="font-semibold text-[1.05rem] text-gray-900">{col.title}</h2>
+                  <div className="flex items-center gap-1 border border-gray-200 bg-white px-2 py-0.5 rounded-lg text-sm font-medium text-gray-600 shadow-sm">
+                    <span>{col.items.length}</span>
+                    <ArrowUpDown size={14} className="text-gray-400" />
+                  </div>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto pr-2 pb-4 flex flex-col gap-4 scrollbar-thin">
+                  {col.items.length === 0 ? (
+                    <div className="border-2 border-dashed border-gray-200 rounded-2xl h-24 flex items-center justify-center text-sm text-gray-400 font-medium">
+                      Empty
+                    </div>
+                  ) : (
+                    col.items.map(schedule => (
+                      <motion.div 
+                        key={schedule.id}
+                        layout
+                        variants={itemVariants}
+                        initial="hidden"
+                        animate="show"
+                        exit="hidden"
+                        className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer relative overflow-hidden group"
+                        onClick={() => setSelectedSchedule(schedule)}
+                      >
+                        <div className={`absolute top-0 left-0 w-1 h-full ${
+                          col.id === 'delinquent' ? 'bg-red-500' : 
+                          col.id === 'paid' ? 'bg-green-500' : 
+                          col.id === 'active' ? 'bg-[#012a6a]' : 'bg-blue-300'
+                        }`} />
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-semibold text-gray-900 text-sm truncate pr-2">
+                            {schedule.loan?.borrower?.full_name || "Unknown Borrower"}
+                          </h3>
+                          <span className="font-bold text-[#012a6a] text-sm shrink-0">
+                            {formatCurrency(Number(schedule.amount_due) || 0)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium mb-3">Due: {new Date(schedule.due_date).toLocaleDateString()}</p>
+                        <div className="flex items-center justify-between mt-4">
+                          <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
+                            col.id === 'delinquent' ? 'bg-red-50 text-red-700' : 
+                            col.id === 'paid' ? 'bg-green-50 text-green-700' : 
+                            col.id === 'active' ? 'bg-blue-50 text-[#012a6a]' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {col.title}
+                          </span>
+                          <span className="text-xs text-gray-400 font-medium">#{schedule.loan_id.slice(0,6)}</span>
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
               </div>
-            )}
+            ))}
           </div>
         )}
+      </div>
 
-        {/* Borrowers View */}
-        {activeTab === "borrowers" && (
-          <BorrowerList borrowers={borrowers} loading={borrowersLoading} />
-        )}
-      </section>
-
-      {/* Payment Action Modal */}
       {selectedSchedule && (
         <PaymentActionModal
           loanId={selectedSchedule.loan_id}
@@ -225,10 +232,10 @@ export default function LoanPage() {
           onClose={() => setSelectedSchedule(null)}
           onSuccess={() => {
             setSelectedSchedule(null);
-            loadSchedules(); // Force refresh dashboard data to reflect payment status
+            loadSchedules();
           }}
         />
       )}
-    </main>
+    </div>
   );
 }

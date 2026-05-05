@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import BalanceCard from "../../components/home/BalanceCard";
 import DueCard from "../../components/home/DueCard";
 import RevenueCard from "../../components/home/RevenueCard";
 import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
-import Header from "../../components/ui/header/Header";
-import Navbar from "../../components/ui/navigation/Navbar";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import {
   DashboardRepository,
@@ -13,7 +12,6 @@ import {
   type DashboardLoan,
   type DashboardSchedule,
 } from "../../repositories/DashboardRepository";
-import styles from "./HomePage.module.css";
 
 function getTodayDateKey() {
   const now = new Date();
@@ -28,7 +26,6 @@ type RevenueChartDatum = {
   value: number;
 };
 
-// Local type for payments returned by the dashboard repository
 type Payment = {
   id?: string;
   amount_paid?: number;
@@ -36,8 +33,22 @@ type Payment = {
   [key: string]: unknown;
 };
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
+
 export default function HomePage() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const { profile, isLoading: profileIsLoading } = useCurrentUserProfile();
   const [loans, setLoans] = useState<DashboardLoan[]>([]);
@@ -163,22 +174,34 @@ export default function HomePage() {
     );
 
   return (
-    <main className={styles.page} data-testid="dashboard-root">
-      <Header title="Home" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-
-      <section className={styles.content}>
-        <div className={styles.hero}>
-          <h2 className={styles.greeting}>
+    <div className="flex-1 px-8 pb-12 pt-4 bg-[#F9F9F8]">
+      <div className="max-w-7xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8"
+        >
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">
             Hi, {profile?.display_name ?? "there"}!
           </h2>
-          <p className={styles.subtitle}>Here is your lending summary today.</p>
-        </div>
+          <p className="text-gray-500 font-medium">Here is your lending summary today.</p>
+        </motion.div>
 
-        {error ? <FeedbackMessage message={error} /> : null}
+        {error ? (
+          <div className="mb-8">
+            <FeedbackMessage message={error} />
+          </div>
+        ) : null}
 
-        <div className={styles.grid}>
-          <div className={styles.balanceCard}>
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {/* Balance Card - Wide on medium screens */}
+          <motion.div variants={itemVariants} className="md:col-span-2 lg:col-span-2 h-full">
             <BalanceCard
               outstandingBalance={outstandingFundBalance}
               initialCapital={profile?.initial_capital ?? 0}
@@ -188,24 +211,24 @@ export default function HomePage() {
               isLoading={profileIsLoading || dashboardIsLoading}
               onManageFunds={() => navigate("/funds")}
             />
-          </div>
+          </motion.div>
 
-          <div className={styles.revenueCard}>
+          <motion.div variants={itemVariants} className="h-full">
+            <DueCard
+              items={dueTodayItems}
+              isLoading={profileIsLoading || dashboardIsLoading}
+            />
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="md:col-span-2 lg:col-span-3 h-full">
             <RevenueCard
               data={revenueChartData}
               totalRevenue={totalRevenue}
               isLoading={profileIsLoading || dashboardIsLoading}
             />
-          </div>
-
-          <div className={styles.dueCard}>
-            <DueCard
-              items={dueTodayItems}
-              isLoading={profileIsLoading || dashboardIsLoading}
-            />
-          </div>
-        </div>
-      </section>
-    </main>
+          </motion.div>
+        </motion.div>
+      </div>
+    </div>
   );
 }

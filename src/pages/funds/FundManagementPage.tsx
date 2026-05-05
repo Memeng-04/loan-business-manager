@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import BalanceCard from "../../components/home/BalanceCard";
 import Card from "../../components/ui/card/Card";
 import Button from "../../components/ui/Button";
-import Header from "../../components/ui/header/Header";
-import Navbar from "../../components/ui/navigation/Navbar";
+
+
 import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
 import EditFundsModal, {
   type EditFundsFormData,
@@ -15,7 +15,7 @@ import {
   DashboardRepository,
   type DashboardLoan,
 } from "../../repositories/DashboardRepository";
-import styles from "./FundManagementPage.module.css";
+
 
 type Transaction = {
   id: string;
@@ -26,7 +26,6 @@ type Transaction = {
 };
 
 export default function FundManagementPage() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const {
     profile,
@@ -136,14 +135,14 @@ export default function FundManagementPage() {
   };
 
   return (
-    <main className={styles.page}>
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
       <Header
         title="Fund Management"
         onMenuClick={() => setIsNavOpen((prev) => !prev)}
       />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
-      <section className={styles.content}>
+      <div className="max-w-4xl mx-auto p-8 w-full">
         <div className={styles.backButtonWrapper}>
           <Button
             variant="back"
@@ -211,7 +210,7 @@ export default function FundManagementPage() {
             )}
           </Card>
         </div>
-      </section>
+      </div>
 
       <EditFundsModal
         isOpen={isEditModalOpen}
@@ -219,6 +218,6 @@ export default function FundManagementPage() {
         onSubmit={handleEditFunds}
         isSubmitting={isSubmitting}
       />
-    </main>
+    </div>
   );
 }

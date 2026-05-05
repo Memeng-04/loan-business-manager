@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/card/Card";
 import FeedbackMessage from "../../components/ui/feedback/FeedbackMessage";
-import Header from "../../components/ui/header/Header";
-import Navbar from "../../components/ui/navigation/Navbar";
+
+
 import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { UserProfileRepository } from "../../repositories/UserProfileRepository";
-import styles from "./MorePage.module.css";
+
 import LoadingState from "../../components/ui/LoadingState";
 
 const TERMS_TEXT = `1. NO LEGAL OR FINANCIAL ADVICE
@@ -44,7 +44,6 @@ These terms shall be governed by the laws of the Republic of the Philippines.
 By using LEND, the user confirms they have read, understood, and agreed to these terms.`;
 
 export default function MorePage() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -121,22 +120,22 @@ export default function MorePage() {
 
   if (isProfileLoading) {
     return (
-      <main className={styles.page}>
+      <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
         <Header title="More" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
         <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-        <section className={styles.content}>
+        <div className="max-w-4xl mx-auto p-8 w-full">
           <LoadingState message="Loading profile..." />
-        </section>
-      </main>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className={styles.page}>
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
       <Header title="More" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
-      <section className={styles.content}>
+      <div className="max-w-4xl mx-auto p-8 w-full">
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Profile</h2>
 
@@ -237,7 +236,7 @@ export default function MorePage() {
             {isLoggingOut ? "Logging out..." : "Log out"}
           </Button>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

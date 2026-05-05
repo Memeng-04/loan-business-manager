@@ -1,15 +1,13 @@
-import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AddBorrowerForm from "../../../components/borrowers/AddBorrowerForm/AddBorrowerForm";
-import Header from "../../../components/ui/header/Header";
-import Navbar from "../../../components/ui/navigation/Navbar";
+
+
 import { useCreateBorrower } from "../../../hooks/useCreateBorrower";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
-import styles from "./AddBorrowerPage.module.css";
+
 
 export default function AddBorrowerPage() {
   const navigate = useNavigate();
-  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const { createBorrower, loading, error } = useCreateBorrower();
 
@@ -25,21 +23,21 @@ export default function AddBorrowerPage() {
   }
 
   return (
-    <main className={styles.page}>
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
       <Header
         title="Add Borrower"
         onMenuClick={() => setIsNavOpen((prev: boolean) => !prev)}
       />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
-      <section className={styles.content}>
+      <div className="max-w-4xl mx-auto p-8 w-full">
         <AddBorrowerForm
           loading={loading}
           error={error}
           onSubmit={handleSubmit}
           onCancel={() => navigate(isFromWizard ? "/add" : "/borrowers")}
         />
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

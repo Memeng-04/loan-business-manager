@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Calendar, CreditCard, Trash2, Plus } from "lucide-react";
-import Header from "../../components/ui/header/Header";
-import Navbar from "../../components/ui/navigation/Navbar";
+
+
 import Card from "../../components/ui/card/Card";
 import Button from "../../components/ui/Button";
 import LoadingState from "../../components/ui/LoadingState";
@@ -17,13 +17,12 @@ import type { PaymentFrequency } from "../../types/loans";
 import type { Loan } from "../../types/loans";
 import type { ScheduleEntry } from "../../types/strategies";
 import { sanitizeNumber } from "../../utils/numberUtils";
-import styles from "./LoanPage.module.css";
+
 import BorrowerProfileCard from "../../components/borrowers/BorrowerDetails/BorrowerProfileCard";
 
 export default function BorrowerLoansPage() {
   const { borrowerId } = useParams<{ borrowerId: string }>();
   const navigate = useNavigate();
-  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const { borrowers, loading: borrowersLoading } = useBorrowers();
   const borrower = borrowers.find((b) => b.id === borrowerId);
@@ -193,28 +192,28 @@ export default function BorrowerLoansPage() {
 
   if (borrowersLoading || !borrower) {
     return (
-      <main className={styles.page}>
+      <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
         <Header
           title="Loading..."
           onMenuClick={() => setIsNavOpen((prev) => !prev)}
         />
         <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-        <section className={styles.content}>
+        <div className="max-w-4xl mx-auto p-8 w-full">
           <LoadingState message="Loading borrower details..." />
-        </section>
-      </main>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className={styles.page}>
+    <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
       <Header
         title="Loan Details"
         onMenuClick={() => setIsNavOpen((prev) => !prev)}
       />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
-      <section className={styles.content}>
+      <div className="max-w-4xl mx-auto p-8 w-full">
         {/* Top bar: BorrowerProfileCard */}
         <div className="mb-2">
           <BorrowerProfileCard
@@ -587,7 +586,7 @@ export default function BorrowerLoansPage() {
             </>
           )}
         </div>
-      </section>
+      </div>
 
       {/* Payment Action Modal */}
       {paymentModalOpen && selectedSchedule && selectedLoan && (
@@ -606,6 +605,6 @@ export default function BorrowerLoansPage() {
           }}
         />
       )}
-    </main>
+    </div>
   );
 }
