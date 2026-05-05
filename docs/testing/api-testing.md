@@ -20,6 +20,7 @@ We use **Vitest** to handle the test runner and assertions, while the **Supabase
 ## Why we use it
 
 Edge Functions are written in Deno and run in a different environment than our React frontend. API testing is crucial to:
+
 - Test logic that cannot be done on the client (like database transactions across multiple tables).
 - Ensure the communication between the Frontend and the Backend endpoints remains robust.
 - Catch bugs in "headless" logic that doesn't have a UI yet.
@@ -32,20 +33,26 @@ Edge Functions are written in Deno and run in a different environment than our R
     - We use `signInWithPassword` to get a real **JWT Access Token**.
 3.  **Function Invocation:** We call the function using the standard Supabase client with the user's token:
     ```typescript
-    const { data, error } = await supabaseUser.functions.invoke('record-payment', {
-      headers: { Authorization: `Bearer ${userToken}` },
-      body: { loanId: testLoanId, amount: 100 }
-    });
+    const { data, error } = await supabaseUser.functions.invoke(
+      "record-payment",
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+        body: { loanId: testLoanId, amount: 100 },
+      },
+    );
     ```
 4.  **Verification:** We verify both the response from the function and the resulting state in the database.
 
-### Code Example ([supabase/functions/__tests__/record-payment.test.ts](supabase/functions/__tests__/record-payment.test.ts#L79))
+### Code Example ([supabase/functions/**tests**/record-payment.test.ts](../../supabase/functions/__tests__/record-payment.test.ts#L79))
 
 ```typescript
-it('should record a payment successfully', async () => {
-  const { data, error } = await supabaseUser.functions.invoke('record-payment', {
-    body: { loanId: testLoanId, amount: 100 }
-  });
+it("should record a payment successfully", async () => {
+  const { data, error } = await supabaseUser.functions.invoke(
+    "record-payment",
+    {
+      body: { loanId: testLoanId, amount: 100 },
+    },
+  );
 
   expect(data?.success).toBe(true);
   // We also check the database to ensure a payment record was actually created

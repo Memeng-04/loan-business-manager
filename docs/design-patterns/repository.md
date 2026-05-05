@@ -7,12 +7,12 @@ The **Repository Pattern** is used to mediate between the domain and data mappin
 The repository pattern is central to how LEND interacts with Supabase (PostgreSQL). Each major entity has its own repository class.
 
 - **Files:**
-  - [src/repositories/BorrowerRepository.ts](src/repositories/BorrowerRepository.ts)
-  - [src/repositories/LoanRepository.ts](src/repositories/LoanRepository.ts)
-  - [src/repositories/PaymentRepository.ts](src/repositories/PaymentRepository.ts)
-  - [src/repositories/ScheduleRepository.ts](src/repositories/ScheduleRepository.ts)
-  - [src/repositories/UserProfileRepository.ts](src/repositories/UserProfileRepository.ts)
-  - [src/repositories/DashboardRepository.ts](src/repositories/DashboardRepository.ts)
+  - [src/repositories/BorrowerRepository.ts](../../src/repositories/BorrowerRepository.ts)
+  - [src/repositories/LoanRepository.ts](../../src/repositories/LoanRepository.ts)
+  - [src/repositories/PaymentRepository.ts](../../src/repositories/PaymentRepository.ts)
+  - [src/repositories/ScheduleRepository.ts](../../src/repositories/ScheduleRepository.ts)
+  - [src/repositories/UserProfileRepository.ts](../../src/repositories/UserProfileRepository.ts)
+  - [src/repositories/DashboardRepository.ts](../../src/repositories/DashboardRepository.ts)
 
 ## Purpose and Advantages
 
@@ -29,7 +29,7 @@ The Repositories provide static methods for CRUD operations. They handle:
 - Constructing complex Supabase queries.
 - Mapping database records back to TypeScript types.
 
-### Code Example ([src/repositories/BorrowerRepository.ts](src/repositories/BorrowerRepository.ts#L7))
+### Code Example ([src/repositories/BorrowerRepository.ts](../../src/repositories/BorrowerRepository.ts#L7))
 
 ```typescript
 export class BorrowerRepository {

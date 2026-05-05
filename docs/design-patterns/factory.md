@@ -7,9 +7,9 @@ The **Factory Pattern** is a creational pattern that provides an interface for c
 LEND uses the Factory pattern to standardize the creation of complex objects like Loans and Borrowers, ensuring all necessary transformations and calculations are performed correctly.
 
 - **Files:**
-  - [src/factories/LoanFactory.ts](src/factories/LoanFactory.ts)
-  - [src/factories/BorrowerFactory.ts](src/factories/BorrowerFactory.ts)
-  - [src/factories/PaymentActionFactory.ts](src/factories/PaymentActionFactory.ts)
+  - [src/factories/LoanFactory.ts](../../src/factories/LoanFactory.ts)
+  - [src/factories/BorrowerFactory.ts](../../src/factories/BorrowerFactory.ts)
+  - [src/factories/PaymentActionFactory.ts](../../src/factories/PaymentActionFactory.ts)
 
 ## Purpose and Advantages
 
@@ -21,7 +21,7 @@ LEND uses the Factory pattern to standardize the creation of complex objects lik
 
 The Factory classes provide static methods that take raw input from the UI and return a fully formed object ready to be saved to the database. It often works in conjunction with the **Strategy Pattern**.
 
-### Code Example ([src/factories/LoanFactory.ts](src/factories/LoanFactory.ts#L8))
+### Code Example ([src/factories/LoanFactory.ts](../../src/factories/LoanFactory.ts#L8))
 
 ```typescript
 export class LoanFactory {

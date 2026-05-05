@@ -26,21 +26,22 @@ LEND utilizes Storybook for visual documentation and automated interaction tests
 
 We define "Stories" for each component that represent its different states.
 
-### Storybook Example ([src/components/stories/ui/Button.stories.tsx](src/components/stories/ui/Button.stories.tsx))
+### Storybook Example ([src/components/stories/ui/Button.stories.tsx](../../src/components/stories/ui/Button.stories.tsx))
 
 ```tsx
 export const Primary: Story = {
   args: {
-    children: 'Submit Payment',
-    variant: 'primary',
+    children: "Submit Payment",
+    variant: "primary",
   },
 };
 
 export const Loading: Story = {
   args: {
-    children: 'Processing...',
+    children: "Processing...",
     isLoading: true,
   },
 };
 ```
+
 By isolating components, we ensure that changes to one part of the UI don't accidentally break others.

@@ -30,7 +30,7 @@ We use integration tests because "mocking" a database isn't enough to guarantee 
 2.  **Clean up:** Before each test, we delete all records for that test user to ensure a "clean slate."
 3.  **Execution:** We call the Repository methods directly and assert that the data in the database matches what we expect.
 
-### Code Example ([src/repositories/**tests**/BorrowerRepository.integration.test.ts](src/repositories/__tests__/BorrowerRepository.integration.test.ts#L33))
+### Code Example ([src/repositories/**tests**/BorrowerRepository.integration.test.ts](../../src/repositories/__tests__/BorrowerRepository.integration.test.ts#L33))
 
 ```typescript
 it("should create and fetch a borrower", async () => {

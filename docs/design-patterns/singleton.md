@@ -6,7 +6,7 @@ The **Singleton Pattern** ensures that a class has only one instance and provide
 
 In LEND, the primary use of the Singleton pattern is for the database connection (Supabase Client).
 
-- **File:** [src/services/supabase.ts](src/services/supabase.ts)
+- **File:** [src/services/supabase.ts](../../src/services/supabase.ts)
 
 ## Purpose and Advantages
 
@@ -18,7 +18,7 @@ In LEND, the primary use of the Singleton pattern is for the database connection
 
 Instead of creating a new client every time we need to query data, the `supabase.ts` file initializes the client once and exports it. Due to the way JavaScript modules work, this exported variable acts as a Singleton.
 
-### Code Example ([src/services/supabase.ts](src/services/supabase.ts#L13))
+### Code Example ([src/services/supabase.ts](../../src/services/supabase.ts#L13))
 
 ```typescript
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;

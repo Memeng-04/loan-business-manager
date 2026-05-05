@@ -13,7 +13,7 @@ We use **Playwright** to automate a browser (Chromium/Webkit) and perform action
 ## What we test (The Critical Path)
 
 1.  **Authentication:** Login and Onboarding flows.
-2.  **Successful Loan Cycle:** 
+2.  **Successful Loan Cycle:**
     - Create a Borrower.
     - Create a Loan for that borrower.
     - Record a Payment for that loan.
@@ -31,19 +31,20 @@ We follow the **Page Object Model (POM)** to keep tests readable and maintainabl
 1.  **Page Objects:** We have files like `LoanPage.ts` and `BorrowerPage.ts` that encapsulate the selectors for those pages.
 2.  **Specs:** The test files (`.spec.ts`) describe the user story.
 
-### Code Example ([E2E/loans.spec.ts](E2E/loans.spec.ts#L6))
+### Code Example ([E2E/loans.spec.ts](../../E2E/loans.spec.ts#L6))
 
 ```typescript
-test('should create a loan and record payment', async ({ page }) => {
-    const loanPage = new LoanPage(page);
-    await loanPage.goto();
-    
-    await loanPage.selectLoanType('fixed');
-    await loanPage.selectBorrower('John Doe');
-    await loanPage.fillLoanDetails('50000', 'monthly', '6', startDate);
-    await loanPage.confirmLoan();
-    
-    await loanPage.expectSuccess();
+test("should create a loan and record payment", async ({ page }) => {
+  const loanPage = new LoanPage(page);
+  await loanPage.goto();
+
+  await loanPage.selectLoanType("fixed");
+  await loanPage.selectBorrower("John Doe");
+  await loanPage.fillLoanDetails("50000", "monthly", "6", startDate);
+  await loanPage.confirmLoan();
+
+  await loanPage.expectSuccess();
 });
 ```
+
 E2E testing ensures that no matter how much we refactor the "under the hood" code, the user's experience remains broken-free.

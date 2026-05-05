@@ -7,11 +7,11 @@ The **Strategy Pattern** defines a family of algorithms, encapsulates each one, 
 LEND uses the Strategy pattern to handle different types of interest calculations and payment actions.
 
 - **Files:**
-  - [src/strategies/InterestStrategy.ts](src/strategies/InterestStrategy.ts)
-  - [src/strategies/PaymentActionStrategies.ts](src/strategies/PaymentActionStrategies.ts)
-  - [src/types/strategies.ts](src/types/strategies.ts) (Interfaces)
+  - [src/strategies/InterestStrategy.ts](../../src/strategies/InterestStrategy.ts)
+  - [src/strategies/PaymentActionStrategies.ts](../../src/strategies/PaymentActionStrategies.ts)
+  - [src/types/strategies.ts](../../src/types/strategies.ts) (Interfaces)
 
-## Interfaces ([src/types/strategies.ts](src/types/strategies.ts))
+## Interfaces ([src/types/strategies.ts](../../src/types/strategies.ts))
 
 ```typescript
 export interface IInterestStrategy {
@@ -38,7 +38,7 @@ In LEND, we have two primary interest strategies:
 - **`FixedInterestStrategy`**: Used when the lender specifies the total amount the borrower must pay.
 - **`PercentageInterestStrategy`**: Used when the lender specifies an interest rate (e.g., 5%).
 
-### Code Example ([src/strategies/InterestStrategy.ts](src/strategies/InterestStrategy.ts#L45))
+### Code Example ([src/strategies/InterestStrategy.ts](../../src/strategies/InterestStrategy.ts#L45))
 
 ```typescript
 export class PercentageInterestStrategy extends BaseInterestStrategy implements IInterestStrategy {
@@ -55,17 +55,22 @@ export class PercentageInterestStrategy extends BaseInterestStrategy implements 
 
 We implemented the Strategy pattern by defining a strictly typed interface and concrete class implementations.
 
-1.  **Interface Definition:** We created `IInterestStrategy` in `src/types/strategies.ts` to enforce a consistent contract for all calculation methods.
+1.  **Interface/Abstract Class:** We created `IInterestStrategy` in `src/types/strategies.ts` to enforce a consistent contract for all calculation methods.
 2.  **Base Class:** We created `BaseInterestStrategy` to share common logic like date calculations and payment distribution.
 3.  **Concrete Strategies:** We implemented `FixedInterestStrategy` and `PercentageInterestStrategy`.
 4.  **Dynamic Selection:** In our `LoanFactory`, we import these strategies and instantiate the correct one based on the user's input:
+
     ```typescript
-    import { FixedInterestStrategy, PercentageInterestStrategy } from '../strategies/InterestStrategy';
-    
+    import {
+      FixedInterestStrategy,
+      PercentageInterestStrategy,
+    } from "../strategies/InterestStrategy";
+
     // The factory decides which strategy to use
-    const strategy = input.type === 'fixed' 
-      ? new FixedInterestStrategy() 
-      : new PercentageInterestStrategy();
+    const strategy =
+      input.type === "fixed"
+        ? new FixedInterestStrategy()
+        : new PercentageInterestStrategy();
     ```
 
 ## Why we chose it

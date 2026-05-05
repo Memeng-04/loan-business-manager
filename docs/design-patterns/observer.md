@@ -7,11 +7,11 @@ The **Observer Pattern** defines a one-to-many dependency between objects so tha
 LEND uses the Observer pattern to keep the Dashboard UI synchronized with the underlying financial data without direct coupling.
 
 - **Files:**
-  - [src/observers/Observer.ts](src/observers/Observer.ts) (Interface)
-  - [src/observers/DashboardSubject.ts](src/observers/DashboardSubject.ts) (Subject)
-  - [src/observers/index.ts](src/observers/index.ts) (Singleton instance)
+  - [src/observers/Observer.ts](../../src/observers/Observer.ts) (Interface)
+  - [src/observers/DashboardSubject.ts](../../src/observers/DashboardSubject.ts) (Subject)
+  - [src/observers/index.ts](../../src/observers/index.ts) (Singleton instance)
 
-## Interfaces ([src/observers/Observer.ts](src/observers/Observer.ts#L5))
+## Interfaces ([src/observers/Observer.ts](../../src/observers/Observer.ts#L5))
 
 ```typescript
 export interface Observer {
@@ -41,7 +41,7 @@ export interface DashboardState {
 2.  **Attach/Detach:** Components can `attach` themselves to the subject when they mount and `detach` when they unmount.
 3.  **Notify:** When data is fetched or updated (e.g., after a payment is recorded), the `setState` method is called, which triggers `notify()`, calling `update()` on all registered observers.
 
-### Code Example ([src/observers/DashboardSubject.ts](src/observers/DashboardSubject.ts#L8))
+### Code Example ([src/observers/DashboardSubject.ts](../../src/observers/DashboardSubject.ts#L8))
 
 ```typescript
 export class DashboardSubject {
