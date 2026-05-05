@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Header from "../../../components/header/Header";
-import LoadingState from "../../../components/LoadingState";
-import Navbar from "../../../components/navigation/Navbar";
+import Header from "../../../components/ui/header/Header";
+import LoadingState from "../../../components/ui/LoadingState";
+import Navbar from "../../../components/ui/navigation/Navbar";
 import { BorrowerRepository } from "../../../repositories/BorrowerRepository";
 import { LoanRepository } from "../../../repositories/LoanRepository";
 import type { Borrower } from "../../../types/borrowers";
@@ -182,10 +182,7 @@ export default function BorrowerDetailsPage() {
       {!loading && !error && borrower ? (
         <main className={styles.content}>
           <section className={styles.container}>
-            <BorrowerProfileCard
-              name={borrower.full_name}
-              onBack={() => navigate("/borrowers")}
-            />
+            <BorrowerProfileCard name={borrower.full_name} />
 
             <div className={styles.detailsGrid}>
               <BorrowerInformationCard
@@ -209,7 +206,7 @@ export default function BorrowerDetailsPage() {
                   latestLoan ? formatCurrency(latestLoan.principal) : "—"
                 }
                 latestLoanCreatedAt={formatDate(latestLoan?.created_at)}
-                onSeeLoans={() => navigate("/loans")}
+                onSeeLoans={() => navigate(`/loans/borrowers/${borrower.id}`)}
               />
             </div>
           </section>

@@ -1,7 +1,7 @@
-import Button from "../../Button";
-import Card from "../../card/Card";
-import FeedbackMessage from "../../feedback/FeedbackMessage";
-import StatusBadge from "../../status-badge/StatusBadge";
+import Button from "../../ui/Button";
+import Card from "../../ui/card/Card";
+import FeedbackMessage from "../../ui/feedback/FeedbackMessage";
+import StatusBadge from "../../ui/status-badge/StatusBadge";
 import type { Loan } from "../../../types/loans";
 import styles from "./BorrowerDetailCards.module.css";
 

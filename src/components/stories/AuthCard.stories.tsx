@@ -4,7 +4,7 @@ import AuthCard from "../auth/AuthCard";
 import styles from "../../pages/auth/AuthPage.module.css";
 
 const meta = {
-  title: "Components/AuthCard",
+  title: "Pages/AuthPage",
   component: AuthCard,
   parameters: {
     layout: "fullscreen",
@@ -73,6 +73,9 @@ export const WithError = {
 
 export const Submitting = {
   args: {
+    mode: "login",
+    email: "test@gmail.com",
+    password: "password",
     isSubmitting: true,
   },
 };

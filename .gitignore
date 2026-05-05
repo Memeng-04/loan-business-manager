@@ -15,6 +15,7 @@ dist-ssr
 # env files
 .env
 .env.*
+.env.test
 
 # Editor directories and files
 .vscode/*
@@ -28,6 +29,8 @@ dist-ssr
 *.sw?
 
 # temp files
+
+.agents/
 tmpclaude-*
 
 # Supabase
@@ -36,3 +39,11 @@ supabase/functions/**/node_modules
 
 # OS
 Thumbs.db
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.auth/
+
+

@@ -1,20 +1,19 @@
 .panel {
   width: 100%;
-  padding: 0.125rem 1.75rem 1.75rem;
+  padding: 1.75rem;
   border-radius: 1.5rem;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(4px);
 }
 
 .authTabs {
-  margin-top: -0.75rem;
   margin-bottom: 1.5rem;
   display: flex;
   gap: 0.5rem;
 }
 
 .halfButton {
-  width: 50%;
+  flex: 1;
 }
 
 .form {
@@ -60,10 +59,58 @@
 
 .submitButton {
   width: 100%;
+  margin-top: 1rem;
+}
+
+.passwordContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordContainer .input {
+  padding-right: 3rem;  /* Space for icon */
+  width: 100%;  /* Full width */
+}
+
+.toggleButton {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.toggleButton:hover {
+  opacity: 1;
+  color: #000;
+}
+
+.toggleButton:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.errorMessage {
+  color: white;
+  background: rgba(255, 0, 0, 0.5);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
 }
 
 @media (min-width: 640px) {
   .panel {
-    padding: 0.125rem 1.75rem 1.75rem;
+    /* Padding is already set in .panel */
   }
 }

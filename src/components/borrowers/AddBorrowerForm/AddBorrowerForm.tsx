@@ -1,9 +1,10 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import Button from "../../Button";
-import Card from "../../card/Card";
-import FeedbackMessage from "../../feedback/FeedbackMessage";
+import Button from "../../ui/Button";
+import Card from "../../ui/card/Card";
+import FeedbackMessage from "../../ui/feedback/FeedbackMessage";
 import type { CreateBorrowerInput } from "../../../types/borrowers";
+import { sanitizeNumber } from "../../../utils/numberUtils";
 import styles from "./AddBorrowerForm.module.css";
 
 type AddBorrowerFormProps = {
@@ -13,6 +14,9 @@ type AddBorrowerFormProps = {
   error?: string | null;
   initialValues?: Partial<CreateBorrowerInput>;
 };
+
+// Helper: only digits allowed
+const sanitizeDigits = (value: string): string => value.replace(/\D/g, "");
 
 export default function AddBorrowerForm({
   onSubmit,
@@ -24,7 +28,9 @@ export default function AddBorrowerForm({
   const [fullName, setFullName] = useState(initialValues?.full_name ?? "");
   const [email, setEmail] = useState(initialValues?.email ?? "");
   const [address, setAddress] = useState(initialValues?.address ?? "");
-  const [phone, setPhone] = useState(initialValues?.phone ?? "");
+  const [phone, setPhone] = useState(
+    initialValues?.phone ? String(initialValues.phone) : ""
+  );
   const [monthlyIncome, setMonthlyIncome] = useState(
     typeof initialValues?.monthly_income === "number"
       ? String(initialValues.monthly_income)
@@ -34,16 +40,14 @@ export default function AddBorrowerForm({
     initialValues?.source_of_income ?? "",
   );
   const [secondaryContactNumber, setSecondaryContactNumber] = useState(
-    initialValues?.secondary_contact_number ?? "",
+    initialValues?.secondary_contact_number
+      ? String(initialValues.secondary_contact_number)
+      : "",
   );
   const [secondaryContactName, setSecondaryContactName] = useState(
     initialValues?.secondary_contact_name ?? "",
   );
   const [formError, setFormError] = useState<string | null>(null);
-
-  function isDigits(value: string) {
-    return /^\d+$/.test(value);
-  }
 
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -53,25 +57,25 @@ export default function AddBorrowerForm({
     event.preventDefault();
 
     const trimmedName = fullName.trim();
-    const trimmedAddress = address.trim();
-    const trimmedPhone = phone.trim();
     const trimmedEmail = email.trim();
-    const trimmedSecondaryNumber = secondaryContactNumber.trim();
-    const trimmedSecondaryName = secondaryContactName.trim();
-    const trimmedSourceOfIncome = sourceOfIncome.trim();
+    const trimmedAddress = address.trim();
+    // phone and secondary are already sanitized to digits only
+    const trimmedPhone = phone.trim();
     const trimmedMonthlyIncome = monthlyIncome.trim();
+    const trimmedSourceOfIncome = sourceOfIncome.trim();
+    const trimmedSecondaryName = secondaryContactName.trim();
+    const trimmedSecondaryNumber = secondaryContactNumber.trim();
+
+    // Sanitize monthly income (extra safety)
+    const sanitizedMonthlyIncome = trimmedMonthlyIncome.replace(/[^0-9.]/g, '');
 
     if (!trimmedName || !trimmedAddress || !trimmedPhone) {
       setFormError("Name, address, and phone number are required.");
       return;
     }
 
-    if (
-      !isDigits(trimmedPhone) ||
-      trimmedPhone.length < 7 ||
-      trimmedPhone.length > 15
-    ) {
-      setFormError("Phone number must be numeric and 7 to 15 digits long.");
+    if (trimmedPhone.length < 7 || trimmedPhone.length > 15) {
+      setFormError("Phone number must contain 7 to 15 digits.");
       return;
     }
 
@@ -82,13 +86,9 @@ export default function AddBorrowerForm({
 
     if (
       trimmedSecondaryNumber &&
-      (!isDigits(trimmedSecondaryNumber) ||
-        trimmedSecondaryNumber.length < 7 ||
-        trimmedSecondaryNumber.length > 15)
+      (trimmedSecondaryNumber.length < 7 || trimmedSecondaryNumber.length > 15)
     ) {
-      setFormError(
-        "Secondary contact number must be numeric and 7 to 15 digits long.",
-      );
+      setFormError("Secondary contact number must contain 7 to 15 digits.");
       return;
     }
 
@@ -102,7 +102,7 @@ export default function AddBorrowerForm({
       return;
     }
 
-    if (trimmedMonthlyIncome && Number.isNaN(Number(trimmedMonthlyIncome))) {
+    if (sanitizedMonthlyIncome && Number.isNaN(Number(sanitizedMonthlyIncome))) {
       setFormError("Monthly income must be a valid number.");
       return;
     }
@@ -113,10 +113,8 @@ export default function AddBorrowerForm({
       full_name: trimmedName,
       email: trimmedEmail,
       address: trimmedAddress,
-      phone: trimmedPhone,
-      monthly_income: trimmedMonthlyIncome
-        ? Number(trimmedMonthlyIncome)
-        : undefined,
+      phone: trimmedPhone, // already digits only
+      monthly_income: sanitizedMonthlyIncome ? Number(sanitizedMonthlyIncome) : undefined,
       source_of_income: trimmedSourceOfIncome,
       secondary_contact_number: trimmedSecondaryNumber,
       secondary_contact_name: trimmedSecondaryName,
@@ -160,7 +158,7 @@ export default function AddBorrowerForm({
             inputMode="numeric"
             className={styles.input}
             value={phone}
-            onChange={(event) => setPhone(event.target.value)}
+            onChange={(event) => setPhone(sanitizeDigits(event.target.value))}
             placeholder="Enter contact number"
           />
         </label>
@@ -182,7 +180,7 @@ export default function AddBorrowerForm({
             inputMode="decimal"
             className={styles.input}
             value={monthlyIncome}
-            onChange={(event) => setMonthlyIncome(event.target.value)}
+            onChange={(event) => setMonthlyIncome(sanitizeNumber(event.target.value))}
             placeholder="Enter monthly income"
           />
         </label>
@@ -198,23 +196,23 @@ export default function AddBorrowerForm({
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Secondary Contact Number</span>
-          <input
-            inputMode="numeric"
-            className={styles.input}
-            value={secondaryContactNumber}
-            onChange={(event) => setSecondaryContactNumber(event.target.value)}
-            placeholder="Enter secondary contact number"
-          />
-        </label>
-
-        <label className={styles.field}>
           <span className={styles.label}>Secondary Contact Name</span>
           <input
             className={styles.input}
             value={secondaryContactName}
             onChange={(event) => setSecondaryContactName(event.target.value)}
             placeholder="Enter secondary contact name"
+          />
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Secondary Contact Number</span>
+          <input
+            inputMode="numeric"
+            className={styles.input}
+            value={secondaryContactNumber}
+            onChange={(event) => setSecondaryContactNumber(sanitizeDigits(event.target.value))}
+            placeholder="Enter secondary contact number"
           />
         </label>
 

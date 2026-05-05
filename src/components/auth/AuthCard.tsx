@@ -1,6 +1,8 @@
-import type { FormEvent } from "react";
-import Button from "../Button";
+import Button from "../ui/Button";
 import styles from "../auth/AuthCard.module.css";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export type AuthMode = "login" | "signup";
 
@@ -14,7 +16,7 @@ type AuthCardProps = {
   onModeChange: (mode: AuthMode) => void;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void | Promise<void>;
+  onSubmit: (event: SubmitEvent<HTMLFormElement>) => void | Promise<void>;
 };
 
 export default function AuthCard({
@@ -29,24 +31,30 @@ export default function AuthCard({
   onPasswordChange,
   onSubmit,
 }: AuthCardProps) {
+  const [showPassword, setShowPassword] = useState(false); // Local state for toggle
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className={styles.panel}>
       <div className={styles.authTabs}>
         <Button
           type="button"
           onClick={() => onModeChange("login")}
-          variant={mode === "login" ? "white" : "outlineWhiteText"}
+          variant={mode === "login" ? "white" : "outline"}
           size="md"
-          className={styles.halfButton}
+          className={`${styles.halfButton} ${mode === "login" ? "" : "border-white text-white hover:bg-white/10"}`}
         >
           Log in
         </Button>
         <Button
           type="button"
           onClick={() => onModeChange("signup")}
-          variant={mode === "signup" ? "white" : "outlineWhiteText"}
+          variant={mode === "signup" ? "white" : "outline"}
           size="md"
-          className={styles.halfButton}
+          className={`${styles.halfButton} ${mode === "signup" ? "" : "border-white text-white hover:bg-white/10"}`}
         >
           Sign up
         </Button>
@@ -68,21 +76,36 @@ export default function AuthCard({
 
         <label className={styles.field}>
           <span className={styles.fieldLabel}>Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => onPasswordChange(event.target.value)}
-            required
-            minLength={6}
-            autoComplete={
-              mode === "login" ? "current-password" : "new-password"
-            }
-            className={styles.input}
-            placeholder="••••••••"
-          />
+          <div className={styles.passwordContainer}>
+            {" "}
+            <input
+              type={showPassword ? "text" : "password"} // Dynamic type
+              value={password}
+              onChange={(event) => onPasswordChange(event.target.value)}
+              required
+              minLength={6}
+              autoComplete={
+                mode === "login" ? "current-password" : "new-password"
+              }
+              className={styles.input}
+              placeholder="••••••••"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className={styles.toggleButton}
+              aria-label="Toggle password visibility"
+              tabIndex={0}
+              style={{ color: showPassword ? "#aaa" : "#fff" }}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+          </div>
         </label>
 
-        {errorMessage ? <p className={styles.message}>{errorMessage}</p> : null}
+        {errorMessage ? (
+          <p className={styles.errorMessage}>{errorMessage}</p>
+        ) : null}
 
         {successMessage ? (
           <p className={styles.message}>{successMessage}</p>

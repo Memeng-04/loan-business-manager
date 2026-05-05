@@ -5,24 +5,121 @@
   background-color: #ffffff;
 }
 
-.actionsSection {
+.content {
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
   width: 100%;
-  padding: 1rem 1rem
-    calc(var(--mobile-footer-height) + env(safe-area-inset-bottom));
+  padding: 1rem 1rem calc(var(--mobile-footer-height) + 1rem);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
+  gap: 1.5rem;
 }
 
-.errorText {
-  margin: 0 0 0.75rem;
-  color: var(--color-text-error);
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4  rem;
+}
+
+.sectionTitle {
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.profileCard,
+.termsCard {
+  border-radius: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.field:last-of-type {
+  margin-bottom: 0;
+}
+
+.label {
+  color: var(--color-light-main-blue);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.value,
+.readOnlyValue {
+  color: #0f172a;
+  font-size: 0.95rem;
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  background-color: #f8f9fb;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 200ms ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #012a6a;
+  box-shadow: 0 0 0 3px rgba(1, 42, 106, 0.1);
+}
+
+.hint {
+  color: #64748b;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1;
+  min-width: 120px;
+}
+
+.termsHeading {
+  color: var(--color-light-main-blue);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0 0 1rem 0;
+}
+
+.termsText {
+  color: #0f172a;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  max-height: 24rem;
+  overflow-y: auto;
 }
 
 .logoutButton {
+  width: 100%;
   margin-top: 0;
   transition:
     transform 180ms ease,
@@ -30,12 +127,33 @@
 }
 
 .logoutButton:hover:not(:disabled) {
-    color: var(--color-main-blue);
+  color: var(--color-main-blue);
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .actions {
+    flex-wrap: nowrap;
+  }
+
+  .actions button {
+    flex: initial;
+  }
 }
 
 @media (min-width: 1024px) {
-  .actionsSection {
-    min-height: calc(100svh - var(--header-height));
-    padding: 1.2rem 1.5rem;
+  .content {
+    padding: 2rem;
+    max-width: 700px;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+    padding-bottom: 0.75rem;
   }
 }

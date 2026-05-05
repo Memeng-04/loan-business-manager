@@ -1,0 +1,24 @@
+.feedbackMessage {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.info {
+  color: #1d4ed8;
+}
+
+.success {
+  color: #166534;
+}
+
+@media (max-width: 640px) {
+  .feedbackMessage {
+    font-size: 0.9rem;
+  }
+}

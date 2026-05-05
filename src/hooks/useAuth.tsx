@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from '../services/supabase';
+import { supabase } from "../services/supabase";
 import {
   getCurrentSession,
   signInWithEmailPassword,
@@ -19,7 +19,7 @@ type AuthContextValue = {
   signUp: (
     email: string,
     password: string,
-  ) => Promise<{ error: string | null }>;
+  ) => Promise<{ error: string | null; hasSession: boolean }>;
   signOut: () => Promise<{ error: string | null }>;
 };
 
@@ -35,7 +35,7 @@ function mapAuthErrorMessage(message: string | null): string | null {
   return message;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -57,8 +57,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, updatedSession) => {
-      setSession(updatedSession);
-      setIsLoading(false);
+      if (isMounted) {
+        setSession(updatedSession);
+        setIsLoading(false);
+      }
     });
 
     return () => {
@@ -77,11 +79,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: mapAuthErrorMessage(error?.message ?? null) };
       },
       signUp: async (email: string, password: string) => {
-        const { error } = await signUpWithEmailPassword(email, password);
-        return { error: mapAuthErrorMessage(error?.message ?? null) };
+        const { error, session: nextSession } = await signUpWithEmailPassword(
+          email,
+          password,
+        );
+        return {
+          error: mapAuthErrorMessage(error?.message ?? null),
+          hasSession: Boolean(nextSession),
+        };
       },
       signOut: async () => {
+        // Clear local state immediately before calling service
+        // to prevent race condition where new user logs in before state clears
+        setSession(null);
+        setIsLoading(false);
+        
+        // Then clear Supabase session server-side
         const { error } = await signOutService();
+        
+        // Force hard redirect to release cached data from memory
+        window.location.href = '/auth';
+        
         return { error: error?.message ?? null };
       },
     }),

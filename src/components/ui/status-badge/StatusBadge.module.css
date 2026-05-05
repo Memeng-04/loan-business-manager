@@ -1,0 +1,51 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.toneActive {
+  background: var(--color-light-blue-bg);
+  color: var(--color-main-blue);
+}
+
+.toneUnpaid {
+  background: var(--color-light-blue-bg);
+  color: var(--color-main-blue);
+}
+
+.toneCompleted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tonePaid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tonePartial {
+  background: #fff7ed;
+  color: #b45309;
+}
+
+.toneMissed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+
+@media (max-width: 640px) {
+  .badge {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+  }
+}

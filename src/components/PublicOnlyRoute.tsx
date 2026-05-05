@@ -1,12 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
-import LoadingState from "./LoadingState";
+import LoadingState from "./ui/LoadingState";
 import { useAuth } from "../hooks/useAuth";
 
 export default function PublicOnlyRoute() {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <LoadingState />;
+    return <LoadingState variant="blueBackground" />;
   }
 
   if (user) {

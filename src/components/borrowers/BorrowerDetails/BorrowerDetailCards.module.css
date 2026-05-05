@@ -23,7 +23,20 @@
 }
 
 .profileBackButton {
+  margin-left: 0;
+  align-self: flex-start;
+}
+
+.profileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
   margin-left: auto;
+  align-items: flex-end;
+}
+
+.profileViewButton {
+  display: inline-flex;
 }
 
 .infoCard,
@@ -115,6 +128,10 @@
   gap: 0.65rem;
 }
 
+.sectionDescription {
+  color: var(--color-gray-700);
+}
+
 .dataCell {
   display: grid;
   gap: 0.2rem;
@@ -128,6 +145,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: #0f172a;
 }
 
 .dataLabelLoans {
@@ -266,8 +284,20 @@
   }
 
   .profileBackButton {
-    width: 100%;
+    width: auto;
     margin-left: 0;
+  }
+
+  .profileActions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-left: auto;
+    align-items: flex-end;
+  }
+
+  .profileViewButton {
+    display: inline-flex;
   }
 
   .infoCard,

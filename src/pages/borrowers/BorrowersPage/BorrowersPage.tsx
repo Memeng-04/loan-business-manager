@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Plus, Home, ClipboardList, Users, Settings, Filter, ArrowUpDown, User } from "lucide-react";
-import LoadingState from "../../../components/LoadingState.tsx";
+import LoadingState from "../../../components/ui/LoadingState.tsx";
 import BorrowerCard from "../../../components/borrowers/BorrowerCard/BorrowerCard.tsx";
 import { useBorrowers } from "../../../hooks/useBorrowers.ts";
 import type { Borrower } from "../../../types/borrowers.ts";

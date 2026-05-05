@@ -1,21 +1,35 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+// @ts-nocheck
+import { createClient } from "supabase"
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
-  console.log('Function called with method:', req.method)
+Deno.serve(async (req) => {
+  console.log('DEBUG: Function started - Method:', req.method)
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    // 1. Get the authorization header and verify JWT first (Security First)
+    const authHeader = req.headers.get('authorization')
+    console.log('DEBUG: Auth Header present:', !!authHeader)
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('DEBUG: Rejecting with 401 - Missing/Invalid Header')
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Missing or invalid authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // 2. Parse request body
     console.log('Parsing request body...')
-    const { loanId } = await req.json()
+    const body = await req.json().catch(() => ({}))
+    const { loanId } = body
     console.log('Received loanId:', loanId)
 
     if (!loanId) {
@@ -24,29 +38,38 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
-
-    // Get the authorization header from the request for audit purposes (optional)
-    const authHeader = req.headers.get('authorization')
     
     const supabase = createClient(
-      Deno.env.get('DB_URL')!,
-      Deno.env.get('DB_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // Fetch loan data
+    const token = authHeader.replace('Bearer ', '');
+
+    // Verify we have an authenticated user explicitly
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token)
+    
+    if (userError || !user?.id) {
+      console.error('Auth error:', userError)
+      return new Response(
+        JSON.stringify({ error: `Unauthorized: ${userError?.message || 'Invalid token'}` }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Fetch loan data (RLS will automatically filter by user)
     const { data: loan, error: loanError } = await supabase
       .from('loans')
       .select('total_payable, frequency, start_date, end_date')
       .eq('id', loanId)
+      .eq('user_id', user.id)
       .single()
 
-    if (loanError) {
-      console.error('Loan fetch error:', loanError)
-      throw new Error(`Failed to fetch loan: ${loanError.message}`)
-    }
-
-    if (!loan) {
-      throw new Error(`No loan found with ID ${loanId}`)
+    if (loanError || !loan) {
+      return new Response(
+        JSON.stringify({ error: 'Loan not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
     // Calculate term days
@@ -67,12 +90,14 @@ serve(async (req) => {
       .from('payment_schedules')
       .delete()
       .eq('loan_id', loanId)
+      .eq('user_id', user.id)
 
     if (deleteError) throw deleteError
 
-    // Save new schedule
+    // Save new schedule with user_id for RLS compliance
     const rows = schedule.map(entry => ({
       loan_id:    loanId,
+      user_id:    user.id,
       due_date:   entry.due_date,
       amount_due: entry.amount_due,
       status:     'unpaid'
@@ -83,7 +108,9 @@ serve(async (req) => {
       .insert(rows)
       .select()
 
-    if (error) throw error
+    if (error || !data) {
+      throw new Error(error?.message || 'Failed to insert payment schedules')
+    }
 
     return new Response(
       JSON.stringify({ success: true, schedule: data }),

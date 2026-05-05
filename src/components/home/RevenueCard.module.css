@@ -1,0 +1,104 @@
+.card {
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 240px;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.label {
+  color: var(--color-light-main-blue);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.totalLabel {
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.chartLegendRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.chartWrap {
+  min-height: 240px;
+}
+
+.legendList {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+  align-content: center;
+  list-style: none;
+}
+
+.legendItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.legendDot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+  display: block;
+}
+
+.emptyContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyText {
+  margin: 0;
+  color: #475569;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .chartLegendRow {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+    gap: 1rem;
+  }
+
+  .chartWrap {
+    margin-top: 0.2rem;
+  }
+
+  .legendList {
+    min-height: 240px;
+    align-self: center;
+  }
+}
+
+.buttonWrapper {
+  display: grid;
+  margin-top: 1rem;
+}
+
+.buttonWrapper button {
+  width: 100%;
+}

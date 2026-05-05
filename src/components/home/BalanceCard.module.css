@@ -1,0 +1,69 @@
+.card {
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 240px;
+}
+
+.label {
+  color: var(--color-light-main-blue);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.balanceValue {
+  margin-top: 0.35rem;
+  color: #0f172a;
+  font-size: clamp(1.55rem, 4.5vw, 2.35rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.metricsGrid {
+  display: grid;
+  gap: 0.75rem;
+  flex: 1;
+  align-content: start;
+}
+
+.metricWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background-color: #f8f9fb;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+}
+
+.metricLabel {
+  color: var(--color-light-main-blue);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.metricValue {
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.buttonWrapper {
+  display: grid;
+  margin-top: 0rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.buttonWrapper button {
+  width: 100%;
+}

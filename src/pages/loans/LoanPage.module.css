@@ -8,5 +8,30 @@
 .content {
   box-sizing: border-box;
   min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
-  padding: 1rem 1rem var(--mobile-footer-height);
+  padding: 1rem 1rem calc(var(--mobile-footer-height) + 1rem);
+}
+
+.filterCard {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(1, 42, 106, 0.08);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 30px -5px rgba(1, 42, 106, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 2rem 2rem var(--mobile-footer-height);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    --mobile-footer-height: 0;
+  }
 }

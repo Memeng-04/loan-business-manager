@@ -8,27 +8,13 @@ import AddBorrowerPage from "./pages/borrowers/AddBorrowerPage/AddBorrowerPage";
 import BorrowerDetailsPage from "./pages/borrowers/BorrowerDetailsPage/BorrowerDetailsPage";
 import MorePage from "./pages/more/MorePage";
 import LoanPage from "./pages/loans/LoanPage";
+import BorrowerLoansPage from "./pages/loans/BorrowerLoansPage";
 import NewLoanPage from "./pages/add/NewLoanPage";
-import { useEffect } from "react";
-import { supabase } from "./services/supabase";
-//something
-function App() {
-  useEffect(() => {
-    const testConnection = async () => {
-      try {
-        const { data, error } = await supabase.from("borrowers").select("*");
-        if (error) {
-          console.error("Supabase connection failed:", error.message);
-        } else {
-          console.log("Supabase connection successful! Data found:", data);
-        }
-      } catch (err) {
-        console.error("Unexpected error connecting to Supabase:", err);
-      }
-    };
-    testConnection();
-  }, []);
+import FundManagementPage from "./pages/funds/FundManagementPage";
+import ProfileOnboardingPage from "./pages/onboarding/ProfileOnboardingPage";
+import CapitalOnboardingPage from "./pages/onboarding/CapitalOnboardingPage";
 
+function App() {
   return (
     <Routes>
       <Route element={<PublicOnlyRoute />}>
@@ -36,13 +22,17 @@ function App() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
+        <Route path="/onboarding/profile" element={<ProfileOnboardingPage />} />
+        <Route path="/onboarding/capital" element={<CapitalOnboardingPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/borrowers" element={<BorrowersPage />} />
         <Route path="/borrowers/new" element={<AddBorrowerPage />} />
         <Route path="/borrowers/:id" element={<BorrowerDetailsPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="/loans" element={<LoanPage />} />
+        <Route path="/loans/borrowers/:borrowerId" element={<BorrowerLoansPage />} />
         <Route path="/add" element={<NewLoanPage />} />
+        <Route path="/funds" element={<FundManagementPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/auth" replace />} />

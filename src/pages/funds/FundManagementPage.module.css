@@ -1,0 +1,131 @@
+.page {
+  min-height: 100svh;
+  --header-height: 3.75rem;
+  --mobile-footer-height: 4.5rem;
+}
+
+.content {
+  box-sizing: border-box;
+  min-height: calc(100svh - var(--header-height) - var(--mobile-footer-height));
+  padding: 1rem 1rem calc(var(--mobile-footer-height) + 1rem);
+}
+
+.backButtonWrapper {
+  margin-bottom: 1rem;
+}
+
+.section {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.transactionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  color: var(--color-light-main-blue);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.balanceCardWrapper {
+  width: 100%;
+}
+
+.transactionList {
+  display: grid;
+  gap: 0.65rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.transactionRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "type amount"
+    "date balance";
+  gap: 0.4rem 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.transactionDate {
+  grid-area: date;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.transactionType {
+  grid-area: type;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.transactionAmount {
+  grid-area: amount;
+  color: #059669;
+  font-weight: 600;
+  text-align: right;
+}
+
+.transactionBalance {
+  grid-area: balance;
+  color: #64748b;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.emptyText {
+  margin: 0;
+  padding: 1rem 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 1.5rem 1.5rem var(--mobile-footer-height);
+  }
+
+  .transactionHeaderRow {
+    gap: 1.5rem;
+  }
+
+  .transactionRow {
+    grid-template-columns: minmax(85px, auto) 1.25fr auto minmax(110px, auto);
+    grid-template-areas: "date type amount balance";
+    gap: 1.5rem;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .transactionDate {
+    font-size: 0.92rem;
+  }
+
+  .transactionBalance {
+    font-size: 0.92rem;
+    color: #0f172a;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    min-height: calc(100svh - var(--header-height));
+    padding: 1.5rem 1.5rem 1.5rem;
+  }
+}
