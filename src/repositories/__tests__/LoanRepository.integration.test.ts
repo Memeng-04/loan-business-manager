@@ -10,21 +10,29 @@ describe('LoanRepository Integration Test', { timeout: 30000 }, () => {
   let testBorrowerId: string;
 
   beforeEach(async () => {
-    // Ensure the test user exists
-    await ensureTestUser();
+    try {
+      // 1. Ensure the test user exists
+      await ensureTestUser();
 
-    // Clean up
-    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
-    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
+      // 2. Clean up
+      await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
 
-    // Create a borrower to attach loans to
-    const { data: borrower } = await supabaseAdmin.from('borrowers').insert({
-      full_name: 'Loan Borrower',
-      phone: '123456',
-      user_id: TEST_USER_ID
-    }).select('id').single();
-    
-    testBorrowerId = borrower!.id;
+      // 3. Create a borrower to attach loans to
+      const { data: borrower, error: bError } = await supabaseAdmin.from('borrowers').insert({
+        full_name: 'Loan Borrower',
+        phone: '123456',
+        user_id: TEST_USER_ID
+      }).select('id').single();
+      
+      if (bError || !borrower) {
+        throw new Error(`borrower insert failed: ${bError?.message}`);
+      }
+      testBorrowerId = borrower.id;
+    } catch (err) {
+      console.error('SETUP FAILED:', err);
+      throw err; // Re-throw to fail the test properly
+    }
   });
 
   afterEach(async () => {

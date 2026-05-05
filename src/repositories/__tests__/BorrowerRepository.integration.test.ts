@@ -8,14 +8,24 @@ vi.mock('../../services/auth', () => ({
 
 describe('BorrowerRepository Integration Test', () => {
   beforeEach(async () => {
-    // Ensure the test user exists in auth.users
-    await ensureTestUser();
+    try {
+      // Ensure user exists
+      await ensureTestUser();
 
-    // Clean up
-    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
+      // Clean up
+      await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('payment_schedules').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
+    } catch (err) {
+      console.error('SETUP FAILED:', err);
+      throw err;
+    }
   });
 
   afterEach(async () => {
+    await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
+    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
     await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
   });
 

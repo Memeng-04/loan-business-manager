@@ -11,39 +11,48 @@ describe('PaymentRepository Integration Test', { timeout: 30000 }, () => {
   let testLoanId: string;
 
   beforeEach(async () => {
-    // Ensure user exists
-    await ensureTestUser();
+    try {
+      // Ensure user exists
+      await ensureTestUser();
 
-    // Clean up
-    await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
-    await supabaseAdmin.from('payment_schedules').delete().eq('user_id', TEST_USER_ID);
-    await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
-    await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
+      // Clean up
+      await supabaseAdmin.from('payments').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('payment_schedules').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('loans').delete().eq('user_id', TEST_USER_ID);
+      await supabaseAdmin.from('borrowers').delete().eq('user_id', TEST_USER_ID);
 
-    // Create a borrower
-    const { data: borrower } = await supabaseAdmin.from('borrowers').insert({
-      full_name: 'Payment Borrower',
-      phone: '123456',
-      user_id: TEST_USER_ID
-    }).select('id').single();
-    testBorrowerId = borrower!.id;
+      // Create a borrower
+      const { data: borrower, error: bError } = await supabaseAdmin.from('borrowers').insert({
+        full_name: 'Payment Borrower',
+        phone: '123456',
+        user_id: TEST_USER_ID
+      }).select('id').single();
+      
+      if (bError || !borrower) throw new Error(`borrower insert failed: ${bError?.message}`);
+      testBorrowerId = borrower.id;
 
-    // Create a loan
-    const { data: loan } = await supabaseAdmin.from('loans').insert({
-      borrower_id: testBorrowerId,
-      user_id: TEST_USER_ID,
-      principal: 1000,
-      total_payable: 1100,
-      interest: 100,
-      interest_rate: 10,
-      frequency: 'monthly',
-      payment_amount: 1100,
-      start_date: '2025-01-01',
-      end_date: '2025-02-01',
-      penalty_rate: 1,
-      status: 'active'
-    }).select('id').single();
-    testLoanId = loan!.id;
+      // Create a loan
+      const { data: loan, error: lError } = await supabaseAdmin.from('loans').insert({
+        borrower_id: testBorrowerId,
+        user_id: TEST_USER_ID,
+        principal: 1000,
+        total_payable: 1100,
+        interest: 100,
+        interest_rate: 10,
+        frequency: 'monthly',
+        payment_amount: 1100,
+        start_date: '2025-01-01',
+        end_date: '2025-02-01',
+        penalty_rate: 1,
+        status: 'active'
+      }).select('id').single();
+      
+      if (lError || !loan) throw new Error(`loan insert failed: ${lError?.message}`);
+      testLoanId = loan.id;
+    } catch (err) {
+      console.error('SETUP FAILED:', err);
+      throw err;
+    }
   });
 
   afterEach(async () => {
