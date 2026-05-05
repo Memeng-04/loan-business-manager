@@ -14,7 +14,7 @@ const meta = {
     },
     tone: {
       control: "select",
-      options: ["active", "done"],
+      options: ["active", "done", "unpaid", "paid", "partial", "missed"],
     },
   },
 } satisfies Meta<typeof StatusBadge>;
@@ -33,6 +33,34 @@ export const Done: Story = {
   args: {
     label: "DONE",
     tone: "done",
+  },
+};
+
+export const Unpaid: Story = {
+  args: {
+    label: "UNPAID",
+    tone: "unpaid",
+  },
+};
+
+export const Paid: Story = {
+  args: {
+    label: "PAID",
+    tone: "paid",
+  },
+};
+
+export const Partial: Story = {
+  args: {
+    label: "PARTIAL",
+    tone: "partial",
+  },
+};
+
+export const Missed: Story = {
+  args: {
+    label: "MISSED",
+    tone: "missed",
   },
 };
 

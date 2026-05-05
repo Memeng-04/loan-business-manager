@@ -1,5 +1,6 @@
 // Removed unused React
 import Card from "../../../components/ui/card/Card";
+import StatusBadge from "../../../components/ui/status-badge/StatusBadge";
 import { formatCurrency } from "../../../lib/formatters";
 import type { DashboardScheduleWithLoan } from "../../../repositories/ScheduleRepository";
 import LoadingState from "../../../components/ui/LoadingState";
@@ -63,19 +64,18 @@ export default function ScheduleList({
               {formatCurrency(schedule.amount_due)}
             </span>
 
-            <span
-              className={`text-[10px] font-black uppercase px-3 py-1 rounded-full mt-1 tracking-tighter shadow-sm ${
+            <StatusBadge
+              label={schedule.status}
+              tone={
                 schedule.status === "paid"
-                  ? "bg-green-100 text-green-700"
+                  ? "paid"
                   : schedule.status === "missed"
-                    ? "bg-red-100 text-red-700"
-                    : schedule.status === "partial"
-                      ? "bg-orange-100 text-orange-700"
-                      : "bg-blue-100 text-main-blue outline outline-1 outline-blue-200"
-              }`}
-            >
-              {schedule.status}
-            </span>
+                  ? "missed"
+                  : schedule.status === "partial"
+                  ? "partial"
+                  : "unpaid"
+              }
+            />
           </div>
         </Card>
       ))}
