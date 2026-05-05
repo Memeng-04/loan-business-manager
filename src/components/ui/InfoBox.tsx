@@ -1,10 +1,11 @@
 import React from 'react'
+import { Info, Lightbulb } from 'lucide-react'
 import styles from './InfoBox.module.css'
 
 interface InfoBoxProps {
   icon?: React.ReactNode
   children: React.ReactNode
-  variant?: 'default' | 'info'
+  variant?: 'default' | 'info' | 'lightbulb'
 }
 
 /**
@@ -16,9 +17,18 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
   children,
   variant = 'default'
 }) => {
+  const variantIcon =
+    variant === 'info'
+      ? <Info size={16} className="lucide lucide-info" />
+      : variant === 'lightbulb'
+        ? <Lightbulb size={16} className="lucide lucide-lightbulb" />
+        : undefined
+
+  const resolvedIcon = icon ?? variantIcon
+
   return (
     <div className={`${styles.infoBox} ${variant === 'info' ? styles.info : ''}`}>
-      {icon && <span className={styles.infoIcon}>{icon}</span>}
+      {resolvedIcon && <span className={styles.infoIcon}>{resolvedIcon}</span>}
       <span className={styles.infoText}>{children}</span>
     </div>
   )

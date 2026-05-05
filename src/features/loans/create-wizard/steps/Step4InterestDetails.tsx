@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import type { WizardStepProps } from '../../../../types/wizardTypes'
-import { Lightbulb, BarChart3, Check } from 'lucide-react'
+import { BarChart3, Check } from 'lucide-react'
 import {
   FixedInterestStrategy,
   PercentageInterestStrategy
@@ -218,7 +218,7 @@ export const Step4InterestDetails: React.FC<WizardStepProps> = ({
       </div>
 
       {/* Info Box */}
-      <InfoBox icon={<Lightbulb size={16} />}>
+      <InfoBox variant="lightbulb">
         The preview updates in real-time as you change values. {isFixedLoan ? 'Enter the total amount the borrower will repay.' : 'Adjust the annual interest rate to see how it affects the repayment schedule.'}
       </InfoBox>
     </div>

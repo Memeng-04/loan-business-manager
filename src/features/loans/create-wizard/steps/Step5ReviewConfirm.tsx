@@ -5,7 +5,7 @@ import {
   PercentageInterestStrategy
 } from '../../../../strategies/InterestStrategy'
 import { useBorrowers } from '../../../../hooks/useBorrowers'
-import { Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar, Info } from 'lucide-react'
+import { Clipboard, BarChart3, Check, User, DollarSign, Clock, Calendar } from 'lucide-react'
 import { SummaryCard } from '../../../../components/ui/SummaryCard'
 import { InfoBox } from '../../../../components/ui/InfoBox'
 import FeedbackMessage from '../../../../components/ui/feedback/FeedbackMessage'
@@ -284,7 +284,7 @@ export const Step5ReviewConfirm: React.FC<WizardStepProps> = ({
       </div>{/* end summaryGrid */}
 
       {/* Info Box */}
-      <InfoBox icon={<Info size={16} />}>
+      <InfoBox variant="info">
         Upon clicking submit, the loan will be recorded and a repayment schedule will be generated and saved automatically.
       </InfoBox>
 
