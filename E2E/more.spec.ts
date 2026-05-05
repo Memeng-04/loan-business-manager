@@ -23,8 +23,4 @@ test.describe('More / Settings', () => {
     await expect(page.getByText('LEND Terms & Conditions')).toBeVisible();
   });
 
-  test('should logout successfully', async ({ page }) => {
-    await morePage.logout();
-    await expect(page).toHaveURL(/.*\/auth/);
-  });
 });

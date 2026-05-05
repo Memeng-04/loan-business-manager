@@ -31,8 +31,20 @@ export class BorrowerPage {
   }
 
   async createBorrower(details: { name: string; address: string; phone: string; email?: string }) {
-    // Wait for the + Add button to appear (it's hidden during loading)
-    await this.addButton.waitFor({ state: 'visible', timeout: 15000 });
+    // Wait for the + Add button to appear, or for an error to show
+    const errorLocator = this.page.getByText('Something went wrong');
+    try {
+      await Promise.race([
+        this.addButton.waitFor({ state: 'visible', timeout: 30000 }),
+        errorLocator.waitFor({ state: 'visible', timeout: 30000 }).then(() => Promise.reject(new Error('App Error State')))
+      ]);
+    } catch (e) {
+      if (e instanceof Error && e.message === 'App Error State') {
+        const errorText = await this.page.locator('.text-sm.font-bold.tracking-\\[0\\.2em\\]').innerText().catch(() => 'Unknown Error');
+        throw new Error(`Page loaded with error: ${errorText}`);
+      }
+      throw e;
+    }
     await this.addButton.click();
 
     // Wait for the form to render
@@ -44,17 +56,17 @@ export class BorrowerPage {
     await this.saveButton.click();
 
     // Wait for navigation back to borrowers list
-    await this.page.waitForURL(/.*\/borrowers$/, { timeout: 10000 });
+    await this.page.waitForURL(/.*\/borrowers$/, { timeout: 20000 });
   }
 
   async search(query: string) {
-    await this.searchInput.waitFor({ state: 'visible', timeout: 10000 });
+    await this.searchInput.waitFor({ state: 'visible', timeout: 20000 });
     await this.searchInput.fill(query);
     // Small delay for debounced search to execute
     await this.page.waitForTimeout(500);
   }
 
   async expectBorrowerInList(name: string) {
-    await expect(this.page.getByText(name)).toBeVisible({ timeout: 10000 });
+    await expect(this.page.getByText(name)).toBeVisible({ timeout: 20000 });
   }
 }

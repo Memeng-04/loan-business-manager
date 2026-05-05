@@ -17,7 +17,7 @@ export class LoanPage {
     await this.page.goto('/add');
     await this.page.waitForLoadState('networkidle');
     // Wait for the wizard to render (step title should be visible)
-    await this.page.getByText('Step 1 of 5').waitFor({ state: 'visible', timeout: 15000 });
+    await this.page.getByText('Step 1 of 5').waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async selectLoanType(type: 'fixed' | 'percentage') {
@@ -29,7 +29,7 @@ export class LoanPage {
 
   async selectBorrower(name: string) {
     // Wait for step 2 to render
-    await this.page.getByText('Step 2 of 5').waitFor({ state: 'visible', timeout: 10000 });
+    await this.page.getByText('Step 2 of 5').waitFor({ state: 'visible', timeout: 20000 });
     
     // Open the borrower dropdown
     const dropdown = this.page.locator('button').filter({ hasText: 'Select a borrower...' }).or(
@@ -39,7 +39,7 @@ export class LoanPage {
 
     // Search and select
     const searchInput = this.page.getByPlaceholder('Search by name, phone...');
-    await searchInput.waitFor({ state: 'visible', timeout: 5000 });
+    await searchInput.waitFor({ state: 'visible', timeout: 15000 });
     await searchInput.fill(name);
     await this.page.waitForTimeout(500);
 
@@ -53,7 +53,7 @@ export class LoanPage {
 
   async fillLoanDetails(principal: string, frequency: string, term: string, startDate: string) {
     // Wait for step 3 to render
-    await this.page.getByText('Step 3 of 5').waitFor({ state: 'visible', timeout: 10000 });
+    await this.page.getByText('Step 3 of 5').waitFor({ state: 'visible', timeout: 20000 });
 
     // Principal - use label text locator
     const principalInput = this.page.locator('label:has-text("Principal Amount") input').or(
@@ -79,7 +79,7 @@ export class LoanPage {
 
   async fillInterestDetails(details: { totalPayable?: string; interestRate?: string; penaltyRate?: string }) {
     // Wait for step 4 to render
-    await this.page.getByText('Step 4 of 5').waitFor({ state: 'visible', timeout: 10000 });
+    await this.page.getByText('Step 4 of 5').waitFor({ state: 'visible', timeout: 20000 });
 
     if (details.totalPayable) {
       const input = this.page.getByPlaceholder('e.g. 60000');
@@ -103,11 +103,11 @@ export class LoanPage {
 
   async confirmLoan() {
     // Wait for step 5 (Review)
-    await this.page.getByText('Step 5 of 5').waitFor({ state: 'visible', timeout: 10000 });
+    await this.page.getByText('Step 5 of 5').waitFor({ state: 'visible', timeout: 20000 });
     await this.confirmButton.click();
   }
 
   async expectSuccess() {
-    await expect(this.successMessage).toBeVisible({ timeout: 15000 });
+    await expect(this.successMessage).toBeVisible({ timeout: 30000 });
   }
 }

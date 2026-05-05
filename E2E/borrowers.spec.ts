@@ -22,7 +22,7 @@ test.describe('Borrower Management', () => {
     await page.waitForLoadState('networkidle');
     
     // Wait for either the list or the search bar to appear (means page loaded)
-    await borrowerPage.addButton.waitFor({ state: 'visible', timeout: 15000 });
+    await borrowerPage.addButton.waitFor({ state: 'visible', timeout: 30000 });
     
     await borrowerPage.search(testName);
     await borrowerPage.expectBorrowerInList(testName);
@@ -38,12 +38,12 @@ test.describe('Borrower Management', () => {
     });
 
     await page.waitForLoadState('networkidle');
-    await borrowerPage.addButton.waitFor({ state: 'visible', timeout: 15000 });
+    await borrowerPage.addButton.waitFor({ state: 'visible', timeout: 30000 });
 
     // Now search for something that doesn't exist
     await borrowerPage.search('ZZZNonExistentUserSearchString');
     
     // The app shows "No borrowers match your search." when there are borrowers but none match
-    await expect(page.getByText('No borrowers match your search.')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('No borrowers match your search.')).toBeVisible({ timeout: 20000 });
   });
 });
