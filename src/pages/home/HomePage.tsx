@@ -163,7 +163,7 @@ export default function HomePage() {
     );
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} data-testid="dashboard-root">
       <Header title="Home" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
       <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
