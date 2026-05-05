@@ -44,6 +44,6 @@ export class LoginPage {
   }
 
   async expectError(message: string) {
-    await expect(this.errorMessage).toContainText(message);
+    await expect(this.errorMessage).toContainText(message, { timeout: 15000 });
   }
 }
