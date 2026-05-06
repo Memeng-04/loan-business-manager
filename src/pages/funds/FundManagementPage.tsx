@@ -136,14 +136,9 @@ export default function FundManagementPage() {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
-      <Header
-        title="Fund Management"
-        onMenuClick={() => setIsNavOpen((prev) => !prev)}
-      />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <div className="max-w-4xl mx-auto p-8 w-full">
-        <div className={styles.backButtonWrapper}>
+        <div className="mb-6">
           <Button
             variant="back"
             size="md"
@@ -158,8 +153,8 @@ export default function FundManagementPage() {
           <FeedbackMessage variant="success" message={success} />
         ) : null}
 
-        <div className={styles.section}>
-          <div className={styles.balanceCardWrapper}>
+        <div className="mb-10">
+          <div className="w-full">
             <BalanceCard
               outstandingBalance={outstandingBalance}
               initialCapital={initialCapital}
@@ -170,34 +165,34 @@ export default function FundManagementPage() {
           </div>
         </div>
 
-        <div className={styles.section}>
-          <div className={styles.transactionHeaderRow}>
-            <h3 className={styles.sectionTitle}>Transaction History</h3>
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-semibold text-gray-900">Transaction History</h3>
             <Button variant="blue" size="md" onClick={() => navigate("/add")}>
               + Add
             </Button>
           </div>
           <Card>
             {transactions.length === 0 ? (
-              <p className={styles.emptyText}>No transactions yet.</p>
+              <p className="text-gray-500 text-center py-8">No transactions yet.</p>
             ) : (
-              <div className={styles.transactionList}>
+              <div className="flex flex-col">
                 {transactions.map((transaction) => (
-                  <div key={transaction.id} className={styles.transactionRow}>
-                    <div className={styles.transactionDate}>
+                  <div key={transaction.id} className="grid grid-cols-4 items-center p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+                    <div className="text-sm text-gray-500">
                       {new Date(transaction.date).toLocaleDateString()}
                     </div>
-                    <div className={styles.transactionType}>
+                    <div className="text-sm font-medium text-gray-900">
                       {transaction.type.replace(/_/g, " ").toUpperCase()}
                     </div>
-                    <div className={styles.transactionAmount}>
+                    <div className="text-sm font-semibold text-gray-900 justify-self-end">
                       ₦
                       {transaction.amount.toLocaleString("en-GB", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}
                     </div>
-                    <div className={styles.transactionBalance}>
+                    <div className="text-sm text-gray-500 justify-self-end">
                       ₦
                       {transaction.balanceBefore.toLocaleString("en-GB", {
                         minimumFractionDigits: 2,

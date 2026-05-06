@@ -24,11 +24,6 @@ export default function AddBorrowerPage() {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
-      <Header
-        title="Add Borrower"
-        onMenuClick={() => setIsNavOpen((prev: boolean) => !prev)}
-      />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <div className="max-w-4xl mx-auto p-8 w-full">
         <AddBorrowerForm

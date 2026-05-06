@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Search, Plus, Home, ClipboardList, Users, Settings, Filter, ArrowUpDown, User } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export type AppLayoutContext = {
   searchQuery: string;
@@ -31,9 +31,9 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F9F9F8] font-poppins text-gray-900 overflow-hidden">
-      {/* Thin Sidebar (BizLink style - Icon Only) */}
-      <aside className="w-[80px] border-r border-gray-200 bg-[#FDFCF8] flex flex-col items-center py-6 shrink-0 transition-all duration-300 z-10">
+    <div className="flex flex-col md:flex-row h-screen bg-[#F9F9F8] font-poppins text-gray-900 overflow-hidden">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-[80px] border-r border-gray-200 bg-[#FDFCF8] flex-col items-center py-6 shrink-0 transition-all duration-300 relative z-20">
         <div className="font-bold text-2xl text-[#012a6a] mb-10 flex items-center justify-center">
           <div className="w-10 h-10 bg-[#012a6a] text-white rounded-[12px] flex items-center justify-center text-xl shadow-sm">L</div>
         </div>
@@ -96,7 +96,7 @@ export default function AppLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#F9F9F8]">
         {/* Global Header */}
-        <header className="h-24 flex items-center justify-between px-8 shrink-0 z-10">
+        <header className="h-24 flex items-center justify-between px-8 shrink-0 relative z-20">
           <div className="relative w-72 lg:w-96">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
             <input 
@@ -127,18 +127,71 @@ export default function AppLayout() {
 
         {/* Page Content with Animation */}
         <div className="flex-1 relative overflow-hidden">
-          <motion.main 
-            key={location.pathname}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="absolute inset-0 overflow-y-auto overflow-x-hidden flex flex-col"
-          >
-            <Outlet context={{ searchQuery } satisfies AppLayoutContext} />
-          </motion.main>
+          <AnimatePresence mode="wait">
+            <motion.main 
+              key={location.pathname}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="absolute inset-0 overflow-y-auto overflow-x-hidden flex flex-col"
+            >
+              <Outlet context={{ searchQuery } satisfies AppLayoutContext} />
+            </motion.main>
+          </AnimatePresence>
         </div>
       </div>
+
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden w-full border-t border-gray-200 bg-white flex justify-around items-center py-3 px-2 shrink-0 relative z-20 pb-safe">
+        <button 
+          onClick={() => navigate('/dashboard')}
+          className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
+            location.pathname.startsWith('/dashboard') 
+              ? 'text-[#012a6a]' 
+              : 'text-gray-400 hover:text-gray-900'
+          }`}
+        >
+          <Home size={24} />
+          <span className="text-[10px] font-medium mt-1">Home</span>
+        </button>
+        
+        <button 
+          onClick={() => navigate('/loans')}
+          className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
+            location.pathname.startsWith('/loans') 
+              ? 'text-[#012a6a]' 
+              : 'text-gray-400 hover:text-gray-900'
+          }`}
+        >
+          <ClipboardList size={24} />
+          <span className="text-[10px] font-medium mt-1">Loans</span>
+        </button>
+        
+        <button 
+          onClick={() => navigate('/borrowers')}
+          className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
+            location.pathname.startsWith('/borrowers') 
+              ? 'text-[#012a6a]' 
+              : 'text-gray-400 hover:text-gray-900'
+          }`}
+        >
+          <Users size={24} />
+          <span className="text-[10px] font-medium mt-1">Clients</span>
+        </button>
+        
+        <button 
+          onClick={() => navigate('/more')}
+          className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
+            location.pathname.startsWith('/more') 
+              ? 'text-[#012a6a]' 
+              : 'text-gray-400 hover:text-gray-900'
+          }`}
+        >
+          <Settings size={24} />
+          <span className="text-[10px] font-medium mt-1">More</span>
+        </button>
+      </nav>
     </div>
   );
 }

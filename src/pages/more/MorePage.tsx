@@ -121,9 +121,7 @@ export default function MorePage() {
   if (isProfileLoading) {
     return (
       <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
-        <Header title="More" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
-        <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-        <div className="max-w-4xl mx-auto p-8 w-full">
+        <div className="max-w-4xl mx-auto p-8 w-full h-full flex items-center justify-center">
           <LoadingState message="Loading profile..." />
         </div>
       </div>
@@ -132,54 +130,51 @@ export default function MorePage() {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
-      <Header title="More" onMenuClick={() => setIsNavOpen((prev) => !prev)} />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-
       <div className="max-w-4xl mx-auto p-8 w-full">
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Profile</h2>
+        <div className="mb-10">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Profile</h2>
 
           {profileError && <FeedbackMessage message={profileError} />}
           {profileSuccess && <FeedbackMessage message={profileSuccess} />}
 
-          <Card className={styles.profileCard} variant="default" padding="lg">
-            <div className={styles.field}>
-              <label className={styles.label}>Email</label>
-              <p className={styles.readOnlyValue}>{user?.email}</p>
-              <p className={styles.hint}>Email cannot be changed</p>
+          <Card className="flex flex-col gap-6" variant="default" padding="lg">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-bold text-gray-700">Email</label>
+              <p className="text-base text-gray-900 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100">{user?.email}</p>
+              <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
             </div>
 
-            <div className={styles.field}>
-              <label className={styles.label}>Legal Full Name</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-bold text-gray-700">Legal Full Name</label>
               {isEditing ? (
                 <input
                   type="text"
                   value={legalName}
                   onChange={(e) => setLegalName(e.target.value)}
-                  className={styles.input}
+                  className="bg-white border border-gray-300 text-gray-900 text-base px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#012a6a] transition-all"
                   required
                 />
               ) : (
-                <p className={styles.value}>{legalName}</p>
+                <p className="text-base text-gray-900 bg-white px-4 py-2.5 rounded-xl border border-gray-200">{legalName}</p>
               )}
             </div>
 
-            <div className={styles.field}>
-              <label className={styles.label}>Display Name</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-bold text-gray-700">Display Name</label>
               {isEditing ? (
                 <input
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className={styles.input}
+                  className="bg-white border border-gray-300 text-gray-900 text-base px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#012a6a] transition-all"
                   required
                 />
               ) : (
-                <p className={styles.value}>{displayName}</p>
+                <p className="text-base text-gray-900 bg-white px-4 py-2.5 rounded-xl border border-gray-200">{displayName}</p>
               )}
             </div>
 
-            <div className={styles.actions}>
+            <div className="flex justify-end gap-3 mt-4 pt-6 border-t border-gray-100">
               {!isEditing ? (
                 <Button
                   type="button"
@@ -215,15 +210,15 @@ export default function MorePage() {
           </Card>
         </div>
 
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Terms & Conditions</h2>
-          <Card className={styles.termsCard} variant="default" padding="lg">
-            <p className={styles.termsHeading}>LEND Terms & Conditions</p>
-            <pre className={styles.termsText}>{TERMS_TEXT}</pre>
+        <div className="mb-10">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Terms & Conditions</h2>
+          <Card className="flex flex-col gap-4" variant="default" padding="lg">
+            <p className="font-bold text-gray-900 text-lg">LEND Terms & Conditions</p>
+            <pre className="text-xs text-gray-600 bg-gray-50 p-6 rounded-xl border border-gray-100 whitespace-pre-wrap font-mono leading-relaxed h-64 overflow-y-auto">{TERMS_TEXT}</pre>
           </Card>
         </div>
 
-        <div className={styles.section}>
+        <div className="mt-12 flex flex-col items-center">
           {logoutError ? <FeedbackMessage message={logoutError} /> : null}
 
           <Button
@@ -231,7 +226,7 @@ export default function MorePage() {
             size="md"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className={styles.logoutButton}
+            className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 w-full sm:w-auto"
           >
             {isLoggingOut ? "Logging out..." : "Log out"}
           </Button>

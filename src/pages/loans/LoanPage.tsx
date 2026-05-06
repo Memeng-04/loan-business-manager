@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUpDown } from "lucide-react";
 import PaymentActionModal from "../../features/loans/management/PaymentActionModal";
 import { ScheduleRepository } from "../../repositories/ScheduleRepository";
-import { useBorrowers } from "../../hooks/useBorrowers";
+
 import { formatCurrency } from "../../lib/formatters";
 import type { AppLayoutContext } from "../../components/layout/AppLayout";
 import type { DashboardScheduleWithLoan } from "../../repositories/ScheduleRepository";
@@ -203,7 +203,7 @@ export default function LoanPage() {
                             {formatCurrency(Number(schedule.amount_due) || 0)}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 font-medium mb-3">Due: {new Date(schedule.due_date).toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500 font-medium mb-3">Due: {schedule.due_date ? new Date(schedule.due_date).toLocaleDateString() : 'N/A'}</p>
                         <div className="flex items-center justify-between mt-4">
                           <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
                             col.id === 'delinquent' ? 'bg-red-50 text-red-700' : 

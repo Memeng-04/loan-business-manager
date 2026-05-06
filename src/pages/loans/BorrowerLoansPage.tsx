@@ -193,11 +193,7 @@ export default function BorrowerLoansPage() {
   if (borrowersLoading || !borrower) {
     return (
       <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
-        <Header
-          title="Loading..."
-          onMenuClick={() => setIsNavOpen((prev) => !prev)}
-        />
-        <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+
         <div className="max-w-4xl mx-auto p-8 w-full">
           <LoadingState message="Loading borrower details..." />
         </div>
@@ -207,11 +203,7 @@ export default function BorrowerLoansPage() {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F9F9F8] overflow-y-auto">
-      <Header
-        title="Loan Details"
-        onMenuClick={() => setIsNavOpen((prev) => !prev)}
-      />
-      <Navbar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+
 
       <div className="max-w-4xl mx-auto p-8 w-full">
         {/* Top bar: BorrowerProfileCard */}
