@@ -14,10 +14,21 @@ We use **Vitest** for our unit testing suite. The tests primarily target pure fu
 
 1.  **Strategies:** Validating mathematics for different loan types (Fixed vs Percentage).
     - [src/strategies/**tests**/InterestStrategy.test.ts](../../src/strategies/__tests__/InterestStrategy.test.ts)
+    - [src/strategies/**tests**/PaymentActionStrategies.test.ts](../../src/strategies/__tests__/PaymentActionStrategies.test.ts)
+    - [src/strategies/**tests**/PaymentStrategies.test.ts](../../src/strategies/__tests__/PaymentStrategies.test.ts)
+    - [src/strategies/**tests**/ScheduleStrategy.test.ts](../../src/strategies/__tests__/ScheduleStrategy.test.ts)
+
 2.  **Factories:** Ensuring UI input is correctly transformed into database-ready objects.
     - [src/factories/**tests**/LoanFactory.test.ts](../../src/factories/__tests__/LoanFactory.test.ts)
+    - [src/factories/**tests**/BorrowerFactory.test.ts](../../src/factories/__tests__/BorrowerFactory.test.ts)
+    - [src/factories/**tests**/PaymentActionFactory.test.ts](../../src/factories/__tests__/PaymentActionFactory.test.ts)
+
 3.  **Utils:** Formatting currency, dates, and number calculations.
     - [src/utils/**tests**/numberUtils.test.ts](../../src/utils/__tests__/numberUtils.test.ts)
+    
+4.  **Components:** Testing UI components for rendering, interactions, and state changes.
+    - [src/components/ui/**tests**/Button.test.tsx](../../src/components/ui/__tests__/Button.test.tsx)
+    - [src/components/borrowers/AddBorrowerForm/**tests**/AddBorrowerForm.test.tsx](../../src/components/borrowers/AddBorrowerForm/__tests__/AddBorrowerForm.test.tsx)
 
 ## Why we use it
 
